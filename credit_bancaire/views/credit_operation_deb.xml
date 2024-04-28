@@ -25,6 +25,7 @@
                         <field name="reference_credit"/>
                         <field name="reference_interne"/>
                         <field name="partner"/>
+                        <field name="tex" invisible="1"/>
                     </group>
                     <group>
                         <field name="montant_debloque"/>

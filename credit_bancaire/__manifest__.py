@@ -9,7 +9,7 @@
     'description': """ Gestion des credit bancaire  """,
     'images' : [],
     'web_icon': ['credit_bancaire,static/description/icon.png'],
-    'depends' : ['base', 'mail', 'account'],
+    'depends' : ['base', 'mail', 'account', 'account_accountant'],
     'data': [
         'security/credit_security.xml',
         'security/ir.model.access.csv',

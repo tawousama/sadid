@@ -20,6 +20,18 @@ class banque(models.Model):
     actualitees = fields.One2many('credit.banque.actualite','banque',string='Actualitées')
     mes_agences = fields.One2many('credit.mon.agence','banque',string='Mon agence')
 
+    has_autorisation = fields.Boolean(string='A une autorisation', compute='compute_autorisation', store=True)
+    autorisation_ids = fields.One2many('credit.autorisation', 'banque')
+
+    @api.depends('autorisation_ids')
+    def compute_autorisation(self):
+        for rec in self:
+            print('computed')
+            has_autor = self.env['credit.autorisation'].search([('banque', '=', rec.id)])
+            if not has_autor:
+                rec.has_autorisation = False
+            else:
+                rec.has_autorisation = True
     def action_actualite(self):
         name = self.name
         print(name)

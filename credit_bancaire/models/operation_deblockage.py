@@ -1,7 +1,7 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
-import datetime
+from datetime import datetime
 
 
 class Operation_Deb(models.Model):
@@ -13,7 +13,7 @@ class Operation_Deb(models.Model):
                        default=lambda self: _('New'))
 
     montant_debloque = fields.Float(string="Montant débloqué", store=True, required=True)
-    montant_add = fields.Float(string="Interet", store=True, default=0)
+    montant_add = fields.Float(string="Interet", store=True, compute='compute_interet')
     montant_total = fields.Float(string="Montant Total", store=True, compute='_compute_total')
     montant_rembourser = fields.Float(string="Montant a rembourser", store=True, compute='_compute_reste')
     deblocage_date = fields.Date("Date de déblocage", tracking=True, required=True)
@@ -28,9 +28,11 @@ class Operation_Deb(models.Model):
     partner = fields.Many2one('res.partner', string='Client / Fournisseur', index=True, tracking=True)
 
     banque_id = fields.Many2one(
-        'credit.banque', string='Banque', index=True, tracking=True, required=True)
+        'credit.banque', string='Banque', index=True, tracking=True, required=True,
+                                         domain="[('has_autorisation', '=', True)]")
     type = fields.Many2one(
-        'credit.type', string='Ligne de crédit', index=True, tracking=True, required=True)
+        'credit.type', string='Ligne de crédit', index=True, tracking=True, required=True,
+                                         domain="[('has_autorisation', '=', True)]")
     ligne_autorisation = fields.Many2one('credit.autorisation', string='Autorisation',
                                          domain="[('banque.id', '=', banque_id),('type.id', '=', type)]", required=True,
                                          ondelete='cascade')
@@ -42,7 +44,8 @@ class Operation_Deb(models.Model):
     disponible_id = fields.Many2one('credit.disponible', )
     echeances = fields.One2many('credit.operation.deb.echeance', 'ref_opr_deb')
     #modif = fields.Float(string='modification', compute='_compute_modif')
-
+    taux = fields.Float(string='Taux', related='ligne_autorisation.autorisation_global.taux')
+    tex = fields.Boolean()
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
@@ -212,20 +215,17 @@ class Operation_Deb(models.Model):
             print('autorise = ', rec.ligne_autorisation.montant)
             print('autorisations = ', disponible.montant_disponible)
 
-    @api.depends('ligne_autorisation')
-    def _compute_banque(self):
+    @api.depends('deblocage_date', 'echeance_date', 'montant_debloque')
+    def compute_interet(self):
         for rec in self:
-            rec.banque = rec.ligne_autorisation.banque
-
-    @api.depends('ligne_autorisation')
-    def _compute_type(self):
-        for rec in self:
-            rec.type = rec.ligne_autorisation.type
-
-    @api.depends('ligne_autorisation')
-    def _compute_type(self):
-        for rec in self:
-            rec.disponible = rec.ligne_autorisation.disponible
+            if rec.deblocage_date and rec.echeance_date:
+                difference = (rec.echeance_date - rec.deblocage_date).days
+            else:
+                difference = False
+            if difference and rec.montant_debloque and rec.taux:
+                rec.interet = (rec.montant_debloque * rec.taux * difference) / 360
+            else:
+                rec.interet = 0
 
     @api.depends('banque', 'type')
     def _compute_autorisation(self):

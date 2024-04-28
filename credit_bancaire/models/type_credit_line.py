@@ -15,6 +15,17 @@ class Type_credit(models.Model):
         'res.users', string='Order representative', index=True, tracking=True, readonly=True,
         default=lambda self: self.env.user, check_company=True)
 
+    has_autorisation = fields.Boolean(string='A une autorisation', compute='compute_autorisation',store=True)
+    autorisation_ids = fields.One2many('credit.autorisation', 'type')
+
+    @api.depends('autorisation_ids')
+    def compute_autorisation(self):
+        for rec in self:
+            has_autor = self.env['credit.autorisation'].search([('type', '=', rec.id)])
+            if not has_autor:
+                rec.has_autorisation = False
+            else:
+                rec.has_autorisation = True
 
     @api.model
     def create(self, vals):

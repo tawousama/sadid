@@ -3,8 +3,6 @@ import datetime
 from odoo import api, fields, models, _
 from dateutil.relativedelta import relativedelta
 
-
-
 class Gestion_autorisation(models.Model):
     _name = 'credit.autorisation'
     _inherit = ["mail.thread", 'mail.activity.mixin']
@@ -20,6 +18,7 @@ class Gestion_autorisation(models.Model):
         'res.currency', string="Devise", company_dependent=True, default='base.DZD',
         help="This currency will be used, instead of the default one, for purchases from the current partner")
     montant = fields.Float(string="Montant de l`autorisation", store=True, required=True)
+    condition_objet = fields.Text(string="Objet et Conditions", store=True, required=True)
     date_create = fields.Datetime(string='Date de création', required=True, index=True, copy=False,
                                  default=fields.Datetime.now,
                                  help="Indicates the date the autorisation was created.",
@@ -28,7 +27,7 @@ class Gestion_autorisation(models.Model):
     date_limit = fields.Date("Date limite", tracking=True, required=True)
     validite_due = fields.Date("Vérification de la date", tracking=True,default=fields.Datetime.now)
     condition = fields.Char(string='Condition non bloquante a réaliser', tracking=True)
-    rappel = fields.Date("Date de rappel", tracking=True, store=True)
+    rappel = fields.Date("Date de rappel de renouvellement", tracking=True, store=True)
     user_id = fields.Many2one(
         'res.users', string='Order representative', index=True, tracking=True, readonly=True,
         default=lambda self: self.env.user, check_company=True)
@@ -71,8 +70,10 @@ class Autorisation_global(models.Model):
                        default=lambda self: _('New'))
     banque = fields.Many2one(
         'credit.banque', string='Banque', index=True, tracking=True, required=True)
-    ligne_autorisation = fields.One2many('credit.autorisation','autorisation_global',string="ligne d`autorisation")
-
+    ligne_autorisation = fields.One2many('credit.autorisation', 'autorisation_global', string="ligne d`autorisation")
+    taux = fields.Float(string='Taux')
+    file_ticket = fields.Binary(string='Ticket d`Autorisation')
+    file_name = fields.Char(string='File name')
     @api.depends('banque')
     def action_Disponible(self):
         for record in self:
