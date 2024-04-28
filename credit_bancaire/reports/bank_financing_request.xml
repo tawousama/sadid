@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_peace_bank">
+
+
+        <t t-call="web.basic_layout">
+            <div class="page">
+                <h1 style="text-align:center;font-weight: bold;padding-bottom: 3em;">مصرف السلام</h1>
+                <img style="position: relative;left: 8em;" src="/credit_bancaire/static/src/img/logo.png"/>
+                <div style="border: 1px solid black;text-align:center">
+                    حتى يتم الرد على طلبكم في أسرع الآجال الرجاء الاهتمام بملء المعلومات الضرورية بأقصى عناية
+                    <br/>
+                    <br/>
+                    Pour obtenir dans les meilleurs délais, une réponse à votre demande de financement nous vous
+                    prions de renseigner ce canevas avec la plus grande attention
+
+                </div>
+                <br/>
+                .....................................................................في,.......................................................................
+                <div style="margin-left: auto;margin-right: auto;width: 50%;border: 1px solid black;                             text-align:center;font-weight: bold;font-family: 'Tahoma';align:center;font-size: 30px;">
+                    طلب تمويل
+                    <br/>
+                    Demande de Financement
+                </div>
+                <div style="text-align:center;">
+                    <table>
+                        <tr>
+                            <td>
+                                تملأ من طرف المتعامل
+                            </td>
+                            <td style=" text-align: left;width: 3em;">
+                            </td>
+                            <td>
+                                A renseigner par le client
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="">
+                    <table>
+                        <tr>
+                            <td style=" text-align: left;width: 5em;">
+                            </td>
+                            <td>
+                                <span>تجديد التسهيلات</span>
+                                <input type="checkbox" id="oe_import_tracking"/>
+                                <p>Renouvellement de crédit</p>
+                            </td>
+                            <td style=" text-align: left;width: 30em;">
+                            </td>
+                            <td>
+                                <span>تسهيلات جديدة</span>
+                                <input type="checkbox" id="oe_import_tracking"/>
+                                <p>Nouvelle demande</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td style=" text-align: left;width: 45em;">
+                            </td>
+                            <td>
+                                <span>:القطاع</span>
+                                <input type="checkbox" id="oe_import_tracking"/>
+                                <p>Branche</p>
+                            </td>
+                            <td>
+                                <p style="color: white;">mmmm</p>
+                            </td>
+                            <td>
+                                <span>:خاص</span>
+                                <p>Privé</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td>
+                                .........................................................................................................................................................................................................................................
+                            </td>
+                            <td>
+                                <p style="color: white;">m</p>
+                            </td>
+                            <td style=" text-align: left;width: 50em;">
+                                <span>:النشاط</span>
+                                <input type="checkbox" id="oe_import_tracking"/>
+                                <p>Activité</p>
+                            </td>
+                            <td>
+                                <span>:عام</span>
+                                <p>Public</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="text-right">
+                        <span>:الفرع</span>
+                        <p>Agence</p>
+                        <p>:رقم الحساب</p>
+                    </div>
+                    <div class="text-right">
+                        <span>N° de compte</span>
+                        <p>
+                            ......................................................................................................
+                            :تاريخ فتح الحساب
+                        </p>
+                        <p>Ouvert le</p>
+                    </div>
+                    <div class="text-right" style="background-color: rgb(189, 189, 190);">
+                        <h4>التعريف بالمؤسسة</h4>
+                    </div>
+                    <div class="text-right">
+                        IDENTIFICATION DE L’ENTREPRISE
+                    </div>
+                    <div class="text-right">
+                        <span>:التسمية الكاملة</span>
+                        <p>Dénomination complète</p>
+
+                        ...............................................................................................................................................................
+                        :فرع
+
+                        <p>Filiale de</p>
+                        <span>-- :اختصار</span>
+                        <p>Abréviation</p>
+                    </div>
+                    <table>
+                        <tr>
+                            <td style=" text-align: left;width: 30em;">
+                            </td>
+                            <td>
+
+                                .........................................................................................
+
+                            </td>
+                            <td>
+                                <span>:البريد الإلكتروني</span>
+                                <p>Email</p>
+                            </td>
+                            <td>
+                                ...............................................................................
+                            </td>
+                            <td>
+                                <span>:فاكس</span>
+                                <p>Fax</p>
+
+                            </td>
+                            <td>
+                                ...............................................................................
+                            </td>
+                            <td>
+                                <span>:الهاتف</span>
+                                <p>Tél</p>
+
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="text-right">
+                        <span>:الشكل القانوني</span>
+                        <p>Forme juridique</p>
+                        <span>:رأس مال الشركة</span>
+                        <p>Capital social</p>
+                        <span>:تاريخ النشأة</span>
+                        <p>Date de création</p>
+                        <span>:تاريخ بداية النشاط</span>
+                        <p>Date début d’activité</p>
+                    </div>
+                    <table>
+                        <tr>
+                            <td style=" text-align: left;width: 10em;">
+                            </td>
+                            <td>
+                                <p>........................................................</p>
+                            </td>
+                            <td>
+                                <span>:في</span>
+                                <p>Lieu</p>
+
+                            </td>
+                            <td>
+                                <p>.............................................................</p>
+                            </td>
+                            <td>
+                                <span>:بتاريخ</span>
+                                <p>Date</p>
+                            </td>
+                            <td>
+                                <p>................................................................</p>
+                            </td>
+                            <td>
+                                <span>:تسجيل في السجل التجاري رقم</span>
+                                <p>Immatriculation au R.C. : N°</p>
+                            </td>
+
+
+                        </tr>
+                    </table>
+                    <div class="text-right">
+                        <span>:عنوان المقر الرئيسي</span>
+                        <p>Adresse du siège</p>
+                    </div>
+                    <table>
+                        <tr>
+                            <td style=" text-align: left;width: 5em;">
+                            </td>
+                            <td>
+                                <input type="checkbox" id="oe_import_tracking"/>
+                                <span>ملكية</span>
+                                <p>PROPRIETE</p>
+                            </td>
+                            <td style=" text-align: left;width: 20em;">
+                            </td>
+                            <td>
+                                <input type="checkbox" id="oe_import_tracking"/>
+                                <span>إيجار</span>
+                                <p>LOCATION</p>
+                            </td>
+                            <td>
+                                <p style="color: white;">mm</p>
+                            </td>
+                            <td>
+                                <span>:الطبيعة القانونية لمحلات تواجد المقر</span>
+                                <p>: Nature juridique des locaux servant de siège</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="text-right">
+                        <span>.............................. .... ..............................
+                            .............................
+                            ........................ : مكان تواجد وحدة الإنتاج
+                        </span>
+                        <p>Implantation de l’unité de production</p>
+                        <span>..................... :الطبيعة القانونية لقطعة الأرض المشيد عليها المصنع و كذا المساحة
+                        </span>
+                        <p>Nature juridique du terrain servant d’assiette pour l’usine et superficie</p>
+                    </div>
+
+                    <table>
+                        <tr>
+                            <td style=" text-align: left;width: 30em;">
+                            </td>
+                            <td>
+                                .........................................................................................
+                            </td>
+                            <td>
+                                <span>: الثانوي</span>
+                                <p>Secondaire</p>
+                            </td>
+                            <td>
+                                ...............................................................................
+                            </td>
+                            <td>
+                                <span>:الرئيسي</span>
+                                <p>Principale</p>
+                            </td>
+                            <td>
+                                <p style="color: white;">mm</p>
+                            </td>
+                            <td>
+                                <span>:طبيعة النشاط</span>
+                                <p>Nature de l’activité</p>
+
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="text-right">
+                        <span>:قدرة الإنتاج</span>
+                        <p>Capacité de production</p>
+                    </div>
+
+                    <table>
+                        <tr>
+                            <td style=" text-align: left;width: 10em;">
+                            </td>
+                            <td>
+                                .........................................................
+                            </td>
+                            <td>
+                                <span>: القيمة</span>
+                                <p>Valeur</p>
+                            </td>
+                            <td>
+                                .........................................................
+                            </td>
+                            <td>
+                                <span>:الكمية</span>
+                                <p>Quantité</p>
+                            </td>
+                            <td>
+                                <p style="color: white;">mm</p>
+                            </td>
+                            <td>
+                                <span>:المركبة</span>
+                                <p>Installée</p>
+
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td style=" text-align: left;width: 10em;">
+                            </td>
+                            <td>
+                                .........................................................
+                            </td>
+                            <td>
+                                <span>: القيمة</span>
+                                <p>Valeur</p>
+                            </td>
+                            <td>
+                                .........................................................
+                            </td>
+                            <td>
+                                <span>:الكمية</span>
+                                <p>Quantité</p>
+                            </td>
+                            <td>
+                                <p style="color: white;">mm</p>
+                            </td>
+                            <td>
+                                <span>:الحقيقية</span>
+                                <p>Réelle</p>
+
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="margin-left: 24em;">
+                        <span>........................................................... :طبيعة السلع المباعة (نشاط
+                            التداول)
+                        </span>
+                        <p>Nature des marchandises vendues (Activité de négoce)</p>
+                    </div>
+                    <div style="margin-left: 24em;">
+                        <span>........................................................... :طبيعة المنتجات المصنعة</span>
+                        <p>Nature des produits fabriqués (Activité de transformation)</p>
+                    </div>
+                    <div style="margin-left: 24em;">
+                        <span>........................................................... :تقديم الخدمات (نشاط الخدمات)
+                        </span>
+                        <p>Prestation fournies (Activité de service)</p>
+                    </div>
+                    <div style="margin-left: 24em;">
+                        <span>........................................................... :البناء، الأشغال العمومية و
+                            الري (
+                            نشاط
+                            الإنجازات)
+                        </span>
+                        <p>B.T.P.H. (Activité de réalisation)</p>
+                    </div>
+                    <div class="text-right">
+                        <span>
+                            ................................................................................................................................................
+                            : المسيرون
+                        </span>
+                        <p>Dirigeants</p>
+                    </div>
+                    <div class="text-right">
+                        <span>........................ : اسم و لقب المالك (شركة شخصية أو ذات الشخص الوحيد)</span>
+                        <p>Nom et prénom du propriétaire ( pour les affaires personnelles ou sur associé unique)</p>
+                    </div>
+                    <div class="text-right">
+                        <span>........................ : اسم و لقب رئيس المدير العام أو المدير العام</span>
+                        <p>Nom et Prénom du PDG ou DG (pour les SPA et SA)</p>
+                    </div>
+                    <div class="text-right">
+                        <span>........................ : اسم و لقب المسير</span>
+                        <p>Nom et prénom du gérant (pour les SARL et SNC)</p>
+                    </div>
+                    <div class="text-right">
+                        <span>........................ :السن</span>
+                        <p>Age</p>
+                    </div>
+                    <div class="text-right">
+                        <span>........................ :المستوى العلمي (التكوين)</span>
+                        <p>Formation</p>
+                    </div>
+                    <div class="text-right">
+                        <span>........................ :التجربة المهنية</span>
+                        <p>Expérience professionnelle</p>
+                    </div>
+                    <div class="text-right">
+                        <span>........................ :اسم المدير المالي</span>
+                        <p>Nom du Directeur financier</p>
+                    </div>
+                    <table>
+                        <tr>
+                            <td style=" text-align: left;width: 115em;">
+                            </td>
+                            <td style=" text-align: left;width: 10em;">
+                                <span>من بينهم</span>
+                                <p>Dont</p>
+                            </td>
+                            <td>
+                                .................................
+                            </td>
+                            <td style=" text-align: left;width: 10em;">
+                                <span>:عدد العمال</span>
+                                <p>Effectifs</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td style=" text-align: left;width: 40em;">
+                            </td>
+                            <td>
+                                .................................
+                            </td>
+                            <td style=" text-align: left;width: 10em;">
+                                <span>:مطبقين</span>
+                            </td>
+                            <td>
+                                .................................
+                            </td>
+                            <td style=" text-align: left;width: 10em;">
+                                <span>:مشرفين</span>
+                            </td>
+                            <td>
+                                .................................
+                            </td>
+                            <td style=" text-align: left;width: 10em;">
+                                <span>:اطارات </span>
+                            </td>
+                        </tr>
+                    </table>
+                    <br></br>
+                    <div class="text-right">
+                        <span>.................................................................................................................. :حجم الرواتب السنوي (دج)</span>
+                        <p>Masse salariale annuelle (DA)</p>
+                    </div>
+
+                </div>
+            </div>
+        </t>
+
+
+    </template>
+
+    <report
+            id="report_peace_bank_id"
+            model="peace.wizard"
+            string="Generate Peace Bank Report"
+            report_type="qweb-pdf"
+            name="credit_bancaire.report_peace_bank"
+            file="credit_bancaire.report_peace_bank"
+            attachment_use="False"
+    />
+
+</odoo>

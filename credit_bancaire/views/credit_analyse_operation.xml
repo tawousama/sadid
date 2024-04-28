@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_operation_graph" model="ir.ui.view">
+        <field name="name">operation.graph</field>
+        <field name="model">credit.operation</field>
+        <field name="arch" type="xml">
+
+            <graph string="Analyse des operations" type="line" sample="1">
+
+                <field name="banque" type="col"/>
+                <field name="type" type="row"/>
+                <field name="montant_debloque" type="measure"/>
+                <field name="montant_rembourser" type="measure"/>
+                <field name="montant_paye" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="view_operation_pivot" model="ir.ui.view">
+        <field name="name">operation.pivot</field>
+        <field name="model">credit.operation</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse des operations" sample="1">
+                <field name="banque" type="col"/>
+                <field name="type" type="row"/>
+                <field name="montant_debloque" type="measure"/>
+                <field name="montant_rembourser" type="measure"/>
+                <field name="montant_paye" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="operation_analyse_action" model="ir.actions.act_window">
+        <field name="name">Credit Analyse Operation</field>
+        <field name="res_model">credit.operation</field>
+        <field name="view_mode">pivot,graph</field>
+    </record>
+
+    <menuitem id="operation_analyse_menu"
+              name="Operation Analyse"
+              parent="analyse_credit"
+              action="operation_analyse_action"
+              sequence="2"/>
+
+</odoo>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<odoo>
+        <record id="view_operation_deb_echeance_form" model="ir.ui.view">
+        <field name="name">credit.operation.deb.echeance.form</field>
+        <field name="model">credit.operation.deb.echeance</field>
+        <field name="arch" type="xml" >
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="montant_rembourser"/>
+                            <field name="echeance_date"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_operation_deb_echeance_tree" model="ir.ui.view">
+        <field name="name">credit.operation.deb.echeance.tree</field>
+        <field name="model">credit.operation.deb.echeance</field>
+        <field name="arch" type="xml">
+            <tree sample="1" >
+                <field name="montant_rembourser"/>
+                <field name="echeance_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="operation_paiement_deb_echeance_action" model="ir.actions.act_window">
+        <field name="name">Echeance partiel</field>
+        <field name="res_model">credit.operation.deb.echeance</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <!--<menuitem id="operation_p_detail_menu"
+              name="Paiement de Credit"
+              parent="oper_credit"
+              action="operation_paiement_detail_action"
+              sequence="20"/>-->
+
+</odoo>

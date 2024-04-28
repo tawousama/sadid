@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_credit_banque_agence_form" model="ir.ui.view">
+        <field name="name">credit.banque.agence.form</field>
+        <field name="model">credit.banque.agence</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="agence"/>
+                        <field name="adresse"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_credit_banque_agence_tree" model="ir.ui.view">
+        <field name="name">credit.banque.agence.tree</field>
+        <field name="model">credit.banque.agence</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <field name="agence"/>
+                <field name="adresse"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="banque_agence_action" model="ir.actions.act_window">
+        <field name="name">Agence de la Banque</field>
+        <field name="res_model">credit.banque.agence</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

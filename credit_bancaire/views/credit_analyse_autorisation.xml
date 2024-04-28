@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_autorisation_graph" model="ir.ui.view">
+        <field name="name">autorisation.graph</field>
+        <field name="model">credit.autorisation</field>
+        <field name="arch" type="xml">
+
+            <graph string="Analyse des autorisation" type="line" sample="1">
+
+                <field name="banque" type="col"/>
+                <field name="type" type="row"/>
+                <field name="montant" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="view_autorisation_pivot" model="ir.ui.view">
+        <field name="name">autorisation.pivot</field>
+        <field name="model">credit.autorisation</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse des autorisation" sample="1">
+                <field name="banque" type="col"/>
+                <field name="type" type="row"/>
+                <field name="montant" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="autorisation_analyse_action" model="ir.actions.act_window">
+        <field name="name">Credit Analyse Autorisation</field>
+        <field name="res_model">credit.autorisation</field>
+        <field name="view_mode">pivot,graph</field>
+    </record>
+
+    <menuitem id="autorisation_analyse_menu"
+              name="Autorisation Analyse"
+              parent="analyse_credit"
+              action="autorisation_analyse_action"
+              sequence="1"/>
+
+</odoo>

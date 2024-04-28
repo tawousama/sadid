@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="view_gestion_echeance_tree" model="ir.ui.view">
+        <field name="name">credit.gestion.echeance.tree</field>
+        <field name="model">credit.echeance</field>
+        <field name="arch" type="xml">
+            <tree sample="1" create="false">
+                <header>
+                    <!--<button name="action_ech_MAJ" string="Mise a jour (Échéances a venir)"
+                                class="btn-primary"
+                                type="object"/>-->
+                </header>
+                <field name="banque"/>
+                <field name="type"/>
+                <field name="echeance_date" optional="show"/>
+                <field name="montant_a_rembourser" sum="Total amount" widget="monetary" optional="show"/>
+                <field name="fournisseur" optional="show"/>
+                <field name="facture" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="gestion_echeance_action" model="ir.actions.act_window">
+        <field name="name">Échéances a venir</field>
+        <field name="res_model">credit.echeance</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="gestion_echeance_menu"
+              name="Échéances a venir"
+              parent="cre_credit"
+              action="gestion_echeance_action"
+              sequence="7"/>
+
+</odoo>

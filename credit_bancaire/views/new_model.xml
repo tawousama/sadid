@@ -1,0 +1,540 @@
+<odoo>
+    <data>
+        <!-- explicit list view definition -->
+
+        <record id="new_model_view_form" model="ir.ui.view">
+            <field name="name">new model view form</field>
+            <field name="model">new.model</field>
+            <field name="arch" type="xml">
+                <form string="room_form">
+                    <sheet style="dont-size:25px;">
+                        <group>
+                            <group>
+                                <field name="request" options="{'horizontal': true}" widget="radio"/>
+                                <field name="sector" options="{'horizontal': true}" widget="radio"/>
+                            </group>
+                            <group>
+                                <field name="activity"/>
+                                <field name="branch"/>
+                                <field name="account_number"/>
+                                <field name="account_opening_date"/>
+                            </group>
+                        </group>
+                        <group string="التعريف بالمؤسسة">
+                            <group>
+                                <field name="company_name"/>
+                                <field name="company_branch"/>
+                                <field name="company_acronym"/>
+                                <field name="legal_form"/>
+                                <field name="origin_date"/>
+                                <field name="register_no"/>
+                                <field name="register_in"/>
+                            </group>
+                            <group>
+                                <field name="company_phone"/>
+                                <field name="company_fax"/>
+                                <field name="company_email"/>
+                                <field name="company_capital"/>
+                                <field name="start_date"/>
+                                <field name="register_date"/>
+                                <field name="headquarter_address"/>
+                            </group>
+                        </group>
+                        <group string="الطبيعة القانونية لمحلات تواجد المقر">
+                            <group>
+                                <field name="legal_nature" options="{'horizontal': true}" widget="radio"/>
+                                <field name="location_production"/>
+                                <field name="legal_nature_for_land"/>
+                            </group>
+                            <group string="طبيعة النشاط ">
+                                <field name="main_activity"/>
+                                <field name="secondary_activity"/>
+                            </group>
+                        </group>
+                        <group string="قدرة الإنتاج">
+                            <group string="المركبة">
+                                <field name="quantity"/>
+                                <field name="value"/>
+                            </group>
+                            <group string="الحقيقية">
+                                <field name="quantity2"/>
+                                <field name="value2"/>
+                            </group>
+                            <group>
+                                <field name="nature_of_goods_sold"></field>
+                                <field name="nature_of_goods_manufacturer"></field>
+
+                            </group>
+                            <group>
+                                <field name="provision_of_services"></field>
+                                <field name="building"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="facilitators"/>
+                                <field name="name_of_owner"/>
+                                <field name="name_of_director"/>
+                                <field name="professional_experience"/>
+                                <field name="number_of_workers"/>
+                            </group>
+                            <group>
+                                <field name="name_of_facilitator"/>
+                                <field name="age"/>
+                                <field name="scientific"/>
+                                <field name="name_of_financial_manager"/>
+                                <field name="tires"/>
+                                <field name="supervisors"/>
+                                <field name="two_applicators"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="payroll"/>
+                        </group>
+                        <notebook>
+                            <page name="exploitation_lands_and_buildings" string="أراضي و مباني الاستغلال">
+                                <field name="land_ids">
+                                    <tree>
+                                        <field name="nature_of_origin"/>
+                                        <field name="address"/>
+                                        <field name="total_area"/>
+                                        <field name="under_foreclosure"/>
+                                        <field name="owner"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="exploitation_equipment" string="معدات الاستغلال">
+                                <field name="hardware_ids">
+                                    <tree>
+                                        <field name="hardware"/>
+                                        <field name="year_of_acquisition"/>
+                                        <field name="acquisition_value"/>
+                                        <field name="note"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="the_real_estate_properties" string="الاملاك العقارية  للشركاء/المساهمين">
+                                <field name="partner_ids">
+                                    <tree>
+                                        <field name="partner"/>
+                                        <field name="nature_of_real_estate"/>
+                                        <field name="estimated_value"/>
+                                        <field name="mortgage_creditors"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="other_companies_ownership_of_the_main_partners"
+                                  string=" 	شركات اخرى ملكية الشركاء الرئيسيين">
+                                <field name="company_ids">
+                                    <tree>
+                                        <field name="names_of_partners"/>
+                                        <field name="company_in"/>
+                                        <field name="company_out"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <group string="نشاط المؤسسة"></group>
+
+                        <notebook>
+                            <page name="purchases.activity_page" string=" 	المشتريات">
+                                <field name="purchases_ids">
+                                    <tree>
+                                        <field name="purchases"/>
+                                        <field name="suppliers"/>
+                                        <field name="payment_method"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="sales.activity_page" string=" 	 	المبيعات">
+                                <field name="sales_ids">
+                                    <tree>
+                                        <field name="sales"/>
+                                        <field name="suppliers_s"/>
+                                        <field name="collection_method"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <group string="التسهيلات المطلوبة "></group>
+                        <notebook>
+                            <page name="facilities_type" string=" 	نوع التسهيلات   ( دج)">
+                                <field name="facilitie_ids">
+                                    <tree>
+                                        <field name="f_type"/>
+                                        <field name="amounts_required"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="proposed_guarantees" string=" 	الضمانات المقترحة   ( دج)">
+                                <field name="security_ids">
+                                    <tree>
+                                        <field name="nature_of_guarantee"/>
+                                        <field name="collateral_value"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="obligations_with_other_banks"
+                                  string=" 	الالتزامات لدى البنوك الأخرى   ( دج)">
+                                <field name="obligations_ids">
+                                    <tree>
+                                        <field name="bank"/>
+                                        <field name="guarantees_provided"/>
+                                        <field name="total_liabilities"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+
+                        <group>
+                            <button name="create_report_peace_bank" type="object" string="Imprimer"
+                            class="btn-primary"/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="proposed_guarantees_form" model="ir.ui.view">
+            <field name="name">proposed_guarantees_form</field>
+            <field name="model">proposed.guarantees</field>
+            <field name="arch" type="xml">
+                <form string="amounts_required_form">
+                    <sheet>
+                        <group>
+                            <field name="nature_of_guarantee"/>
+                            <field name="collateral_value"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="obligations_with_other_banks_form" model="ir.ui.view">
+            <field name="name">obligations_with_other_banks_form</field>
+            <field name="model">obligations.banks</field>
+            <field name="arch" type="xml">
+                <form string="amounts_required_form">
+                    <sheet>
+                        <group>
+                            <field name="bank"/>
+                            <field name="guarantees_provided"/>
+                            <field name="total_liabilities"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="facilities_type_view_form" model="ir.ui.view">
+            <field name="name">facilities_type_view_form</field>
+            <field name="model">facilities.type</field>
+            <field name="arch" type="xml">
+                <form string="facilities_type_form">
+                    <sheet>
+                        <group>
+                            <field name="f_type"/>
+                        </group>
+                        <notebook>
+                            <page string="المبالغ المطلوبة">
+                                <field name="amounts_required">
+                                    <tree>
+                                        <field name="in_dinars"/>
+                                        <field name="in_hard_currency"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="amounts_required_view_form" model="ir.ui.view">
+            <field name="name">amounts_required_view_form</field>
+            <field name="model">amounts.required</field>
+            <field name="arch" type="xml">
+                <form string="amounts_required_form">
+                    <sheet>
+                        <group>
+                            <field name="in_dinars"/>
+                            <field name="in_hard_currency"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="land_view_form" model="ir.ui.view">
+            <field name="name">land_view_form</field>
+            <field name="model">lands.buildings</field>
+            <field name="arch" type="xml">
+                <form string="land_form">
+                    <sheet>
+                        <group>
+                            <field name="nature_of_origin"/>
+                            <field name="address"/>
+                            <field name="total_area"/>
+                            <field name="under_foreclosure" options="{'horizontal': true}" widget="radio"/>
+                            <field name="owner" options="{'horizontal': true}" widget="radio"/>
+
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="purchases_suppliers_view_form" model="ir.ui.view">
+            <field name="name">purchases_suppliers_view_form</field>
+            <field name="model">purchases.suppliers</field>
+            <field name="arch" type="xml">
+                <form string="purchases_suppliers_form">
+                    <sheet>
+                        <group>
+                            <field name="aliens"/>
+                            <field name="local"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="sales_suppliers_view_form" model="ir.ui.view">
+            <field name="name">sales_suppliers_view_form</field>
+            <field name="model">sales.suppliers</field>
+            <field name="arch" type="xml">
+                <form string="sales_suppliers_form">
+                    <sheet>
+                        <group>
+                            <field name="s_aliens"/>
+                            <field name="s_local"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="purchases_activity_view_form" model="ir.ui.view">
+            <field name="name">purchases_activity_view_form</field>
+            <field name="model">purchases.activity</field>
+            <field name="arch" type="xml">
+                <form string="purchases_activity_form">
+                    <sheet>
+                        <group>
+                            <field name="purchases"/>
+                            <field name="payment_method"/>
+                        </group>
+                        <notebook>
+                            <page string="الموردون">
+                                <field name="suppliers">
+                                    <tree>
+                                        <field name="aliens"/>
+                                        <field name="local"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="sales_activity_view_form" model="ir.ui.view">
+            <field name="name">sales_activity_view_form</field>
+            <field name="model">sales.activity</field>
+            <field name="arch" type="xml">
+                <form string="purchases_activity_form">
+                    <sheet>
+                        <group>
+                            <field name="sales"/>
+                            <field name="collection_method"/>
+                        </group>
+                        <notebook>
+                            <page string="الزبائن">
+                                <field name="suppliers_s">
+                                    <tree>
+                                        <field name="s_aliens"/>
+                                        <field name="s_local"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="purchases_aliens_view_form" model="ir.ui.view">
+            <field name="name">purchases_aliens_view_form</field>
+            <field name="model">purchases.aliens</field>
+            <field name="arch" type="xml">
+                <form string="purchases_aliens_form">
+                    <sheet>
+                        <group>
+                            <field name="country"/>
+                            <field name="a_thousand_dzd"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="sales_aliens_view_form" model="ir.ui.view">
+            <field name="name">sales_aliens_view_form</field>
+            <field name="model">sales.aliens</field>
+            <field name="arch" type="xml">
+                <form string="sales_aliens_form">
+                    <sheet>
+                        <group>
+                            <field name="s_country"/>
+                            <field name="s_a_thousand_dzd"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="purchases_local_view_form" model="ir.ui.view">
+            <field name="name">purchases_local_view_form</field>
+            <field name="model">purchases.local</field>
+            <field name="arch" type="xml">
+                <form string="purchases_locals_form">
+                    <sheet>
+                        <group>
+                            <field name="l_name"/>
+                            <field name="l_thousand_dzd"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="sales_local_view_form" model="ir.ui.view">
+            <field name="name">sales_local_view_form</field>
+            <field name="model">sales.local</field>
+            <field name="arch" type="xml">
+                <form string="sales_locals_form">
+                    <sheet>
+                        <group>
+                            <field name="s_l_name"/>
+                            <field name="s_l_thousand_dzd"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="hardware_view_form" model="ir.ui.view">
+            <field name="name">hardware_view_form</field>
+            <field name="model">exploitation.equipment</field>
+            <field name="arch" type="xml">
+                <form string="hardware_form">
+                    <sheet>
+                        <group>
+                            <field name="hardware"/>
+                            <field name="year_of_acquisition"/>
+                            <field name="acquisition_value"/>
+                            <field name="note"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="partner_view_form" model="ir.ui.view">
+            <field name="name">partner_view_form</field>
+            <field name="model">real.estate</field>
+            <field name="arch" type="xml">
+                <form string="partner_form">
+                    <sheet>
+                        <group>
+                            <field name="partner"/>
+                            <field name="nature_of_real_estate"/>
+                            <field name="estimated_value"/>
+                            <field name="mortgage_creditors"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="company_in_view_form" model="ir.ui.view">
+            <field name="name">company_in_view_form</field>
+            <field name="model">companies.in</field>
+            <field name="arch" type="xml">
+                <form string="company_in_form">
+                    <sheet>
+                        <group>
+                            <field name="the_company_name"/>
+                            <field name="obligations"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="company_out_view_form" model="ir.ui.view">
+            <field name="name">company_out_view_form</field>
+            <field name="model">companies.out</field>
+            <field name="arch" type="xml">
+                <form string="company_out_form">
+                    <sheet>
+                        <group>
+                            <field name="the_company_name_o"/>
+                            <field name="obligations_o"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="other_companies_view_form" model="ir.ui.view">
+            <field name="name">other_companies_view_form</field>
+            <field name="model">other.companies</field>
+            <field name="arch" type="xml">
+                <form string="other_companies_form">
+                    <sheet>
+                        <group>
+                            <field name="names_of_partners"/>
+                        </group>
+                        <notebook>
+                            <page name="company_in" string="شركات موطنة لدى مصرف السلام">
+                                <field name="company_in">
+                                    <tree>
+                                        <field name="the_company_name"/>
+                                        <field name="obligations"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="company_out" string="شركات موطنة لدى البنوك الأخرى">
+                                <field name="company_out">
+                                    <tree>
+                                        <field name="the_company_name_o"/>
+                                        <field name="obligations_o"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- actions opening views on models -->
+
+        <record model="ir.actions.act_window" id="new_model_action_window">
+            <field name="name">Salle</field>
+            <field name="res_model">new.model</field>
+            <field name="view_mode">form</field>
+        </record>
+
+        <!-- server action to the one above -->
+        <record model="ir.actions.server" id="new_model_action_server">
+            <field name="name">Salle server</field>
+            <field name="model_id" ref="model_new_model"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = {
+                "type": "ir.actions.act_window",
+                "view_mode": "form",
+                "res_model": model._name,
+                }
+            </field>
+        </record>
+
+
+        <menuitem id="menu_new_model"
+                  name="Canvas Al Salam"
+                  parent="montage_credit"
+                  action="new_model_action_window"
+                  sequence="9"/>
+
+    </data>
+</odoo>

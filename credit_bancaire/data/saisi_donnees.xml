@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="poste_1" model="montage.saisi.donnee">
+            <field name="poste">Immobilisations corporelles</field>
+        </record>
+        <record id="poste_2" model="montage.saisi.donnee">
+            <field name="poste">Immobilisations financières</field>
+        </record>
+        <record id="poste_3" model="montage.saisi.donnee">
+            <field name="poste">Stock en cours</field>
+        </record>
+        <record id="poste_4" model="montage.saisi.donnee">
+            <field name="poste">Clients</field>
+        </record>
+        <record id="poste_5" model="montage.saisi.donnee">
+            <field name="poste">Impôts et assimiliés</field>
+        </record>
+        <record id="poste_6" model="montage.saisi.donnee">
+            <field name="poste">Trésorerie</field>
+        </record>
+        <record id="poste_7" model="montage.saisi.donnee">
+            <field name="poste">Capital</field>
+        </record>
+        <record id="poste_8" model="montage.saisi.donnee">
+            <field name="poste">Report à nouveau</field>
+        </record>
+        <record id="poste_9" model="montage.saisi.donnee">
+            <field name="poste">Emprunts financières</field>
+        </record>
+        <record id="poste_10" model="montage.saisi.donnee">
+            <field name="poste">Fournisseurs</field>
+        </record>
+        <record id="poste_11" model="montage.saisi.donnee">
+            <field name="poste">Trésorerie de passif</field>
+        </record>
+        <record id="poste_12" model="montage.saisi.donnee">
+            <field name="poste">Autres dettes</field>
+        </record>
+        <record id="poste_13" model="montage.saisi.donnee">
+            <field name="poste">Chiffre d`affaires</field>
+        </record>
+        <record id="poste_14" model="montage.saisi.donnee">
+            <field name="poste">Achats consommés</field>
+        </record>
+        <record id="poste_15" model="montage.saisi.donnee">
+            <field name="poste">Autres charges</field>
+        </record>
+        <record id="poste_16" model="montage.saisi.donnee">
+            <field name="poste">Charges du personnel</field>
+        </record>
+        <record id="poste_17" model="montage.saisi.donnee">
+            <field name="poste">Frais financiers</field>
+        </record>
+        <record id="poste_18" model="montage.saisi.donnee">
+            <field name="poste">Résultat net</field>
+        </record>
+        <record id="variation_1" model="montage.variation.poste.comptable">
+            <field name="poste">Immobilisations corporelles</field>
+        </record>
+        <record id="variation_2" model="montage.variation.poste.comptable">
+            <field name="poste">Immobilisations financières</field>
+        </record>
+        <record id="variation_3" model="montage.variation.poste.comptable">
+            <field name="poste">Stock en cours</field>
+        </record>
+        <record id="variation_4" model="montage.variation.poste.comptable">
+            <field name="poste">Clients</field>
+        </record>
+        <record id="variation_5" model="montage.variation.poste.comptable">
+            <field name="poste">Impôts et assimiliés</field>
+        </record>
+        <record id="variation_6" model="montage.variation.poste.comptable">
+            <field name="poste">Trésorerie</field>
+        </record>
+        <record id="variation_7" model="montage.variation.poste.comptable">
+            <field name="poste">Capital</field>
+        </record>
+        <record id="variation_8" model="montage.variation.poste.comptable">
+            <field name="poste">Report à nouveau</field>
+        </record>
+        <record id="variation_9" model="montage.variation.poste.comptable">
+            <field name="poste">Emprunts financières</field>
+        </record>
+        <record id="variation_10" model="montage.variation.poste.comptable">
+            <field name="poste">Fournisseurs</field>
+        </record>
+        <record id="variation_11" model="montage.variation.poste.comptable">
+            <field name="poste">Trésorerie de passif</field>
+        </record>
+        <record id="variation_12" model="montage.variation.poste.comptable">
+            <field name="poste">Autres dettes</field>
+        </record>
+        <record id="variation_13" model="montage.variation.poste.comptable">
+            <field name="poste">Chiffre d`affaires</field>
+        </record>
+        <record id="variation_14" model="montage.variation.poste.comptable">
+            <field name="poste">Achats consommés</field>
+        </record>
+        <record id="variation_15" model="montage.variation.poste.comptable">
+            <field name="poste">Autres charges</field>
+        </record>
+        <record id="variation_16" model="montage.variation.poste.comptable">
+            <field name="poste">Charges du personnel</field>
+        </record>
+        <record id="variation_17" model="montage.variation.poste.comptable">
+            <field name="poste">Frais financiers</field>
+        </record>
+        <record id="variation_18" model="montage.variation.poste.comptable">
+            <field name="poste">Résultat net</field>
+        </record>
+    </data>
+</odoo>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

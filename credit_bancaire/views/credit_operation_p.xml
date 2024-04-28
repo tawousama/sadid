@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<odoo>
+        <record id="view_operation_detail_form" model="ir.ui.view">
+        <field name="name">credit.operation.paiementdetail.form</field>
+        <field name="model">credit.operation.paiementdetail</field>
+        <field name="arch" type="xml" >
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="montant_paye"/>
+                            <field name="date_creation"/>
+                            <field name="note"/>
+                        </group>
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_operation_detail_tree" model="ir.ui.view">
+        <field name="name">credit.operation.paiementdetail.tree</field>
+        <field name="model">credit.operation.paiementdetail</field>
+        <field name="arch" type="xml">
+            <tree sample="1" >
+                <field name="montant_paye"/>
+                <field name="date_creation"/>
+                <field name="note"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="operation_paiement_detail_action" model="ir.actions.act_window">
+        <field name="name">Operation de paiement</field>
+        <field name="res_model">credit.operation.paiementdetail</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <!--<menuitem id="operation_p_detail_menu"
+              name="Paiement de Credit"
+              parent="oper_credit"
+              action="operation_paiement_detail_action"
+              sequence="20"/>-->
+
+</odoo>

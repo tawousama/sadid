@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_credit_type_form" model="ir.ui.view">
+        <field name="name">credit.type.form</field>
+        <field name="model">credit.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="titre" />
+                        <field name="note"/>
+                        <field name="user_id"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_credit_type_tree" model="ir.ui.view">
+        <field name="name">credit.type.tree</field>
+        <field name="model">credit.type</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <field name="titre" />
+                <field name="note"/>
+                <field name="user_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="type_action" model="ir.actions.act_window">
+        <field name="name">Type Crédit Bancaire</field>
+        <field name="res_model">credit.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="type_menu_credit"
+              name="Type Crédit Bancaire"
+              parent="conf_credit"
+              action="type_action"
+              sequence="7"/>
+</odoo>

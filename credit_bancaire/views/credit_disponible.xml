@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_disponible_form" model="ir.ui.view">
+        <field name="name">credit.disponible.form</field>
+        <field name="model">credit.disponible</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <field name="banque"/>
+                        <field name="type"/>
+                        <field name="montant_disponible"/>
+                        <field name="ligne_autorisation"/>
+                    </group>
+
+                    <notebook>
+
+                    </notebook>
+
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="view_disponible_tree" model="ir.ui.view">
+        <field name="name">credit.disponible.tree</field>
+        <field name="model">credit.disponible</field>
+        <field name="arch" type="xml">
+            <tree sample="1" create="false">
+                <field name="banque"/>
+                <field name="type"/>
+                <field name="montant_autorisation" sum="Total amount" widget="monetary" optional="show"/>
+                <field name="montant_disponible" sum="Total amount" widget="monetary" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="disponible_action" model="ir.actions.act_window">
+        <field name="name">Credit Disponible</field>
+        <field name="res_model">credit.disponible</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="disponible_menu"
+              name="Disponible Credit"
+              parent="cre_credit"
+              action="disponible_action"
+              sequence="1"/>
+
+</odoo>

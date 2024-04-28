@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_credit_banque_form" model="ir.ui.view">
+        <field name="name">credit.banque.form</field>
+        <field name="model">credit.banque</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="adresse_siege"/>
+                        <field name="web_site" widget="url"/>
+                        <field name="nbr_agences"/>
+                        <field name="agences"/>
+                    </group>
+                    <notebook>
+                        <page string="Mon agence">
+                            <field name="mes_agences" colspan="4" nolabel="1" height="260" mode="tree">
+                                    <tree>
+                                            <field name="name"/>
+                                            <field name="code"/>
+                                            <field name="adresse"/>
+                                            <field name="num_compte"/>
+                                    </tree>
+                            </field>
+                        </page>
+                        <page string="Actualitées">
+                            <button id="button_Actualite" name="action_actualite" string="Voir l'actualité de la banque"
+                                    class="btn-primary"
+                                    type="object"/>
+                            <field name="actualitees" mode="tree" readonly="1" >
+                                <tree>
+                                    <field name="title" />
+                                    <field name="link" widget="url" text="lien de l`article"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_credit_banque_tree" model="ir.ui.view">
+        <field name="name">credit.banque.tree</field>
+        <field name="model">credit.banque</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="adresse_siege"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="banque_action" model="ir.actions.act_window">
+        <field name="name">Liste des banques</field>
+        <field name="res_model">credit.banque</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="actualite_action" model="ir.actions.act_window">
+        <field name="name">Actualité</field>
+        <field name="res_model">credit.banque.actualite</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="banque_menu_credit"
+              name="Liste Banques"
+              parent="conf_credit"
+              action="banque_action"
+              sequence="10"/>
+</odoo>

@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<odoo>
+    <!-- les vues de plan des charges-->
+    <record id="view_montage_plan_charges_tree" model="ir.ui.view">
+        <field name="name">montage.plan.charges.tree</field>
+        <field name="model">montage.plan.charges</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="type_marche"/>
+                <field name="maitre_ouvrage"/>
+                <field name="domiciliation_bancaire"/>
+                <field name="montant_ht"/>
+                <field name="objet_marche"/>
+                <field name="date_ods"/>
+                <field name="delai_realisation"/>
+                <field name="cbe"/>
+                <field name="montant_cbe"/>
+                <field name="caution_cra"/>
+                <field name="montant_cra"/>
+                <field name="taux_avancement" widget="percentage"/>
+                <field name="paiement_encaisse_ht"/>
+                <field name="paiement_attendu_ht"/>
+            </tree>
+        </field>
+    </record>
+    <record id="montage_plan_charges_action" model="ir.actions.act_window">
+        <field name="name">Plan des charges</field>
+        <field name="res_model">montage.plan.charges</field>
+        <field name="view_mode">tree</field>
+    </record>
+    <menuitem id="montage_plan_charges"
+              name="Plan des charges"
+              parent="montage_credit"
+              action="montage_plan_charges_action"
+              sequence="1"/>
+
+    <!-- les vues de plan d'appro local-->
+    <record id="view_montage_plan_appro_local_tree" model="ir.ui.view">
+        <field name="name">montage.plan.appro.local.tree</field>
+        <field name="model">montage.plan.appro.local</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="nature_marchandise"/>
+                <field name="fournisseur"/>
+                <field name="mode_reglement"/>
+                <field name="type_reglement"/>
+                <field name="montant_previsionnel"/>
+                <field name="date_previsionnel"/>
+                <field name="delai_moyen_livraision"/>
+            </tree>
+        </field>
+    </record>
+    <record id="montage_plan_appro_local_action" model="ir.actions.act_window">
+        <field name="name">Plan d'appro local</field>
+        <field name="res_model">montage.plan.appro.local</field>
+        <field name="view_mode">tree</field>
+    </record>
+    <menuitem id="montage_plan_appro_local"
+              name="Plan d`appro local"
+              parent="montage_credit"
+              action="montage_plan_appro_local_action"
+              sequence="2"/>
+
+    <!-- les vues de plan d'importation-->
+    <record id="view_montage_plan_importation_tree" model="ir.ui.view">
+        <field name="name">montage.plan.importation.tree</field>
+        <field name="model">montage.plan.importation</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="marchandise_importer"/>
+                <field name="fournisseur"/>
+                <field name="pays_fournisseur"/>
+                <field name="banque_fournisseur"/>
+                <field name="mode_paiement"/>
+                <field name="currency_id"/>
+                <field name="montant_devise"/>
+                <field name="montant_DZD"/>
+                <field name="tarif_douanier" widget="percentage"/>
+                <field name="montant_global_DZD"/>
+                <field name="lead_time"/>
+                <field name="date_lancement_commande"/>
+            </tree>
+        </field>
+    </record>
+    <record id="montage_plan_importation_action" model="ir.actions.act_window">
+        <field name="name">Plan d'Importation</field>
+        <field name="res_model">montage.plan.importation</field>
+        <field name="view_mode">tree</field>
+    </record>
+    <menuitem id="montage_plan_importation"
+              name="Plan d`importation"
+              parent="montage_credit"
+              action="montage_plan_importation_action"
+              sequence="3"/>
+
+     <!--les vues de plan creance en cours-->
+    <record id="account_out_invoice_creance_tree_view" model="ir.ui.view">
+            <field name="name">account.out.invoice.creance.tree</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="invoice_partner_display_name" string="Client"/>
+                </field>
+            </field>
+    </record>
+    <record id="montage_creance_en_cours_action" model="ir.actions.act_window">
+        <field name="name">Créances en cours</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="credit_bancaire.account_out_invoice_creance_tree_view"/>
+        <field name="domain">[('state', '=', 'posted'), ('payment_state', 'in', ('not_paid', 'partial')),('move_type', 'in', ('out_invoice', 'out_receipt', 'out_refund'))]</field>
+    </record>
+
+
+    <menuitem id="montage_creance_en_cours"
+              name="Créances en cours"
+              parent="montage_credit"
+              action="montage_creance_en_cours_action"
+              sequence="4"/>
+
+     <!--les vues de saisi de donnee-->
+    <record id="view_montage_saisi_donnee_tree" model="ir.ui.view">
+        <field name="name">montage.saisi.donnee.tree</field>
+        <field name="model">montage.saisi.donnee</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" create="false">
+                <field name="poste"/>
+                <field name="n_2"/>
+                <field name="n_1"/>
+            </tree>
+        </field>
+    </record>
+    <record id="montage_saisi_donnee_action" model="ir.actions.act_window">
+        <field name="name">Saisi des données</field>
+        <field name="res_model">montage.saisi.donnee</field>
+        <field name="view_mode">tree</field>
+    </record>
+    <menuitem id="montage_saisi_donnee"
+              name="Saisi des données"
+              parent="montage_credit"
+              action="montage_saisi_donnee_action"
+              sequence="5"/>
+
+     <!--les vues de variation des postes comptables-->
+    <record id="view_montage_variation_poste_comptable_tree" model="ir.ui.view">
+        <field name="name">montage.variation.poste.comptable.tree</field>
+        <field name="model">montage.variation.poste.comptable</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom" create="false">
+                <field name="poste"/>
+                <field name="n_2"/>
+                <field name="n_1"/>
+                <field name="variation" widget="percentage"/>
+                <field name="explication" />
+
+            </tree>
+        </field>
+    </record>
+    <record id="montage_variation_poste_comptable_action" model="ir.actions.act_window">
+        <field name="name">Variations des postes comptables</field>
+        <field name="res_model">montage.variation.poste.comptable</field>
+        <field name="view_mode">tree</field>
+    </record>
+    <menuitem id="montage_variation_poste_comptable"
+              name="Variations des postes comptables"
+              parent="montage_credit"
+              action="montage_variation_poste_comptable_action"
+              sequence="6"/>
+</odoo>

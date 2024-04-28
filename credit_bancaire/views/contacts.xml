@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_credit_contact_form" model="ir.ui.view">
+        <field name="name">credit.contact.form</field>
+        <field name="model">credit.contact</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="nom"/>
+                        <field name="prenom"/>
+                        <field name="poste"/>
+                        <field name="telephone"/>
+                        <field name="mail"/>
+                    </group>
+                </sheet>
+                <button id="button_Linkedin" name="action_linkedin" string="Chercher ce profil sur linkedin"
+                                class="btn-primary"
+                                type="object"/>
+                <button id="button_Linkedin_cancel" name="action_cancel_linkedin" string="Annuler"
+                                class="btn-secondary"
+                                type="object"/>
+                <field name="linkedin_accounts" string="Resultats de recherche" mode="tree" readonly="1">
+                    <tree>
+                        <field name="title" />
+                        <field name="link" widget="url" text="voir le profil"/>
+                    </tree>
+                </field>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_credit_contact_tree" model="ir.ui.view">
+        <field name="name">credit.contact.tree</field>
+        <field name="model">credit.contact</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <field name="nom"/>
+                <field name="prenom"/>
+                <field name="poste"/>
+                <field name="telephone"/>
+                <field name="mail"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="credit_contact_action" model="ir.actions.act_window">
+        <field name="name">Mes contacts</field>
+        <field name="res_model">credit.contact</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <!--<menuitem id="credit_contact_menu_credit"
+              name="Mes contacts"
+              parent="conf_credit"
+              action="credit_contact_action"
+              sequence="10"/>-->
+</odoo>

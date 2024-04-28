@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="01" model="credit.type">
+            <field name="name">Découvert</field>
+            <field name="titre">Découvert</field>
+            <field name="note">Découvert</field>
+        </record>
+        <record id="02" model="credit.type">
+            <field name="name">AS Appro</field>
+            <field name="titre">AS Appro</field>
+            <field name="note">AS Appro</field>
+        </record>
+        <record id="03" model="credit.type">
+            <field name="name">ASF</field>
+            <field name="titre">ASF</field>
+            <field name="note">ASF</field>
+        </record>
+        <record id="04" model="credit.type">
+            <field name="name">LC a vue</field>
+            <field name="titre">LC a vue</field>
+            <field name="note">LC a vue</field>
+        </record>
+        <record id="05" model="credit.type">
+            <field name="name">Fin. Douane</field>
+            <field name="titre">Fin. Douane</field>
+            <field name="note">Fin. Douane</field>
+        </record>
+        <record id="06" model="credit.type">
+            <field name="name">SPOT Refin</field>
+            <field name="titre">SPOT Refin</field>
+            <field name="note">SPOT Refin</field>
+        </record>
+        <record id="07" model="credit.type">
+            <field name="name">SPOT Préfin</field>
+            <field name="titre">SPOT Préfin</field>
+            <field name="note">SPOT Préfin</field>
+        </record>
+        <record id="08" model="credit.type">
+            <field name="name">Découvert Mobilisable</field>
+            <field name="titre">Découvert Mobilisable</field>
+            <field name="note">Découvert Mobilisable</field>
+        </record>
+        <record id="09" model="credit.type">
+            <field name="name">CMT</field>
+            <field name="titre">CMT</field>
+            <field name="note">CMT</field>
+        </record>
+        <record id="10" model="credit.type">
+            <field name="name">Leasing Auto</field>
+            <field name="titre">Leasing Auto</field>
+            <field name="note">Leasing Auto</field>
+        </record>
+        <record id="11" model="credit.type">
+            <field name="name">Leasing Immo</field>
+            <field name="titre">Leasing Immo</field>
+            <field name="note">Leasing Immo</field>
+        </record>
+        <record id="12" model="credit.type">
+            <field name="name">Leasing Matériels</field>
+            <field name="titre">Leasing Matériels</field>
+            <field name="note">Leasing Matériels</field>
+        </record>
+
+    </data>
+</odoo>

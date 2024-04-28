@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Sequences for credit.type -->
+        <record id="seq_credit_type" model="ir.sequence">
+            <field name="name">Type crédit</field>
+            <field name="code">credit.type</field>
+            <field name="prefix">TC</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+    <data>
+        <!-- Sequences for credit.autorisation -->
+        <record id="seq_autorisation" model="ir.sequence">
+            <field name="name">Gestion des autorisations</field>
+            <field name="code">credit.autorisation</field>
+            <field name="prefix">Autor</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+	<data>
+        <!-- Sequences for credit.autorisation_globale -->
+        <record id="seq_autorisation_globale" model="ir.sequence">
+            <field name="name">Gestion des autorisations globale</field>
+            <field name="code">credit.autorisation_globale</field>
+            <field name="prefix">AutorG</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+    <data>
+        <!-- Sequences for credit.autorisation_globale -->
+        <record id="seq_credit_dispo" model="ir.sequence">
+            <field name="name">Gestion  dispoe</field>
+            <field name="code">credit.dispo</field>
+            <field name="prefix">Dispo</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+    <data>
+        <!-- Sequences for credit.operation -->
+        <!--
+        <record id="seq_operation" model="ir.sequence">
+            <field name="name">Gestion des operations</field>
+            <field name="code">credit.operation</field>
+            <field name="prefix">Oper</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        -->
+    </data>
+    <data>
+        <!-- Sequences for credit.disponible -->
+        <record id="seq_disponible" model="ir.sequence">
+            <field name="name">Gestion de la disponibilité</field>
+            <field name="code">credit.disponible</field>
+            <field name="prefix">Disp</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+    <data>
+        <!-- Sequences for credit.operation -->
+        <record id="seq_operation_db" model="ir.sequence">
+            <field name="name">Gestion des operations de déblockage</field>
+            <field name="code">credit.operation.deb</field>
+            <field name="prefix">OperDeb</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+    <data>
+        <!-- Sequences for credit.operation -->
+        <record id="seq_operation_p" model="ir.sequence">
+            <field name="name">Gestion des operations de payements</field>
+            <field name="code">credit.operation.p</field>
+            <field name="prefix">OperP</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+    <data>
+        <!-- Sequences for credit.operation -->
+        <record id="seq_operation_paiement_detail" model="ir.sequence">
+            <field name="name">Gestion des operations de payements detail</field>
+            <field name="code">credit.operation.paiementdetail</field>
+            <field name="prefix">OperPD</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+    <data>
+        <!-- Sequences for credit.operation -->
+        <record id="seq_operation_pd" model="ir.sequence">
+            <field name="name">Gestion des operations de prolongement date</field>
+            <field name="code">credit.operation.pd</field>
+            <field name="prefix">OperPD</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_disponible_graph" model="ir.ui.view">
+        <field name="name">disponible.graph</field>
+        <field name="model">credit.disponible</field>
+        <field name="arch" type="xml">
+
+            <graph string="Analyse de la disponibilité" type="line" sample="1">
+
+                <field name="banque" type="col"/>
+                <field name="type" type="row"/>
+                <field name="montant_disponible" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="view_disponible_pivot" model="ir.ui.view">
+        <field name="name">disponible.pivot</field>
+        <field name="model">credit.disponible</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse de la disponibilité" sample="1">
+                <field name="banque" type="col"/>
+                <field name="type" type="row"/>
+                <field name="montant_disponible" type="measure"/>
+
+            </pivot>
+        </field>
+    </record>
+
+    <record id="disponible_analyse_action" model="ir.actions.act_window">
+        <field name="name">Credit Analyse Disponibilité</field>
+        <field name="res_model">credit.disponible</field>
+        <field name="view_mode">pivot,graph</field>
+    </record>
+
+    <menuitem id="disponible_analyse_menu"
+              name="Disponibilité Analyse"
+              parent="analyse_credit"
+              action="disponible_analyse_action"
+              sequence="3"/>
+
+</odoo>

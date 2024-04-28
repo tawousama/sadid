@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_operation_form" model="ir.ui.view">
+        <field name="name">credit.operation.form</field>
+        <field name="model">credit.operation</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <field name="banque"/>
+                        <field name="type"/>
+                        <field name="deblocage_date"/>
+                        <field name="montant_debloque"/>
+                        <field name="montant_rembourser"/>
+                        <field name="capital_interet"/>
+                        <field name="referene_credit"/>
+                    </group>
+                    <group>
+                        <field name="referene_interne"/>
+                        <field name="partner"/>
+                        <field name="echeance_date"/>
+                        <field name="paiement"/>
+                        <field name="montant_paye"/>
+                        <field name="prorogation"/>
+                        <field name="echeance_date_new"/>
+                    </group>
+
+                    <notebook>
+
+                    </notebook>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_operation_tree" model="ir.ui.view">
+        <field name="name">credit.operation.tree</field>
+        <field name="model">credit.operation</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <field name="banque"/>
+                <field name="type"/>
+                <field name="deblocage_date"/>
+                <field name="montant_debloque" sum="Total amount" widget="monetary" optional="show"/>
+                <field name="montant_rembourser" sum="Total amount" widget="monetary" optional="show"/>
+                <field name="capital_interet"/>
+                <field name="referene_credit"/>
+                <field name="referene_interne"/>
+                <field name="partner"/>
+                <field name="echeance_date"/>
+                <field name="paiement"/>
+                <field name="montant_paye" sum="Total amount" widget="monetary" optional="show"/>
+                <field name="prorogation"/>
+                <field name="echeance_date_new"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="operation_action" model="ir.actions.act_window">
+        <field name="name">Credit Operation</field>
+        <field name="res_model">credit.operation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="operation_menu"
+              name="Operation Credit"
+              parent="oper_credit"
+              action="operation_action"
+              sequence="20"/>
+
+</odoo>

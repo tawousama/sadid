@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <!-- LE Menu d'MGX  -->
+    <menuitem id="menu_credit"
+              name="Credit bancaire"
+              groups="group_credit_user"
+              web_icon="credit_bancaire,static/description/icon.png"
+              sequence="10"/>
+
+    <menuitem id="conf_credit"
+              name="Configuration"
+              parent="menu_credit"
+              sequence="15"/>
+
+
+    <menuitem id="oper_credit"
+              name="Opérations"
+              parent="menu_credit"
+              sequence="2"/>
+
+    <menuitem id="cre_credit"
+              name="Gestion des crédits"
+              parent="menu_credit"
+              sequence="1"/>
+
+    <menuitem id="analyse_credit"
+              name="Analyse"
+              parent="menu_credit"
+              sequence="10"/>
+
+    <menuitem id="montage_credit"
+              name="Montage dossier credit"
+              parent="menu_credit"
+              sequence="14"/>
+
+
+
+</odoo>

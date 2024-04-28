@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_credit_mon_agence_form" model="ir.ui.view">
+        <field name="name">credit.mon.agence.form</field>
+        <field name="model">credit.mon.agence</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Mon agence</h1>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="adresse"/>
+                        <field name="num_compte"/>
+                        <field name="contacts"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_credit_banque_tree" model="ir.ui.view">
+        <field name="name">credit.mon.agence.tree</field>
+        <field name="model">credit.mon.agence</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="adresse"/>
+                <field name="num_compte"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="mon_agence_action" model="ir.actions.act_window">
+        <field name="name">Mon agence</field>
+        <field name="res_model">credit.mon.agence</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <!--<menuitem id="mon_agence_menu_credit"
+              name="Mon agence"
+              parent="conf_credit"
+              action="mon_agence_action"
+              sequence="10"/>-->
+</odoo>

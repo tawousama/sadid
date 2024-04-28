@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_autorisation_g_form" model="ir.ui.view">
+        <field name="name">credit.autorisation_global.form</field>
+        <field name="model">credit.autorisation_global</field>
+        <field name="arch" type="xml">
+
+            <form>
+                <header>
+                    <button id="button_Disponibilité" name="action_Disponible" string="Confirmer"
+                                    class="btn-primary"
+                                    type="object"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="banque"/>
+                     </group>
+                    <notebook>
+                        <page string="Autorisations">
+                            <field name="ligne_autorisation"/>
+                        </page>
+                    </notebook>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_autorisation_g_tree" model="ir.ui.view">
+        <field name="name">credit.autorisation_global.tree</field>
+        <field name="model">credit.autorisation_global</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <field name="banque"/>
+                <field name="ligne_autorisation"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="autorisation_g_action" model="ir.actions.act_window">
+        <field name="name">Autorisation Globale</field>
+        <field name="res_model">credit.autorisation_global</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="autorisation_g_menu"
+              name="Autorisation Global"
+              parent="cre_credit"
+              action="autorisation_g_action"
+              sequence="10"/>
+
+</odoo>

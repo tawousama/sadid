@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_operation_pd_form" model="ir.ui.view">
+        <field name="name">credit.operation.pd.form</field>
+        <field name="model">credit.operation.pd</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+
+                    <button id="button_confirm" name="action_validation" string="Confirm" class="btn-primary"
+                            invisible="state != 'verification'" type="object"
+                            />
+
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="verification,confirm"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+
+                        <field name="banque"/>
+                        <field name="type"/>
+                        <field name="ligne_autorisation"/>
+                        <field name="ref_opr_deb"/>
+                        <field name="echeance_date_old"/>
+                        <field name="echeance_date_new"/>
+                        <field name="note"/>
+                    </group>
+
+                    <notebook>
+
+                    </notebook>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_operation_pd_tree" model="ir.ui.view">
+        <field name="name">credit.operation.pd.tree</field>
+        <field name="model">credit.operation.pd</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <field name="name"/>
+                <field name="ligne_autorisation"/>
+                <field name="echeance_date_old"/>
+                <field name="echeance_date_new"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="operation_pd_action" model="ir.actions.act_window">
+        <field name="name">Operation de prolongement date d'écheance</field>
+        <field name="res_model">credit.operation.pd</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="operation_pd_menu"
+              name="Prolongement Date "
+              parent="oper_credit"
+              action="operation_pd_action"
+              sequence="20"/>
+
+</odoo>

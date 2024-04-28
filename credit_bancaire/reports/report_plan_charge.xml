@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--<record id="montage_plan_charge_report" model="ir.actions.report">
+        <field name="name">Plan des charges</field>
+        <field name="model">montage.plan.charges</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">credit_bancaire.plan_charge_report</field>
+        <field name="report_file">credit_bancaire.plan_charge_report</field>
+        <field name="binding_model_id" ref="model_montage_plan_charges"/>
+        <field name="binding_type">report</field>
+    </record>-->
+</odoo>
