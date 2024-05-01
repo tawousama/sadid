@@ -47,7 +47,8 @@
                         </page>
                     </notebook>
                     <group>
-                        <field name="file_ticket"/>
+                        <field name="file_ticket" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
                     </group>
 
                 </sheet>

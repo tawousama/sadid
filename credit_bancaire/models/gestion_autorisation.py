@@ -74,6 +74,7 @@ class Autorisation_global(models.Model):
     taux = fields.Float(string='Taux')
     file_ticket = fields.Binary(string='Ticket d`Autorisation')
     file_name = fields.Char(string='File name')
+
     @api.depends('banque')
     def action_Disponible(self):
         for record in self:

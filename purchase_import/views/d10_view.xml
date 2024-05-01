@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- This xml display the Order Line Template menu  -->
+    <record id="view_purchase_import_d10_view_tree" model="ir.ui.view">
+        <field name="name">purchase.import.folder.d10.tree</field>
+        <field name="model">purchase.import.folder.d10</field>
+        <field name="arch" type="xml">
+            <tree string="Listes des d10"   >
+                <field name="d10_number" ></field>
+                <field name="d10_date"></field>
+                <field name="taux_change"></field>
+                <field name="folder_id"></field>
+
+
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="open_view_purchase_import_d10_view_tree" model="ir.actions.act_window">
+        <field name="name">D10</field>
+        <field name="res_model">purchase.import.folder.d10</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_purchase_import_d10_view_tree"></field>
+    </record>
+
+    <record id="view_purchase_import_d10_view_form" model="ir.ui.view">
+        <field name="name">purchase.import.folder.d10.form</field>
+        <field name="model">purchase.import.folder.d10</field>
+        <field name="arch" type="xml">
+            <form string="D10">
+                <sheet>
+                    <group>
+                        <group string="D10" name="D10">
+                            <field name="d10_number"  />
+                            <field name="d10_date"  />
+                            <field name="amount_devise"/>
+                            <field name="taux_change" />
+
+                            <field name="amount_dinars"/>
+                        </group>
+                        <group string="Quitance" name="Quitance">
+                            <field name="quitance_number" />
+                            <field name="quitance_date"  />
+                            <field name="frais_quitance"  />
+                            <field name="amount_quitance"  />
+
+                        </group>
+                    </group>
+                    <group string="Tax" name="Tax">
+                        <group >
+                            <field name="taux_douanes"  />
+                            <field name="taux_tcs" />
+                            <field name="taux_tva" />
+                        </group>
+                        <group >
+                            <field name="amount_douane"  />
+                            <field name="amount_tcs" />
+
+                        </group>
+                    </group>
+                    <group string="Total" name="Total">
+                        <group >
+
+                            <field name="debours"  />
+                            <field name="fret_devise"  />
+                            <field name="frais_douanier"  />
+                            <field name="total_product_price" invisible="1" />
+
+                            <field name="total_frais"  />
+
+                            <field name="amount_total_d10" />
+
+                        </group>
+
+                    </group>
+                    <notebook>
+                        <page string="Produits">
+                            <field name="product_ids" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="price"/>
+                                    <field name="price_da"/>
+                                    <field name="droit_douane"/>
+                                    <field name="total_charge"/>
+                                    <field name="cle_repartition"/>
+                                    <field name="type_produit"/>
+
+                                    <field name="cout"/>
+
+
+
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+
+            </form>
+        </field>
+
+    </record>
+
+
+    <!--    groups="purchase_import.group_importation" -->
+    <menuitem
+            id="menu_purchase_import_d10_view"
+            name="D10"
+            groups="purchase_import.group_importation,purchase_import.group_importation_user"
+            parent="menu_purchase_import"
+            action="open_view_purchase_import_d10_view_tree"
+            sequence="20"
+
+    />
+
+
+</odoo>
+

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+        <record model="ir.ui.view" id="view_purchase_order_tree_inherit">
+            <field name="name">purchase.order.tree.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="/tree/field[@name='amount_total']" position="after">
+                    <field name="currency_id" />
+                </xpath>
+            </field>
+        </record>
+
+
+
+
+
+        <record id="purchase_order_list" model="ir.actions.act_window">
+            <field name="name">Achat international</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_import', '=', True)]</field>
+            <field name="context">{'default_is_import': True,'default_is_import': True}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer un nouvel paiement.
+                </p>
+            </field>
+        </record>
+        <!--    groups="purchase_import.group_importation" -->
+        <menuitem
+                id="menu_purchase_order_import"
+                name="Achat internationnal"
+                parent="menu_purchase_import"
+
+                action="purchase_order_list"
+                sequence="20"
+        />
+
+
+
+        <record id="purchase_rfq" model="ir.actions.act_window">
+            <field name="name">Requests for Quotation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="context">{'search_default_todo':1,'default_is_import': False,'default_is_import': False}}</field>
+            <field name="domain">[('state','in',('draft','sent','cancel', 'confirmed')),('is_import', '=', False)]</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a request for quotation.
+                </p><p>
+                The quotation contains the history of the discussion/negotiation
+                you had with your vendor. Once confirmed, a request for
+                quotation is converted into a purchase order.
+            </p><p>
+                Most propositions of purchase orders are created automatically
+                by Odoo based on inventory needs.
+            </p>
+            </field>
+
+        </record>
+
+        <menuitem
+                id="purchase.menu_purchase_rfq"
+                name="Demande de prix"
+                parent="purchase.menu_procurement_management"
+                action="purchase_rfq"
+                sequence="10"
+        />
+
+
+        <record id="purchase_form_action" model="ir.actions.act_window">
+            <field name="name">Purchase Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+            <field name="context">{'search_default_todo':1, 'show_purchase': True,'default_is_import': False,'default_is_import': False}</field>
+            <field name="domain">[('state','not in',('draft','sent', 'confirmed')),('is_import', '=', False)]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a quotation that will be converted into a purchase order.
+                </p><p>
+                Use this menu to search within your purchase orders by
+                references, vendor, products, etc. For each purchase order,
+                you can track the related discussion with the vendor, control
+                the products received and control the vendor bills.
+            </p>
+            </field>
+        </record>
+
+
+        <menuitem action="purchase_form_action" id="purchase.menu_purchase_form_action" parent="purchase.menu_procurement_management" sequence="12"
+                  groups="purchase.group_purchase_user,purchase_import.group_importation,purchase_import.group_importation_user"
+        />
+
+
+    </data>
+
+
+
+</odoo>

@@ -11,7 +11,9 @@ class Operation_Deb(models.Model):
 
     name = fields.Char(string='Opération Déblocage', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
-
+    type_ligne = fields.Selection([('1', 'Crédit d\'exploitation'),
+                                   ('2', 'Crédit d\'investissement'),
+                                   ('3', 'Leasing')], )
     montant_debloque = fields.Float(string="Montant débloqué", store=True, required=True)
     montant_add = fields.Float(string="Interet", store=True, compute='compute_interet')
     montant_total = fields.Float(string="Montant Total", store=True, compute='_compute_total')
@@ -21,7 +23,8 @@ class Operation_Deb(models.Model):
     note = fields.Text(string='Description', tracking=True)
     reference_credit = fields.Char(string='Référence du dossier banque', tracking=True)
     reference_interne = fields.Many2one('account.move', string='Référence interne (N. facture)', tracking=True)
-
+    ref_interne = fields.Char(string='Référence interne (N. facture)')
+    client = fields.Char(string='Client/ Fournisseur')
     user_id = fields.Many2one(
         'res.users', string='Order representative', index=True, tracking=True, readonly=True,
         default=lambda self: self.env.user, check_company=True)
@@ -45,7 +48,9 @@ class Operation_Deb(models.Model):
     echeances = fields.One2many('credit.operation.deb.echeance', 'ref_opr_deb')
     #modif = fields.Float(string='modification', compute='_compute_modif')
     taux = fields.Float(string='Taux', related='ligne_autorisation.autorisation_global.taux')
-    tex = fields.Boolean()
+    file_ticket = fields.Binary(string='Ticket d`Autorisation')
+    file_name = fields.Char(string='File name')
+
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
@@ -223,9 +228,9 @@ class Operation_Deb(models.Model):
             else:
                 difference = False
             if difference and rec.montant_debloque and rec.taux:
-                rec.interet = (rec.montant_debloque * rec.taux * difference) / 360
+                rec.montant_add = (rec.montant_debloque * rec.taux * difference) / 360
             else:
-                rec.interet = 0
+                rec.montant_add = 0
 
     @api.depends('banque', 'type')
     def _compute_autorisation(self):

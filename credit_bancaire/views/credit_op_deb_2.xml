@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
-    <record id="view_operation_deb_1_form" model="ir.ui.view">
+    <record id="view_operation_deb_2_form" model="ir.ui.view">
         <field name="name">credit.operation.deb.form</field>
         <field name="model">credit.operation.deb</field>
         <field name="arch" type="xml">
@@ -58,7 +58,7 @@
         </field>
     </record>
 
-    <record id="view_operation_deb_1_tree" model="ir.ui.view">
+    <record id="view_operation_deb_2_tree" model="ir.ui.view">
         <field name="name">credit.operation.deb.tree</field>
         <field name="model">credit.operation.deb</field>
         <field name="arch" type="xml">
@@ -78,26 +78,21 @@
         </field>
     </record>
 
-    <record id="operation_deb_1_action" model="ir.actions.act_window">
-        <field name="name">Crédit d'Exploitation</field>
+    <record id="operation_deb_2_action" model="ir.actions.act_window">
+        <field name="name">Crédit d'investissement</field>
         <field name="res_model">credit.operation.deb</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[('type_ligne', '=', '1')]</field>
-        <field name="context">{'default_type_ligne': '1'}</field>
+        <field name="domain">[('type_ligne', '=', '2')]</field>
+        <field name="context">{'default_type_ligne': '2'}</field>
         <field name="view_ids" eval="[(5, 0, 0),
-            (0, 0, {'view_mode': 'tree', 'view_id': ref('credit_bancaire.view_operation_deb_1_tree')}),
-            (0, 0, {'view_mode': 'form', 'view_id': ref('credit_bancaire.view_operation_deb_1_form')})]"/>
-
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('credit_bancaire.view_operation_deb_2_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('credit_bancaire.view_operation_deb_2_form')})]"/>
     </record>
 
-    <menuitem id="operation_deb_menu"
-              name="Déblocage Crédit Bancaire"
-              parent="account_accountant.menu_accounting"
-              sequence="20"/>
-    <menuitem id="operation_deb_1_menu"
-              name="Crédit d'Exploitation"
+    <menuitem id="operation_deb_2_menu"
+              name="Crédit d'investissement"
               parent="operation_deb_menu"
-              action="operation_deb_1_action"
+              action="operation_deb_2_action"
               sequence="20"/>
 
 </odoo>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- This xml display the Order Line Template menu  -->
+    <record id="view_purchase_import_model_frais_tree" model="ir.ui.view">
+        <field name="name">purchase.import.model.frais.tree</field>
+        <field name="model">purchase.import.model.frais</field>
+        <field name="arch" type="xml">
+            <tree string="Listes des Dossiers"   >
+                <field name="reference" ></field>
+                <field name="date"></field>
+
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_purchase_import_model_frais_form" model="ir.ui.view">
+        <field name="name">purchase.import.model.frais.form</field>
+        <field name="model">purchase.import.model.frais</field>
+        <field name="arch" type="xml">
+            <form string="Order Line Template">
+                <sheet>
+                    <h1>
+                        <label for="reference" string="Référence "/>
+                        <field name="reference" class="oe_inline" />
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="date"></field>
+
+                        </group>
+                        <group>
+                            <field name="active"></field>
+
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Liste des achats">
+                            <field name="product_lines" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="product_id" />
+                                    <field name="amount" />
+                                    <!-- <field name="state"  />  -->
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="open_view_purchase_import_model_frais_tree" model="ir.actions.act_window">
+        <field name="name">Modèle</field>
+        <field name="res_model">purchase.import.model.frais</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_purchase_import_model_frais_tree"></field>
+    </record>
+
+
+    <menuitem
+            id="menu_purchase_import_config"
+            name="Configuration"
+            parent="menu_purchase_import_root"
+            sequence="31"
+            groups="purchase_import.group_importation,purchase_import.group_importation_user"
+
+    />
+
+    <!--    groups="purchase_import.group_importation" -->
+    <menuitem
+            id="menu_purchase_import_model_frais"
+            name="Modèle de dossier"
+            groups="purchase_import.group_importation,purchase_import.group_importation_user"
+            parent="menu_purchase_import_config"
+            action="open_view_purchase_import_model_frais_tree"
+            sequence="20"
+
+    />
+
+
+</odoo>
+

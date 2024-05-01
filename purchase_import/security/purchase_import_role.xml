@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+        <record model="ir.module.category" id="module_importation">
+            <field name="name">Importation</field>
+            <field name="description">User access level for this module</field>
+            <field name="sequence">3</field>
+        </record>
+
+
+        <record id="group_importation_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+
+            <field name="category_id" ref="module_importation"/>
+        </record>
+        <record id="group_importation" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="implied_ids" eval="[(4, ref('purchase_import.group_importation_user'))]"/>
+
+            <field name="category_id" ref="module_importation"/>
+        </record>
+
+
+
+        <!-- top level menu: no parent -->
+        <!-- Add the security groups here to allow only access for specific user groups! -->
+
+
+    </data>
+</odoo>

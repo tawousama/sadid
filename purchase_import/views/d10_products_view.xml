@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- This xml display the Order Line Template menu  -->
+    <record id="view_purchase_import_d10_produits_view_tree" model="ir.ui.view">
+        <field name="name">purchase.import.folder.d10.products.tree</field>
+        <field name="model">purchase.import.folder.d10.products</field>
+        <field name="arch" type="xml">
+            <tree string="Listes des produits" default_order = "folder_id asc"  >
+                <field name="folder_id"></field>
+                <field name="d10_id" ></field>
+                <field name="product_id"></field>
+                <field name="type_produit"></field>
+                <field name="quantity" sum="Total quantité"></field>
+                <field name="total_charge"></field>
+                <field name="total" sum="Total prix"></field>
+
+
+                <field name="cout" sum="Total des couts"></field>
+
+
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="open_view_purchase_import_d10_products_view_tree" model="ir.actions.act_window">
+        <field name="name">Produits D10</field>
+        <field name="res_model">purchase.import.folder.d10.products</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_purchase_import_d10_produits_view_tree"></field>
+    </record>
+
+
+
+
+    <menuitem
+            id="menu_purchase_import_d10_products_view"
+            name="Produits D10"
+            groups="purchase_import.group_importation,purchase_import.group_importation_user"
+            parent="menu_purchase_import"
+            action="open_view_purchase_import_d10_products_view_tree"
+            sequence="20"
+
+    />
+
+
+</odoo>
+

@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name' : 'Crédit Bancaire',
-    'version' : '1.0',
+    'version' : '17.0',
     'author': 'FINOUTSOURCE',
     'summary': 'Invoices & Payments',
     'sequence': 10,
@@ -28,6 +28,8 @@
         #'views/credit_analyse_operation.xml',
         'views/credit_analyse_disponible.xml',
         'views/credit_operation_deb.xml',
+        'views/credit_op_deb_2.xml',
+        'views/credit_op_deb_3.xml',
         'views/credit_operation_p.xml',
         'views/credit_operation_pd.xml',
         'views/credit_echeance.xml',

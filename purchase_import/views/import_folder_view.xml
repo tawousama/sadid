@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- This xml display the Order Line Template menu  -->
+    <record id="view_purchase_import_folder_tree" model="ir.ui.view">
+        <field name="name">purchase.import.folder.tree</field>
+        <field name="model">purchase.import.folder</field>
+        <field name="arch" type="xml">
+            <tree string="Listes des Dossiers"   >
+                <field name="reference" ></field>
+                <field name="date"></field>
+                <field name="partner_id" ></field>
+                <field name="proformat" ></field>
+                <field name="product_designation" ></field>
+                <field name="eta" ></field>
+                <field name="etd" ></field>
+                <field name="payment_mode"></field>
+
+                <field name="total_cmd"></field>
+                <field name="currency_id"></field>
+                <field name="date_usine"></field>
+
+                <field name="state_actuel"></field>
+
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_purchase_import_folder_form" model="ir.ui.view">
+        <field name="name">purchase.import.folder.form</field>
+        <field name="model">purchase.import.folder</field>
+        <field name="arch" type="xml">
+            <form string="Order Line Template">
+                <header>
+
+                    <!-- <button name="update_list" string="Mettre à jour D.P" class="oe_highlight" type="object" confirm="Vous êtes sûr?"/>
+                     --><button name="update_list" string="Mettre à jour" class="oe_highlight" type="object" />
+                    <field name="state_lc"  invisible="payment_mode not in ['L.C']" widget="statusbar" options="{'clickable':'1'}"/>
+                    <field name="state_rd"  invisible="payment_mode not in ['remise_documentaire_echeance','remise_documentaire_vue']"  widget="statusbar" clickable="True"/>
+                    <field name="state_tl" invisible="payment_mode not in ['transfert_libre']" widget="statusbar" clickable="True" />
+                    <field name="state_sp" invisible="payment_mode not in ['sans_paiement']" widget="statusbar" clickable="True" />
+                </header>
+                <sheet>
+                    <h1>
+                        <label for="reference" string="Référence "/>
+                        <field name="reference" class="oe_inline"  readonly="1"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="partner_id" ></field>
+
+                            <field name="transitaire_id" ></field>
+                            <field name="payment_mode" ></field>
+                            <field name="proformat" ></field>
+
+                            <field name="currency_id" ></field>
+                            <field name="model_id" ></field>
+
+
+                        </group>
+                        <group>
+                            <field name="date"></field>
+                            <field name="date_usine"></field>
+                            <field name="date_embarequement" ></field>
+                            <field name="note" ></field>
+
+                        </group>
+
+                    </group>
+                    <notebook>
+                        <page string="Liste des achats">
+                            <field name="purchase_ids" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="purchase_id" />
+                                    <field name="partner_id" />
+                                    <field name="date_order"  />
+                                    <field name="amount_total"  />
+                                    <field name="conditions"  />
+                                    <!-- <field name="state"  />  -->
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Liste des facture">
+                            <field name="invoice_ids" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="invoice_id" />
+                                    <field name="partner_id" />
+                                    <field name="date_invoice"  />
+                                    <field name="amount_total"  />
+                                    <!-- <field name="state"  /> -->
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Importation">
+                            <group>
+                                <group>
+                                    <field name="port_embarquement" />
+                                    <field name="compagnieie_maritime" />
+                                    <field name="etd" />
+                                    <field name="tracking_doc" />
+                                </group>
+                                <group>
+                                    <field name="navire"  />
+                                    <field name="n_bl"  />
+                                    <field name="eta" />
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Remise documentaire / LC" invisible="payment_mode not in ('L.C','remise_documentaire_echeance','remise_documentaire_vue','transfert_libre')">
+                            <group>
+                                <group>
+                                    <field name="bank_id" />
+                                    <field name="acceptation_dossier" />
+
+                                    <field name="swift_reglement" />
+                                    <field name="type_livraison" />
+
+
+                                </group>
+                                <group>
+                                    <field name="cheque_bank"  />
+                                    <field name="commission_reglement"  />
+                                    <field name="assurance_couverture_par" />
+                                    <field name="moyen_livraison" />
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Remise documentaire" invisible="payment_mode not in ('remise_documentaire_echeance','remise_documentaire_vue','transfert_libre')">
+                            <group>
+                                <group>
+                                    <field name="ouverture_dossier" />
+                                    <field name="echeance_date" />
+                                    <field name="fiance_sur" />
+                                </group>
+                                <group>
+                                    <field name="payment_modality"  />
+                                    <field name="echeance_amount" />
+                                    <field name="reglement_date" />
+                                </group>
+                            </group>
+                        </page>
+                        <page string="LC" invisible="payment_mode != 'L.C'">
+                            <group>
+                                <group>
+                                    <field name="ouverture_lc" />
+                                    <field name="modification" />
+                                    <field name="date_validite" />
+                                    <field name="spec_montant" />
+                                    <field name="start_pres_documents" />
+                                    <field name="date_limit_embarequement" />
+                                </group>
+                                <group>
+                                    <field name="swift_ouverture"  />
+                                    <field name="credit_forme"  />
+                                    <field name="lieu_validite"  />
+                                    <field name="condition_livraison"  />
+                                    <field name="end_pres_documents" />
+                                </group>
+                                <group string="Document Exigés">
+                                    <field name="facture_commerciale" class="oe_inline"/>
+                                    <field name="jeu_complet_connaissement"  class="oe_inline"/>
+                                    <field name="lettre_transport"  class="oe_inline"/>
+                                    <field name="certificat_origine"  class="oe_inline"/>
+                                    <field name="certificat_analyse"  class="oe_inline"/>
+                                    <field name="certificat_sanitaire"  class="oe_inline"/>
+                                    <field name="certificat_confirmite"  class="oe_inline"/>
+                                    <field name="certificat_controle_qualite"  class="oe_inline"/>
+                                    <field name="certificat_non_radioactivite"  class="oe_inline"/>
+                                    <field name="liste_colisage"  class="oe_inline"/>
+                                    <field name="note_poids"  class="oe_inline"/>
+                                    <field name="autre_document_transport"  class="oe_inline"/>
+                                    <field name="autres"  class="oe_inline"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Frais">
+                            <field name="frais_ids" widget="one2many_list">
+                                <tree editable="bottom">
+                                    <field name="product_id" />
+                                    <field name="d10" />
+
+                                    <field name="amount" />
+
+                                </tree>
+                            </field>
+                        </page>
+
+                        <page string="D10">
+                            <field name="d10_ids" widget="one2many_list" nolabel="1">
+                                <tree>
+                                    <field name="d10_number"/>
+                                    <field name="d10_date"/>
+                                    <field name="amount_devise"/>
+
+                                </tree>
+
+                                <form string="Purchase Order Line">
+                                    <sheet>
+                                        <group>
+                                            <group string="D10" name="D10">
+                                                <field name="d10_number"  />
+                                                <field name="d10_date"  />
+                                                <field name="amount_devise"/>
+                                                <field name="taux_change" />
+
+                                                <field name="amount_dinars"/>
+                                            </group>
+                                            <group string="Quitance" name="Quitance">
+                                                <field name="quitance_number" />
+                                                <field name="quitance_date"  />
+                                                <field name="frais_quitance"  />
+                                                <field name="amount_quitance"  />
+
+                                            </group>
+                                        </group>
+                                        <group string="Tax" name="Tax">
+                                            <group >
+                                                <field name="taux_douanes"  />
+                                                <field name="taux_tcs" />
+                                                <field name="taux_tva" />
+                                                <field name="amount_tva" />
+
+                                            </group>
+                                            <group >
+                                                <field name="amount_douane"  />
+                                                <field name="amount_tcs" />
+
+                                            </group>
+                                        </group>
+                                        <group string="Total" name="Total">
+                                            <group >
+
+                                                <field name="debours"  />
+                                                <field name="fret"  />
+                                                <field name="frais_douanier"  />
+                                                <field name="total_product_price" invisible="1" />
+                                                <field name="total_product_poid" invisible="1" />
+
+                                                <field name="total_frais"  />
+
+                                                <field name="amount_total_d10" />
+
+                                            </group>
+
+                                        </group>
+                                        <notebook>
+                                            <page string="Produits">
+                                                <field name="product_ids" widget="one2many_list">
+                                                    <tree editable="bottom">
+                                                        <field name="product_id"/>
+                                                        <field name="quantity"/>
+                                                        <field name="price"/>
+                                                        <field name="price_da"/>
+                                                        <field name="poid"/>
+                                                        <field name="cle_repartition"/>
+
+                                                        <field name="taux_douanes"/>
+                                                        <field name="amount_douane"/>
+                                                        <field name="taux_tcs"/>
+                                                        <field name="amount_tcs"/>
+
+
+
+                                                        <field name="droit_douane"/>
+                                                        <field name="total_tax"/>
+                                                        <field name="total"/>
+                                                        <field name="total_charge"/>
+                                                        <field name="charge_reparti"/>
+
+
+                                                        <field name="cout"/>
+
+
+
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                        </notebook>
+
+
+                                    </sheet>
+
+                                </form>
+
+                            </field>
+
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="open_view_purchase_import_folder_tree" model="ir.actions.act_window">
+        <field name="name">Dossier</field>
+        <field name="res_model">purchase.import.folder</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_purchase_import_folder_tree"></field>
+    </record>
+
+
+
+    <menuitem
+            id="menu_purchase_import_root"
+            name="Commerce Exterieur"
+            sequence="20"
+            parent="account_accountant.menu_accounting"
+            groups="purchase_import.group_importation,purchase_import.group_importation_user"
+    />
+
+    <menuitem
+            id="menu_purchase_import"
+            name="Importation"
+            parent="menu_purchase_import_root"
+            action="open_view_purchase_import_folder_tree"
+            sequence="20"
+            groups="purchase_import.group_importation,purchase_import.group_importation_user"
+
+    />
+
+    <!--    groups="purchase_import.group_importation" -->
+    <menuitem
+            id="menu_purchase_import_folder"
+            name="Dossier"
+            groups="purchase_import.group_importation,purchase_import.group_importation_user"
+            parent="menu_purchase_import"
+            action="open_view_purchase_import_folder_tree"
+            sequence="20"
+
+    />
+
+
+</odoo>
+
