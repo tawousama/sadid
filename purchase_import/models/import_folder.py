@@ -4,23 +4,36 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 
-
-
-
 class ImportFolder(models.Model):
     _name = "purchase.import.folder"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = "reference"
 
+    #champs principale
     reference = fields.Char(string='Référence')
     note = fields.Text(string='Note')
-    proformat = fields.Char(string="Proformat")
+    proformat = fields.Char(string="Proforma")
     partner_id = fields.Many2one("res.partner", string='Fournisseur')
     transitaire_id = fields.Many2one("res.partner", string='Transitaire')
     date_usine = fields.Date(string="Date entrée usine")
     currency_id = fields.Many2one(
-        'res.currency', string="Devise", company_dependent=True,
+       'res.currency', string="Devise", company_dependent=True,
         help="This currency will be used, instead of the default one, for purchases from the current partner")
+    date = fields.Date(string='Date')
+    date_embarquement = fields.Date(string="Date d'embarquement")
+    payment_mode = fields.Selection([
+        ('LC_a_vue', 'LC à vue'),
+        ('LC_a_DP', 'LC à DP'),
+        ('REMDOC_a_vue', 'REMDOC à vue'),
+        ('REMDOC_a_DP', 'REMDOC à DP'),
+    ],
+        default='LC_a_vue',
+        string="Mode de paiement",
+        copy=False)
+    state_actuel = fields.Char(
+        string='Statut',
+        compute="_onchange_state_"
+    )
+
     # Champs importations
     port_embarquement = fields.Char(string="Port d'embarquement")
     navire = fields.Char(string='Navire')
@@ -29,147 +42,108 @@ class ImportFolder(models.Model):
     etd = fields.Char(string='ETD')
     eta = fields.Char(string='ETA')
     tracking_doc = fields.Char(string='Tracking Doc')
-    # Champs remise documentaire
-    ouverture_dossier = fields.Char(string='Ouverture dossier')
-    payment_modality = fields.Many2one("purchase.import.payment.modality", string='Modalité de paiement')
-    echeance_date = fields.Date(string="Date d'échéance")
-    fiance_sur = fields.Float(string="Financé sur")
-    reglement_date = fields.Date(string="Date de règlement")
-    echeance_amount = fields.Float(string='Montant échéance')
-    # Commun
-    acceptation_dossier = fields.Char(string='Ouverture dossier')
-    cheque_bank = fields.Char(string='Chèque de banque DD')
-    commission_reglement = fields.Char(string='commission règlement')
-    swift_reglement = fields.Char(string='Swift règlement')
-    assurance_couverture_par = fields.Char(string='Assurance couvert par')
-    apport_society = fields.Char(string='Apport société')
-    type_livraison = fields.Many2one("purchase.import.livraison.type", string='Type de livraison')
-    moyen_livraison = fields.Many2one("purchase.import.livraison.moyen", string='Moyen de livraison')
-    # Champs LC
-    ouverture_lc = fields.Char(string='ouverture LC')
-    swift_ouverture = fields.Char(string='Swift ouverture')
-    modification = fields.Char(string='Modification')
-    # 2nd LC
-    credit_forme = fields.Many2one("purchase.import.credit.forme", string='Forme du crédit')
-    model_id = fields.Many2one("purchase.import.model.frais", string='Modèle des frais')
-    date_validite = fields.Char(string='Date de validité')
-    lieu_validite = fields.Char(string='Lieu de validité')
-    spec_montant = fields.Char(string='Spécialisation du montant')
-    condition_livraison = fields.Text(string='Condition de livraison')
-    start_pres_documents = fields.Date(string='Début présentation des documents')
-    end_pres_documents = fields.Date(string='Fin présentation des documents')
-    date_limit_embarequement = fields.Date(string="Date limite d'embarequement")
-    date = fields.Date(string='Date')
-    date_embarequement = fields.Date(string="Date d'embarequement")
-    payment_mode = fields.Selection([
-        ('L.C', 'L.C'),
-        ('remise_documentaire_vue', 'Remise documentaire à vue'),
-        ('remise_documentaire_echeance', 'Remise documentaire à écheance'),
-        ('transfert_libre', 'transfert libre'),
-        ('sans_paiement', 'Sans paiement'),
-    ],
-        default='L.C',
-        string="Mode de paiement",
-        copy=False)
 
-    STATE_RD = [
-        ('draft', 'Brouillon'),
-        ('confirmation', 'Confirmation'),
-        ('production', 'En cours de production'),
-        ('expedition', 'Expédition marchandise'),
-        ('assurence', 'Assurance transport Maritime'),
-        ('reception documants', 'Récéption documants (Banque)'),
-        ('Predomiciliation', 'Pré-domiciliation'),
-        ('Domiciliation', 'Domiciliation'),
-        ('Retrait documents', 'Retrait documents (banque)'),
-        ('depot transitaire/Documents', 'Dépôt transitaire/Documents'),
-        ('Arrivee marchandise', 'Arrivée marchandise'),
-        ('Paiement fournisseur', 'Paiement fournisseur'),
-        ('Dédouanement en cours', 'Dédouanement en cours'),
-        ('Cheque de douane', 'Chèque de douane'),
-        ('Reception marchandise', 'Réception marchandise'),
-        ('Accuse de confirmation', 'Accusé de confirmation'),
-        ('Reception dossier Transit', 'Récéption dossier Transit'),
-        ('Retrait dossier comptable', 'Retrait dossier comptable'),
-        ('Accuse de confirmation', 'Accusé de confirmation'),
-        ('Terminee', 'Terminée')
-        # ('canceld', 'Annulé'),
-        # ('done', 'Validé')
+
+    #champs du detail de Dom
+    bank_id = fields.Many2one("credit.banque", string="Banque de domiciliation")
+    reference_dossier_banque = fields.Char(string="Référence dossier banque")
+    date_ouverture_lc = fields.Date(string="Date d`ouverture LC")
+    montant = fields.Monetary(string="Montant")
+    devise = fields.Many2one(
+       'res.currency', string="Devise", company_dependent=True,
+        help="This currency will be used, instead of the default one, for purchases from the current partner")
+    incoterm = fields.Char(string="Incoterm")
+    methode_expedition = fields.Selection([('by_sea','voie maritime'),('by_air','voie aérienne')],string="Méthode d`expédition", default="by_sea")
+    provision_ouverture = fields.Char(string="Provision d`ouverture")
+    date_limit_embarquement = fields.Date(string="Date limite d'embarquement")
+    date_reception_document = fields.Date(string="Date de réception de document")
+    #SPOT REFIN
+    deblocage_spot_refin = fields.Boolean(string="Déblocage SPOT Refin")
+    montant_debloque_spot_refin = fields.Monetary(string="montant débloqué")
+    date_deblocage_spot_refin = fields.Date(string="Date de déblocage SPOT Refin")
+    date_echeance_spot_refin = fields.Date(string="Date d`échéance SPOT Refin")
+    reference_deblocage_spot_refin = fields.Char(string="Référence déblocage SPOT Refin")
+    montant_a_rembourser_spot_refin = fields.Monetary(string="Montant à rembourser SPOT Refin")
+
+    #SPOT PREFIN
+    deblocage_spot_prefin = fields.Boolean(string="Déblocage SPOT Prefin")
+    montant_debloque_spot_prefin = fields.Monetary(string="montant débloqué")
+    date_deblocage_spot_prefin = fields.Date(string="Date de déblocage SPOT Prefin")
+    date_echeance_spot_prefin = fields.Date(string="Date d`échéance SPOT Prefin")
+    reference_deblocage_spot_prefin = fields.Char(string="Référence déblocage SPOT Prefin")
+    montant_a_rembourser_spot_prefin = fields.Monetary(string="Montant à rembourser SPOT Prefin")
+
+    #douane
+    montant_droits_douane = fields.Monetary(string="Montant droits de douane")
+    financement_droits_douane = fields.Boolean(string="Financement droits de douane")
+    date_deblocage_fin_douane = fields.Date(string="Date de déblocage Fin.Douane")
+    date_echeance_fin_douane = fields.Date(string="Date d`échéance Fin.Douan")
+    reference_deblocage_fin_douane = fields.Char(string="Référence déblocage Fin.Douane")
+    montant_a_rembourser_fin_douane = fields.Monetary(string="Montant a rembourser Fin.Douane")
+
+    #restitution de provision
+    restitution_de_provision = fields.Boolean(string="Restitution de Provision", default=False)
+    #si restitution de provision est vrai
+    montant_restitue = fields.Monetary(string="Montant restitué")
+    commission_banque_1 = fields.Char(string="Commission banque 01 ")
+    commission_banque_2 = fields.Char(string="Commission banque 02 ")
+    commission_banque_3 = fields.Char(string="Commission banque 03 ")
+    commission_banque_4 = fields.Char(string="Commission banque 04 ")
+
+    activation_cur = fields.Char(compute='activate_currencies',store=True)
+
+    @api.depends('payment_mode')
+    def activate_currencies(self):
+        for rec in self:
+            cur = rec.env['res.currency'].search([])
+            print(len(cur))
+    #fonction renvoi la cle d'etat actuel
+    def get_key_actuel(self, val):
+        for key, value in self.nouv_list:
+            if val == value:
+                return key
+        return "key doesn't exist"
+
+    #la fonction du bouton suivant
+    def action_suivant(self):
+        if int(self.get_key_actuel(self.state_actuel)) < len(self.nouv_list):
+            new_state = int(self.get_key_actuel(self.state_actuel))+1
+            self.etat = str(new_state)
+            self._onchange_state_
+            print("ca marche"+self.etat)
+            print("get_keys"+self.get_key_actuel(self.state_actuel)+" dddd"+self.state_actuel)
+
+    #la fonction du bouton precedent
+    def action_precedent(self):
+        if int(self.get_key_actuel(self.state_actuel)) > 1:
+            new_state = int(self.get_key_actuel(self.state_actuel))-1
+            self.etat = str(new_state)
+            self._onchange_state_
+            print("ca marche"+self.etat)
+            print("get_keys"+self.get_key_actuel(self.state_actuel)+" dddd"+self.state_actuel)
+
+    nouv_list = [
+        ('1', 'Brouillon'),
+        ('2', 'Confirmation'),
+        ('3', 'Pré-domiciliation'),
+        ('4', 'Ouverture LC'),
+        ('5', 'En cours de production'),
+        ('6', 'Expédition marchandise'),
+        ('7', 'Récéption documants (Banque)'),
+        ('8', 'Paiement fournisseur'),
+        ('9', 'Retrait documents (banque)'),
+        ('10', 'Dépôt transitaire/Documents'),
+        ('11', 'Arrivée marchandise'),
+        ('12', 'Dédouanement en cours'),
+        ('13', 'Chèque de douane'),
+        ('14', 'Réception marchandise'),
+        ('15', 'Récéption dossier Transit'),
+        ('16', 'Terminée')
     ]
+    etat = fields.Selection(selection=nouv_list, string="etat",required=True, readonly=True, copy=False,
+                                tracking=True, default='1')
 
-    STATE_LC = [
-        ('draft', 'Brouillon'),
-        ('confirmation', 'Confirmation'),
-        ('Predomiciliation', 'Pré-domiciliation'),
-        ('ouverture lc', 'Ouverture LC'),
-        ('production', 'En cours de production'),
-        ('expedition', 'Expédition marchandise'),
-        ('assurence', 'Assurance transport Maritime'),
-        ('Reception documants (Banque)', 'Récéption documants (Banque)'),
-        ('Paiement fournisseur', 'Paiement fournisseur'),
-        ('Retrait documents (banque)', 'Retrait documents (banque)'),
-        ('Depot transitaire/Documents', 'Dépôt transitaire/Documents'),
-        ('Arrivee marchandise', 'Arrivée marchandise'),
-        ('Dedouanement en cours', 'Dédouanement en cours'),
-        ('Cheque de douane', 'Chèque de douane'),
-        ('Reception marchandise', 'Réception marchandise'),
-        ('Accuse de confirmation', 'Accusé de confirmation'),
-        ('Reception dossier Transit', 'Récéption dossier Transit'),
-        ('Retrait dossier comptable', 'Retrait dossier comptable'),
-        ('Terminee', 'Terminée')
-    ]
-
-    STATE_TL = [
-        ('draft', 'Brouillon'),
-        ('confirmation', 'Confirmation'),
-        ('production', 'En cours de production'),
-        ('expedition', 'Expédition marchandise'),
-        ('Récéption documants', 'Récéption documants'),
-        ('Retrait documents', 'Retrait documents (banque)'),
-        ('Dépôt transitaire/Documents', 'Dépôt transitaire/Documents'),
-        ('Arrivee marchandise', 'Arrivée marchandise'),
-        ('Dedouanement en cours', 'Dédouanement en cours'),
-        ('Cheque de douane', 'Chèque de douane'),
-        ('Reception marchandise', 'Réception marchandise'),
-        ('Accuse de confirmation', 'Accusé de confirmation'),
-        ('Reception dossier Transit', 'Récéption dossier Transit'),
-        ('Paiement fournisseur', 'Paiement fournisseur'),
-        ('Retrait dossier comptable', 'Retrait dossier comptable'),
-        ('Terminee', 'Terminée')
-    ]
-
-    STATE_SP = [
-        ('draft', 'Brouillon'),
-        ('confirmation', 'Confirmation'),
-        ('production', 'En cours de production'),
-        ('expedition', 'Expédition marchandise'),
-        ('Reception documants', 'Récéption documants'),
-        ('Depot transitaire/Documents', 'Dépôt transitaire/Documents'),
-        ('Arrivee marchandise', 'Arrivée marchandise'),
-        ('Dedouanement en cours', 'Dédouanement en cours'),
-        ('Cheque de douane', 'Chèque de douane'),
-        ('Reception marchandise', 'Réception marchandise'),
-        ('Accuse de confirmation', 'Accusé de confirmation'),
-        ('Reception dossier Transit', 'Récéption dossier Transit'),
-        ('Retrait dossier comptable', 'Retrait dossier comptable'),
-        ('Terminee', 'Terminée')
-    ]
-
-    state_rd = fields.Selection(selection=STATE_RD, string='État', required=True, readonly=True, copy=False,
-                                tracking=True, default='draft')
-    state_lc = fields.Selection(selection=STATE_LC, string='État', required=True, readonly=True, copy=False,
-                                tracking=True, default='draft')
-    state_sp = fields.Selection(selection=STATE_SP, string='État', required=True, readonly=True, copy=False,
-                                tracking=True, default='draft')
-    state_tl = fields.Selection(selection=STATE_TL, string='État', required=True, readonly=True, copy=False,
-                                tracking=True, default='draft')
-
-    state_actuel = fields.Char(
-        string='Statut',
-        compute="_onchange_payement_"
-    )
-
-    @api.onchange('model_id')
+    '''@api.onchange('model_id')
     def _onchange_model_id(self):
         # raise UserError("sssssssss")
         lines = []
@@ -181,23 +155,13 @@ class ImportFolder(models.Model):
             # lines += [vals]
             lines.append((0, 0, vals))
         if len(lines) > 0:
-            self.update({'frais_ids': lines})
+            self.update({'frais_ids': lines})'''
 
-    @api.depends('payment_mode')
-    def _onchange_payement_(self):
+
+    def _onchange_state_(self):
         for record in self:
-            if record.payment_mode == 'L.C':
-                record.state_actuel = str(dict(record._fields['state_lc'].selection).get(record.state_lc))
-            elif record.payment_mode == 'remise_documentaire_vue':
-                record.state_actuel = str(dict(record._fields['state_rd'].selection).get(record.state_rd))
-            elif record.payment_mode == 'remise_documentaire_echeance':
-                record.state_actuel = str(dict(record._fields['state_rd'].selection).get(record.state_rd))
-            elif record.payment_mode == 'transfert_libre':
-                record.state_actuel = str(dict(record._fields['state_tl'].selection).get(record.state_tl))
-            elif record.payment_mode == 'sans_paiement':
-                record.state_actuel = str(dict(record._fields['state_sp'].selection).get(record.state_sp))
-            else:
-                record.state_actuel = ""
+            record.state_actuel = str(dict(record._fields['etat'].selection).get(record.etat))
+
 
     purchase_ids = fields.One2many(
         'purchase.import.folder.purchases', 'folder_id',
@@ -215,7 +179,7 @@ class ImportFolder(models.Model):
         'purchase.import.folder.frais', 'folder_id',
         string='Lines')
     detail = fields.Text(string="Détail")
-    bank_id = fields.Many2one("res.bank", string="Banque de domiciliation")
+
     # 2nd LC document exigés
     facture_commerciale = fields.Boolean(string="Facture commerciale", default=False)
     jeu_complet_connaissement = fields.Boolean(string="Jeu complet de connaissement", default=False)
@@ -237,8 +201,6 @@ class ImportFolder(models.Model):
     total_cmd = fields.Monetary(string='Total des commandes', compute='_get_montant_invoice')
     product_designation = fields.Char(string='Produit', compute='_get_products_des')
     total_frais = fields.Monetary(string='Total des frais', compute='_get_montant_invoice')
-
-
 
     def _get_products_des(self):
         for folder in self:
@@ -269,17 +231,6 @@ class ImportFolder(models.Model):
             # folder.total = folder.additionnal_charges+folder.total_invoices
             # folder.amount_quitance = folder.amount_total_d10+folder.frais_quitance
 
-
-    def get_key_actuel(self, val,tuple_list):
-        for key, value in tuple_list:
-            print(key,value)
-            if val == value:
-                result = [tup[1] for tup in tuple_list].index(val)
-                print(result)
-                return result
-        return "key doesn't exist"
-
-
     def update_list(self):
         lines = []
         self.update({'purchase_ids': None})
@@ -300,34 +251,6 @@ class ImportFolder(models.Model):
             lines.append([0, 0, line_item])
         self.update({'invoice_ids': lines})
 
-        if self.payment_mode == 'L.C':
-            if int(self.get_key_actuel(self.state_actuel, self.STATE_LC)) < len(self.STATE_LC):
-                new_state = int(self.get_key_actuel(self.state_actuel, self.STATE_LC)) + 1
-                new_key = [tup[0] for tup in self.STATE_LC][int(new_state)]
-                self.state_lc = new_key
-                self.state_actuel = new_key
-
-        elif (self.payment_mode == 'remise_documentaire_vue') or (self.payment_mode == 'remise_documentaire_echeance'):
-            key = int(self.get_key_actuel(self.state_actuel, self.STATE_RD))
-            if key < len(self.STATE_RD):
-                new_state = key+ 1
-                new_key = [tup[0] for tup in self.STATE_RD][int(new_state)]
-                self.state_rd = new_key
-
-        elif self.payment_mode == 'transfert_libre':
-            key = int(self.get_key_actuel(self.state_actuel, self.STATE_TL))
-            if key < len(self.STATE_TL):
-                new_state = key + 1
-                new_key = [tup[0] for tup in self.STATE_TL][int(new_state)]
-                self.state_tl = new_key
-
-        elif self.payment_mode == 'sans_paiement':
-            key = int(self.get_key_actuel(self.state_actuel, self.STATE_SP))
-            if key < len(self.STATE_SP):
-                new_state = key + 1
-                new_key = [tup[0] for tup in self.STATE_SP][int(new_state)]
-                self.state_sp = new_key
-
     @api.model
     def create(self, vals):
         vals['reference'] = self.env['ir.sequence'].next_by_code('purchase.import.folder') or 'New'
@@ -347,10 +270,9 @@ class ImportFolder(models.Model):
 
 class ImportFolderProducts(models.Model):
     _name = "purchase.import.folder.d10"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
     _rec_name = "d10_number"
 
-    reception_date = fields.Date(string="Date DE récèption")
+    reception_date = fields.Date(string="Date DE réception")
     taux_change = fields.Float(string='règlement (Taux de change)', default="1", digits=(12, 5), required=True)
     d10_number = fields.Char(string="NUMERO DE D10", required=True)
     currency_id = fields.Many2one(related='folder_id.currency_id')
@@ -472,8 +394,9 @@ class ImportFolderD10Products(models.Model):
             product.total = amout_taxed + product.total_tax
             product.total_charge = product.d10_id.debours + product.d10_id.frais_quitance + product.d10_id.frais_douanier + product.d10_id.total_frais
             product.charge_reparti = product.total_charge * product.cle_repartition / 100
+            product.cout = 0
             if product.quantity > 0:
-                product.cout = (product.charge_reparti + product.total) / (product.quantity)
+                product.cout = (product.charge_reparti + product.total) / product.quantity
                 # raise UserError((product.charge_reparti+product.total ))
                 if product.type_produit == 'LOCAL_PET' or product.type_produit == 'PET' or product.type_produit == 'PEHD':
                     product.cout = product.cout / 1000
@@ -500,10 +423,13 @@ class ImportFolderD10Products(models.Model):
         is_product_exist = False
         # raise UserError("ssssssssss")
         if self.product_id:
-            for orders in self._origin.d10_id.folder_id.purchase_ids:
+            print('jjjjjjjj')
+            for orders in self.d10_id.folder_id.purchase_ids:
+                print('hhhhhhhh')
                 for order in orders.purchase_id:
                     for order_line in order.order_line:
                         if order_line.product_id.id == self.product_id.id:
+                            print('iiiiiiiiii')
                             is_product_exist = True
             if not is_product_exist:
                 raise UserError("Le produit sélèctionné n'existe dans les bons de commandes")

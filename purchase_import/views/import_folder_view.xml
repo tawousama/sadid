@@ -16,9 +16,7 @@
                 <field name="payment_mode"></field>
 
                 <field name="total_cmd"></field>
-                <field name="currency_id"></field>
                 <field name="date_usine"></field>
-
                 <field name="state_actuel"></field>
 
             </tree>
@@ -32,53 +30,35 @@
             <form string="Order Line Template">
                 <header>
 
-                    <!-- <button name="update_list" string="Mettre à jour D.P" class="oe_highlight" type="object" confirm="Vous êtes sûr?"/>
-                     --><button name="update_list" string="Mettre à jour" class="oe_highlight" type="object" />
-                    <field name="state_lc"  invisible="payment_mode not in ['L.C']" widget="statusbar" options="{'clickable':'1'}"/>
-                    <field name="state_rd"  invisible="payment_mode not in ['remise_documentaire_echeance','remise_documentaire_vue']"  widget="statusbar" clickable="True"/>
-                    <field name="state_tl" invisible="payment_mode not in ['transfert_libre']" widget="statusbar" clickable="True" />
-                    <field name="state_sp" invisible="payment_mode not in ['sans_paiement']" widget="statusbar" clickable="True" />
+                    <button name="action_suivant" string="Suivant"
+                            class="btn-primary" type="object"/>
+                    <button name="action_precedent" string="Precedent"
+                            class="btn-secondary" type="object"/>
+                    <field name="etat"   widget="statusbar" />
                 </header>
                 <sheet>
                     <h1>
                         <label for="reference" string="Référence "/>
-                        <field name="reference" class="oe_inline"  readonly="1"/>
+                        <field name="reference" class="oe_inline" attrs="{'readonly': 1}"/>
                     </h1>
                     <group>
                         <group>
                             <field name="partner_id" ></field>
-
                             <field name="transitaire_id" ></field>
                             <field name="payment_mode" ></field>
                             <field name="proformat" ></field>
 
                             <field name="currency_id" ></field>
-                            <field name="model_id" ></field>
-
-
                         </group>
                         <group>
                             <field name="date"></field>
                             <field name="date_usine"></field>
-                            <field name="date_embarequement" ></field>
+                            <field name="date_embarquement" ></field>
                             <field name="note" ></field>
-
                         </group>
 
                     </group>
                     <notebook>
-                        <page string="Liste des achats">
-                            <field name="purchase_ids" widget="one2many_list">
-                                <tree editable="bottom">
-                                    <field name="purchase_id" />
-                                    <field name="partner_id" />
-                                    <field name="date_order"  />
-                                    <field name="amount_total"  />
-                                    <field name="conditions"  />
-                                    <!-- <field name="state"  />  -->
-                                </tree>
-                            </field>
-                        </page>
                         <page string="Liste des facture">
                             <field name="invoice_ids" widget="one2many_list">
                                 <tree editable="bottom">
@@ -90,7 +70,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Importation">
+                        <page string="Info. Expédition">
                             <group>
                                 <group>
                                     <field name="port_embarquement" />
@@ -105,57 +85,48 @@
                                 </group>
                             </group>
                         </page>
-                        <page string="Remise documentaire / LC" invisible="payment_mode not in ('L.C','remise_documentaire_echeance','remise_documentaire_vue','transfert_libre')">
+                        <page string="Détails de Dom. ">
                             <group>
                                 <group>
-                                    <field name="bank_id" />
-                                    <field name="acceptation_dossier" />
-
-                                    <field name="swift_reglement" />
-                                    <field name="type_livraison" />
-
-
+                                   <field name="bank_id" />
+                                   <field name="reference_dossier_banque" />
+                                   <field name="date_ouverture_lc" />
+                                   <field name="montant" />
+                                   <field name="devise" />
+                                    <field name="incoterm" />
+                                    <field name="methode_expedition" />
+                                    <field name="provision_ouverture" />
+                                    <field name="date_limit_embarquement" />
+                                    <field name="date_reception_document" />
                                 </group>
                                 <group>
-                                    <field name="cheque_bank"  />
-                                    <field name="commission_reglement"  />
-                                    <field name="assurance_couverture_par" />
-                                    <field name="moyen_livraison" />
+                                    <field name="deblocage_spot_refin" class="oe_inline"/>
+                                    <field name="montant_debloque_spot_refin" attrs="{'invisible':[('deblocage_spot_refin', '!=', True)]}" />
+                                    <field name="date_deblocage_spot_refin" attrs="{'invisible':[('deblocage_spot_refin', '!=', True)]}"/>
+                                    <field name="date_echeance_spot_refin" attrs="{'invisible':[('deblocage_spot_refin', '!=', True)]}" />
+                                    <field name="reference_deblocage_spot_refin" attrs="{'invisible':[('deblocage_spot_refin', '!=', True)]}" />
+                                    <field name="montant_a_rembourser_spot_refin" attrs="{'invisible':[('deblocage_spot_refin', '!=', True)]}"/>
+                                    <field name="deblocage_spot_prefin" class="oe_inline"/>
+                                    <field name="montant_debloque_spot_prefin" attrs="{'invisible':[('deblocage_spot_prefin', '!=', True)]}"/>
+                                    <field name="date_deblocage_spot_prefin" attrs="{'invisible':[('deblocage_spot_prefin', '!=', True)]}"/>
+                                    <field name="date_echeance_spot_prefin" attrs="{'invisible':[('deblocage_spot_prefin', '!=', True)]}"/>
+                                    <field name="reference_deblocage_spot_prefin" attrs="{'invisible':[('deblocage_spot_prefin', '!=', True)]}"/>
+                                    <field name="montant_a_rembourser_spot_prefin" attrs="{'invisible':[('deblocage_spot_prefin', '!=', True)]}"/>
+                                    <field name="montant_droits_douane" />
+                                    <field name="financement_droits_douane" class="oe_inline"/>
+                                    <field name="date_deblocage_fin_douane" attrs="{'invisible':[('financement_droits_douane', '!=', True)]}"/>
+                                    <field name="date_echeance_fin_douane" attrs="{'invisible':[('financement_droits_douane', '!=', True)]}"/>
+                                    <field name="reference_deblocage_fin_douane" attrs="{'invisible':[('financement_droits_douane', '!=', True)]}" />
+                                    <field name="montant_a_rembourser_fin_douane" attrs="{'invisible':[('financement_droits_douane', '!=', True)]}" />
+                                    <field name="restitution_de_provision" class="oe_inline"/>
+                                    <field name="montant_restitue" attrs="{'invisible':[('restitution_de_provision', '!=', True)]}"/>
+                                    <field name="commission_banque_1" />
+                                    <field name="commission_banque_2" />
+                                    <field name="commission_banque_3" />
+                                    <field name="commission_banque_4" />
                                 </group>
                             </group>
-                        </page>
-                        <page string="Remise documentaire" invisible="payment_mode not in ('remise_documentaire_echeance','remise_documentaire_vue','transfert_libre')">
-                            <group>
-                                <group>
-                                    <field name="ouverture_dossier" />
-                                    <field name="echeance_date" />
-                                    <field name="fiance_sur" />
-                                </group>
-                                <group>
-                                    <field name="payment_modality"  />
-                                    <field name="echeance_amount" />
-                                    <field name="reglement_date" />
-                                </group>
-                            </group>
-                        </page>
-                        <page string="LC" invisible="payment_mode != 'L.C'">
-                            <group>
-                                <group>
-                                    <field name="ouverture_lc" />
-                                    <field name="modification" />
-                                    <field name="date_validite" />
-                                    <field name="spec_montant" />
-                                    <field name="start_pres_documents" />
-                                    <field name="date_limit_embarequement" />
-                                </group>
-                                <group>
-                                    <field name="swift_ouverture"  />
-                                    <field name="credit_forme"  />
-                                    <field name="lieu_validite"  />
-                                    <field name="condition_livraison"  />
-                                    <field name="end_pres_documents" />
-                                </group>
-                                <group string="Document Exigés">
+                            <group string="Document Exigés">
                                     <field name="facture_commerciale" class="oe_inline"/>
                                     <field name="jeu_complet_connaissement"  class="oe_inline"/>
                                     <field name="lettre_transport"  class="oe_inline"/>
@@ -170,19 +141,6 @@
                                     <field name="autre_document_transport"  class="oe_inline"/>
                                     <field name="autres"  class="oe_inline"/>
                                 </group>
-                            </group>
-                        </page>
-
-                        <page string="Frais">
-                            <field name="frais_ids" widget="one2many_list">
-                                <tree editable="bottom">
-                                    <field name="product_id" />
-                                    <field name="d10" />
-
-                                    <field name="amount" />
-
-                                </tree>
-                            </field>
                         </page>
 
                         <page string="D10">
@@ -252,6 +210,7 @@
                                                         <field name="price"/>
                                                         <field name="price_da"/>
                                                         <field name="poid"/>
+                                                        <field name="type_produit"/>
                                                         <field name="cle_repartition"/>
 
                                                         <field name="taux_douanes"/>
@@ -288,11 +247,6 @@
 
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"/>
-                    <field name="activity_ids" widget="mail_activity"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
             </form>
         </field>
     </record>
@@ -308,10 +262,10 @@
 
     <menuitem
             id="menu_purchase_import_root"
-            name="Commerce Exterieur"
+            name="Commerce Extérieur"
             sequence="20"
-            parent="account_accountant.menu_accounting"
             groups="purchase_import.group_importation,purchase_import.group_importation_user"
+            web_icon="purchase_import,static/description/icon.png"
     />
 
     <menuitem
@@ -331,9 +285,9 @@
             groups="purchase_import.group_importation,purchase_import.group_importation_user"
             parent="menu_purchase_import"
             action="open_view_purchase_import_folder_tree"
-            sequence="20"
+            sequence="20"/>
 
-    />
+
 
 
 </odoo>

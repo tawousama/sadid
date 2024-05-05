@@ -1,5 +1,5 @@
 from odoo import api, fields, models, _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 from datetime import datetime
 
@@ -88,6 +88,8 @@ class Operation_Deb(models.Model):
             date_ech = datetime.strptime(vals.get('echeance_date'), '%Y-%m-%d').date()
         else:
             date_ech = vals['echeance_date']
+        if date_ech <= self.echeance_date:
+            raise UserError('Vous devriez saisir une date d\'echeance superieure à l\'ancienne')
         print(date_ech)
         if date_deb > date_ech:
             raise ValidationError(_("The echeance_date is less than the deblocage_date !!! "))
@@ -246,6 +248,25 @@ class Operation_Deb(models.Model):
                 'context': {'deblocage': rec.id},
             }
 
+    def action_prolongation(self):
+        for rec in self:
+            if rec.echeance_date_new < rec.echeance_date_old:
+                raise ValidationError(_("The new date is less than the old date !!! "))
+            else:
+                print(rec.echeance_date_new)
+                rec.ref_opr_deb.echeance_date = rec.echeance_date_new
+                ech = rec.env['credit.echeance'].search([('ref_opr_deb','=',rec.ref_opr_deb.id),('echeance','=',None)])
+                ech.echeance_date = rec.echeance_date_new
+                pay = rec.env['credit.operation.p'].search(
+                    [('ref_opr_deb', '=', rec.ref_opr_deb.id), ('echeance', '=', None)])
+                print(pay.montant_a_rembourser)
+                print(pay.date_echeance)
+                pay.date_echeance = rec.echeance_date_new
+                '''rec.ligne_autorisation.validite_old = rec.ligne_autorisation.validite
+                rec.ligne_autorisation.validite = rec.echeance_date_new
+                rec.echeance_date_old = rec.ligne_autorisation.validite_old'''
+                self.state = 'confirm'
+                print('origin', rec.date_origin)
     def action_create_file(self):
         for rec in self:
             if rec.type_ligne == '1':

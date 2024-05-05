@@ -24,7 +24,7 @@ class ImportFolder(models.Model):
     tracking_doc = fields.Char(string='Tracking Doc')
     #Champs remise documentaire
     ouverture_dossier = fields.Char(string='Ouverture dossier')
-    payment_modality = fields.Many2one("purchase.import.payment.modality",string='Modalité de paiement')
+    payment_modality = fields.Many2one("purchase.import.payment.modality",string='Modalité de paiement.xml')
     #Commun
     acceptation_dossier = fields.Char(string='Ouverture dossier')
     cheque_bank = fields.Char(string='Chèque de banque')
@@ -54,9 +54,9 @@ class ImportFolder(models.Model):
         ('remise_documentaire_vue', 'Remise documentaire à vue'),
         ('remise_documentaire_echeance', 'Remise documentaire à écheance'),
         ('transfert_libre', 'transfert libre'),
-        ('sans_paiement', 'Sans paiement'),
+        ('sans_paiement', 'Sans paiement.xml'),
         ], 
-        string="Mode de paiement",
+        string="Mode de paiement.xml",
         copy=False)
         
     # default="draft",

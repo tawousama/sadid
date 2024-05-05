@@ -2,7 +2,7 @@
 
 
 {
-    'name': "-PTD- Importations",
+    'name': "Commerce Extérieur",
     'author': 'Finoutsource',
     'category': 'purchase',
     'summary': """Importation app by miza""",
@@ -10,8 +10,8 @@
     'website': '',
     'description': """
 """,
-    'version': '17.0.0.1',
-    'depends': ['base','mail',"purchase", 'stock', 'account_accountant'],
+    'version': '15.0.0.1',
+    'depends': ["purchase", 'stock','base','credit_bancaire'],
     'data': [
     'security/purchase_import_role.xml',
     'views/import_folder_view.xml',

@@ -22,7 +22,8 @@ class Gestion_payement(models.Model):
     type = fields.Many2one(
         'credit.type', string='Ligne de crédit', index=True, tracking=True,compute="_compute_type")
     ligne_autorisation = fields.Many2one('credit.autorisation', string='Autorisation',domain="[('banque.id', '=', banque),('type.id', '=', type)]", required=True,ondelete='cascade',compute='_compute_ligne_autorisation' )
-
+    state = fields.Selection([('draft', 'Brouillon'),
+                              ('confirmed', 'Confirmé')], default='draft')
     date_create = fields.Datetime(string='Date de création', required=True, index=True, copy=False,
                                   default=fields.Datetime.now,
                                   help="Indicates the date the operation p was created.",
@@ -43,7 +44,20 @@ class Gestion_payement(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('credit.operation.p') or _('New')
         result = super(Gestion_payement, self).create(vals)
         return result
-
+    def validate_payment(self):
+        for rec in self:
+            if rec.state == 'draft':
+                rec.state = 'confirmed'
+            view_id = self.env.ref('credit_bancaire.deblocage_wizard_form').id
+            return {
+                'name': 'Information',
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'res_model': 'wizard.credit.deblocage',
+                'view_id': view_id,
+                'target': 'new',
+                'context': {'payment': rec.id},
+            }
     def unlink(self):
         for rec in self:
             if len(rec.paiements)!= 0:

@@ -9,20 +9,20 @@ class Gestion_operation_pd(models.Model):
     name = fields.Char(string='Opération', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
 
-    echeance_date_old = fields.Date("Ancienne date d`échéance", compute='_compute_date_old',readonly=True,store=True)
-    echeance_date_new = fields.Date("Nouvelle date d`échéance", store=True)
+    echeance_date_old = fields.Date("Date d'échéance initiale", compute='_compute_date_old',readonly=True,store=True)
+    echeance_date_new = fields.Date("Nouvelle date d'échéance", store=True)
     note = fields.Text(string='Description', tracking=True)
     user_id = fields.Many2one(
         'res.users', string='Order representative', index=True, tracking=True, readonly=True,
         default=lambda self: self.env.user, check_company=True)
     ref_opr_deb = fields.Many2one('credit.operation.deb', string='Opération de déblocage', ondelete='cascade',
-                                  domain="[('banque_id.id', '=', banque),('type.id', '=', type),('ligne_autorisation.id', '=', ligne_autorisation),]", store=True )
+                                  domain="[('banque_id.id', '=', banque),('type.id', '=', type),('state', '=', 'confirmed')]", store=True )
     banque = fields.Many2one(
-        'credit.banque', string='Banque', index=True, tracking=True, required=True)
+        'credit.banque', string='Banque', index=True, tracking=True, required=True, domain="[('has_deblocage', '=', True)]")
     type = fields.Many2one(
-        'credit.type', string='Ligne de crédit', index=True, tracking=True)
+        'credit.type', string='Ligne de crédit', index=True, tracking=True, domain="[('has_deblocage', '=', True)]")
     ligne_autorisation = fields.Many2one('credit.autorisation', string='Autorisation',
-                                         domain="[('banque.id', '=', banque),('type.id', '=', type)]", required=True,
+                                        domain="[('banque.id', '=', banque),('type.id', '=', type),('state', '=', 'confirmed')]",
                                          ondelete='cascade')
     state = fields.Selection([
         ('verification', 'Verification'),
@@ -33,6 +33,9 @@ class Gestion_operation_pd(models.Model):
                                   help="Indicates the date the operation pd was created.",
                                   readonly=True)
     date_origin = fields.Date("confirmation d`échéance", readonly=True, compute='_compute_date_confirm',store=True)
+    file_accord = fields.Binary(string='Accord de la banque')
+    file_name1 = fields.Char(string='File name')
+
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):

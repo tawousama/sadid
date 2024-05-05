@@ -13,7 +13,15 @@
             <field name="use_date_range" eval="True" />
 
         </record>
-
+        <record id="base.DZD" model="res.currency">
+            <field name="active" eval="True"/>
+        </record>
+        <record id="base.EUR" model="res.currency">
+            <field name="active" eval="True"/>
+        </record>
+        <record id="base.USD" model="res.currency">
+            <field name="active" eval="True"/>
+        </record>
 
     </data>
 </openerp>

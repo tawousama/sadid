@@ -13,8 +13,6 @@
                 <field name="quantity" sum="Total quantité"></field>
                 <field name="total_charge"></field>
                 <field name="total" sum="Total prix"></field>
-
-
                 <field name="cout" sum="Total des couts"></field>
 
 

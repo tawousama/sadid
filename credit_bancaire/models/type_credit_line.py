@@ -18,6 +18,19 @@ class Type_credit(models.Model):
     has_autorisation = fields.Boolean(string='A une autorisation', compute='compute_autorisation',store=True)
     autorisation_ids = fields.One2many('credit.autorisation', 'type')
 
+    has_deblocage = fields.Boolean(string='A une deblocage', compute='compute_deblocage', store=True)
+    deblocage_ids = fields.One2many('credit.operation.deb', 'type')
+
+    @api.depends('deblocage_ids')
+    def compute_deblocage(self):
+        for rec in self:
+            print('computed')
+            has_deb = self.env['credit.operation.deb'].search([('type', '=', rec.id)])
+            if not has_deb:
+                rec.has_deblocage = False
+            else:
+                rec.has_deblocage = True
+
     @api.depends('autorisation_ids')
     def compute_autorisation(self):
         for rec in self:

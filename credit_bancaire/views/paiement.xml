@@ -5,9 +5,14 @@
         <field name="model">credit.operation.p</field>
         <field name="arch" type="xml" >
             <form create="false">
+                <header>
+                    <button id="button_Confirm" name="validate_payment" string="Confirmer"
+                            class="btn-primary"
+                            type="object"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
-
                         <h1>
                             <field name="name" readonly="1"/>
                         </h1>
