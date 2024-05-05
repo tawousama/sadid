@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="deblocage_wizard_form">
+            <field name="name">deblocage_wizard_form</field>
+            <field name="model">wizard.credit.deblocage</field>
+            <field name="arch" type="xml">
+                <form>
+                    <p>Ce déblocage a-t-il un impact sur le compte courant ?</p>
+                    <br/>
+                    <footer>
+                        <button name="send" type="object" string="Oui" class="btn-primary"/>
+                        <button name="cancel" type="object" string="Non" class="btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

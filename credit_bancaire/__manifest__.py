@@ -9,7 +9,7 @@
     'description': """ Gestion des credit bancaire  """,
     'images' : [],
     'web_icon': ['credit_bancaire,static/description/icon.png'],
-    'depends' : ['base', 'mail', 'account', 'account_accountant'],
+    'depends' : ['base', 'mail', 'account', 'account_accountant', 'purchase_import'],
     'data': [
         'security/credit_security.xml',
         'security/ir.model.access.csv',
@@ -40,6 +40,7 @@
         'views/contacts.xml',
         'views/montage_demande_credit.xml',
         'views/montage_plan_charge.xml',
+        'views/wizard.xml',
         #'views/new_model.xml',
         #'reports/bank_financing_request.xml',
         'reports/report_plan_charge.xml',

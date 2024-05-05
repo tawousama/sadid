@@ -89,5 +89,6 @@ access_facilities_type,facilities.type,model_facilities_type,base.group_user,1,1
 access_amounts_required,amounts.required,model_amounts_required,base.group_user,1,1,1,1
 access_proposed_guarantees,proposed.guarantees,model_proposed_guarantees,base.group_user,1,1,1,1
 access_obligations_banks,obligations.banks,model_obligations_banks,base.group_user,1,1,1,1
+access_wizard_credit_deblocage,access.wizard.credit.deblocage,model_wizard_credit_deblocage,base.group_user,1,1,1,1
 
 

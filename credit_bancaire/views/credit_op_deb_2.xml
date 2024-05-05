@@ -9,6 +9,7 @@
                     <button id="button_Confirm" name="action_Confirme" string="Confirmer"
                             class="btn-primary"
                             type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed" />
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -22,18 +23,19 @@
                             <field name="banque_id"/>
                             <field name="type"/>
                             <field name="ligne_autorisation"/>
+                            <field name="date_validite"/>
                             <field name="reference_credit"/>
                             <field name="ref_interne"/>
-                            <field name="client"/>
-                            <field name="taux" invisible="1"/>
+                            <field name="client" string="Fournisseur"/>
                         </group>
                         <group>
                             <field name="montant_debloque"/>
-                            <field name="montant_add"/>
-                            <field name="montant_total"/>
-                            <field name="montant_rembourser"/>
+                            <field name="remboursement"/>
                             <field name="deblocage_date"/>
-                            <field name="echeance_date"/>
+                            <field name="echeance_date" string="Date de 1er échéance"/>
+                            <field name="echeance_fin_date" string="Date du dernier échéance"/>
+                            <field name="taux_apply" string="Taux Appliqué"/>
+                            <field name="montant_total" string="Montant de l`échéance"/>
                         </group>
                     </group>
                     <notebook invisible="type not in [9,10,11,12]">

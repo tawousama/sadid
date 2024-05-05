@@ -5,7 +5,7 @@
     <menuitem id="menu_credit"
               name="Credit bancaire"
               groups="group_credit_user"
-              web_icon="credit_bancaire,static/description/icon.png"
+              parent="account_accountant.menu_accounting"
               sequence="10"/>
 
     <menuitem id="conf_credit"

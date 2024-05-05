@@ -14,12 +14,16 @@ class Operation_Deb(models.Model):
     type_ligne = fields.Selection([('1', 'Crédit d\'exploitation'),
                                    ('2', 'Crédit d\'investissement'),
                                    ('3', 'Leasing')], )
+    state = fields.Selection([('draft', 'Brouillon'),
+                              ('confirmed', 'Confirmé'),
+                              ('extended', 'Prolongé')], default='draft')
     montant_debloque = fields.Float(string="Montant débloqué", store=True, required=True)
     montant_add = fields.Float(string="Interet", store=True, compute='compute_interet')
     montant_total = fields.Float(string="Montant Total", store=True, compute='_compute_total')
     montant_rembourser = fields.Float(string="Montant a rembourser", store=True, compute='_compute_reste')
     deblocage_date = fields.Date("Date de déblocage", tracking=True, required=True)
     echeance_date = fields.Date("Date d`échéance", tracking=True, required=True)
+    echeance_fin_date = fields.Date("Date d`échéance", tracking=True, required=True)
     note = fields.Text(string='Description', tracking=True)
     reference_credit = fields.Char(string='Référence du dossier banque', tracking=True)
     reference_interne = fields.Many2one('account.move', string='Référence interne (N. facture)', tracking=True)
@@ -50,7 +54,19 @@ class Operation_Deb(models.Model):
     taux = fields.Float(string='Taux', related='ligne_autorisation.autorisation_global.taux')
     file_ticket = fields.Binary(string='Ticket d`Autorisation')
     file_name = fields.Char(string='File name')
+    file_accord = fields.Binary(string='Accord de la banque')
+    file_name1 = fields.Char(string='File name')
 
+    lc_id = fields.Many2one('purchase.import.folder', string='LC Ouvertes')
+    remdoc = fields.Char(string='REMDOC')
+    remboursement = fields.Selection([('m', 'Mensuel'),
+                                      ('t', 'Trimestriel'),
+                                      ('s', 'Semestriel'),
+                                      ])
+    date_validite = fields.Date(string='Date de validité', related='ligne_autorisation.validite')
+    taux_apply = fields.Float(string='Taux Appliqué')
+    plm = fields.Float(string='PLM')
+    folder_id = fields.Many2one('purchase.import.folder', string='Dossier')
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
@@ -122,7 +138,6 @@ class Operation_Deb(models.Model):
     def _compute_modif(self):'''
 
 
-    @api.depends('echeances')
     def action_Confirme(self):
         for rec in self:
             disponible = rec.env['credit.disponible'].search([('ligne_autorisation', '=', rec.ligne_autorisation.id)])
@@ -216,9 +231,49 @@ class Operation_Deb(models.Model):
                             'ligne_autorisation': rec.ligne_autorisation.id,
                             'echeance': e.id
                         })'''
+            rec.state = 'confirmed'
             print('rembourser = ', rec.montant_rembourser)
             print('autorise = ', rec.ligne_autorisation.montant)
             print('autorisations = ', disponible.montant_disponible)
+            view_id = self.env.ref('credit_bancaire.deblocage_wizard_form').id
+            return {
+                'name': 'Information',
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'res_model': 'wizard.credit.deblocage',
+                'view_id': view_id,
+                'target': 'new',
+                'context': {'deblocage': rec.id},
+            }
+
+    def action_create_file(self):
+        for rec in self:
+            if rec.type_ligne == '1':
+                if rec.type == self.env.ref('credit_bancaire.04'):
+                    print('LC A VUE')
+                    view_id = self.env.ref('credit_bancaire.view_purchase_import_folder_form_inherit').id
+                    return {
+                        'type': 'ir.actions.act_window',
+                        'name': _('Créer le dossier'),
+                        'res_model': 'purchase.import.folder',
+                        'view_mode': 'form',
+                        'views': [[view_id, 'form']],
+                    }
+
+    def open_folder(self):
+        for rec in self:
+            if rec.type_ligne == '1':
+                if rec.type == self.env.ref('credit_bancaire.04'):
+                    print('LC A VUE')
+                    view_id = self.env.ref('credit_bancaire.view_purchase_import_folder_form_inherit').id
+                    dossier = self.env['purchase.import.folder'].search([('deblocage_id', '=', rec.id)])
+                    return {
+                        'type': 'ir.actions.act_window',
+                        'res_model': 'purchase.import.folder',
+                        'res_id': dossier.id,
+                        'view_mode': 'form',
+                        'views': [[view_id, 'form']],
+                    }
 
     @api.depends('deblocage_date', 'echeance_date', 'montant_debloque')
     def compute_interet(self):

@@ -9,8 +9,21 @@
                     <button id="button_Confirm" name="action_Confirme" string="Confirmer"
                             class="btn-primary"
                             type="object"/>
+                    <button id="button_open_file" name="action_create_file" string="Créer un LC"
+                            class="btn-primary" invisible="type != 4 or folder_id"
+                            type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed" />
                 </header>
                 <sheet>
+                    <div name="button_box" position="inside">
+                        <button name="open_folder" type="object" class="oe_stat_button"
+                                invisible="type != 4 or not folder_id"
+                                icon="fa-file-text-o">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">LC ouverte</span>
+                            </div>
+                        </button>
+                    </div>
                     <div class="oe_title">
 
                         <h1>
@@ -26,6 +39,7 @@
                             <field name="ref_interne"/>
                             <field name="client"/>
                             <field name="taux" invisible="1"/>
+                            <field name="folder_id" invisible="1"/>
                         </group>
                         <group>
                             <field name="montant_debloque"/>
@@ -35,9 +49,13 @@
                             <field name="deblocage_date"/>
                             <field name="echeance_date"/>
                         </group>
+                        <group>
+                            <field name="lc_id" invisible="type not in [6, 7]"/>
+                            <field name="remdoc" invisible="type not in [6, 7]"/>
+                        </group>
                     </group>
-                    <notebook invisible="type not in [9,10,11,12]">
-                        <page string="Echeances partiels">
+                    <notebook>
+                        <page string="Echeances partiels" invisible="type not in [9,10,11,12]">
                             <tree>
                                 <field name="echeances"/>
                             </tree>
@@ -94,10 +112,25 @@
               name="Déblocage Crédit Bancaire"
               parent="account_accountant.menu_accounting"
               sequence="20"/>
+    <menuitem id="operation_deb_menu"
+              name="Déblocage Crédit Bancaire"
+              parent="oper_credit"
+              sequence="20"/>
     <menuitem id="operation_deb_1_menu"
               name="Crédit d'Exploitation"
               parent="operation_deb_menu"
               action="operation_deb_1_action"
               sequence="20"/>
 
+    <record id="view_purchase_import_folder_form_inherit" model="ir.ui.view">
+        <field name="name">purchase.import.folder.form.inherit</field>
+        <field name="model">purchase.import.folder</field>
+        <field name="inherit_id" ref="purchase_import.view_purchase_import_folder_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="deblocage_id" invisible="1"/>
+                <field name="computed_field" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
