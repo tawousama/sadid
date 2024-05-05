@@ -49,3 +49,7 @@ class Dossier(models.Model):
             res.deblocage_id = self.env['credit.operation.deb'].browse(self.env.context.get('deblocage'))
             res.deblocage_id.folder_id = res.id
         return res
+
+    def compute_deblocage(self):
+        for rec in self:
+            rec.computed_field = True

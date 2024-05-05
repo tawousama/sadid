@@ -122,37 +122,5 @@
               action="operation_deb_1_action"
               sequence="20"/>
 
-    <record id="view_purchase_import_folder_form_inherit" model="ir.ui.view">
-        <field name="name">purchase.import.folder.form.inherit</field>
-        <field name="model">purchase.import.folder</field>
-        <field name="inherit_id" ref="purchase_import.view_purchase_import_folder_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='partner_id']" position="after">
-                <field name="deblocage_id" invisible="1"/>
-                <field name="computed_field" invisible="1"/>
-            </xpath>
-        </field>
-    </record>
-    <record id="view_purchase_import_folder_tree_inherit" model="ir.ui.view">
-        <field name="name">purchase.import.folder.tree</field>
-        <field name="model">purchase.import.folder</field>
-        <field name="arch" type="xml">
-            <tree string="Listes des Dossiers">
-                <field name="partner_id" />
-                <field name="reference"/>
-                <field name="date_validite"/>
-                <field name="banque_id"/>
-                <field name="proformat"/>
-                <field name="product_designation"/>
-                <field name="eta"/>
-                <field name="etd"/>
-                <field name="payment_mode"/>
-                <field name="total_cmd"/>
-                <field name="currency_id"/>
-                <field name="date_usine"/>
-                <field name="state_actuel"/>
-            </tree>
-        </field>
-    </record>
 
 </odoo>

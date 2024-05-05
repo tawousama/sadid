@@ -54,9 +54,9 @@ class ImportFolder(models.Model):
         ('remise_documentaire_vue', 'Remise documentaire à vue'),
         ('remise_documentaire_echeance', 'Remise documentaire à écheance'),
         ('transfert_libre', 'transfert libre'),
-        ('sans_paiement', 'Sans paiement.xml'),
+        ('sans_paiement', 'Sans paiement'),
         ], 
-        string="Mode de paiement.xml",
+        string="Mode de paiement",
         copy=False)
         
     # default="draft",

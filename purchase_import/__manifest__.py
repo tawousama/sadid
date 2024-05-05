@@ -10,8 +10,8 @@
     'website': '',
     'description': """
 """,
-    'version': '15.0.0.1',
-    'depends': ["purchase", 'stock','base','credit_bancaire'],
+    'version': '17.0.0.1',
+    'depends': ["purchase", 'stock','base',],
     'data': [
     'security/purchase_import_role.xml',
     'views/import_folder_view.xml',

@@ -272,7 +272,7 @@ class Operation_Deb(models.Model):
             if rec.type_ligne == '1':
                 if rec.type == self.env.ref('credit_bancaire.04'):
                     print('LC A VUE')
-                    view_id = self.env.ref('credit_bancaire.view_purchase_import_folder_form_inherit').id
+                    view_id = self.env.ref('credit_bancaire.view_purchase_import_folder_form').id
                     return {
                         'type': 'ir.actions.act_window',
                         'name': _('Créer le dossier'),
@@ -286,7 +286,7 @@ class Operation_Deb(models.Model):
             if rec.type_ligne == '1':
                 if rec.type == self.env.ref('credit_bancaire.04'):
                     print('LC A VUE')
-                    view_id = self.env.ref('credit_bancaire.view_purchase_import_folder_form_inherit').id
+                    view_id = self.env.ref('credit_bancaire.view_purchase_import_folder_form').id
                     dossier = self.env['purchase.import.folder'].search([('deblocage_id', '=', rec.id)])
                     return {
                         'type': 'ir.actions.act_window',
