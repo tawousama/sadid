@@ -9,12 +9,12 @@ class ImportFolder(models.Model):
     _rec_name = "reference"
 
     #champs principale
-    reference = fields.Char(string='Référence')
+    reference = fields.Char(string='N. Commande')
     note = fields.Text(string='Note')
     proformat = fields.Char(string="Proforma")
     partner_id = fields.Many2one("res.partner", string='Fournisseur')
-    transitaire_id = fields.Many2one("res.partner", string='Transitaire')
-    date_usine = fields.Date(string="Date entrée usine")
+    #transitaire_id = fields.Many2one("res.partner", string='Transitaire')
+    date_usine = fields.Date(string="Date d'arrivage")
     currency_id = fields.Many2one(
        'res.currency', string="Devise", company_dependent=True,
         help="This currency will be used, instead of the default one, for purchases from the current partner")
@@ -52,6 +52,7 @@ class ImportFolder(models.Model):
     devise = fields.Many2one(
        'res.currency', string="Devise", company_dependent=True,
         help="This currency will be used, instead of the default one, for purchases from the current partner")
+    montant_dz = fields.Monetary(string='Montant DZD.')
     incoterm = fields.Char(string="Incoterm")
     methode_expedition = fields.Selection([('by_sea','voie maritime'),('by_air','voie aérienne')],string="Méthode d`expédition", default="by_sea")
     provision_ouverture = fields.Char(string="Provision d`ouverture")
@@ -67,7 +68,7 @@ class ImportFolder(models.Model):
 
     #SPOT PREFIN
     deblocage_spot_prefin = fields.Boolean(string="Déblocage SPOT Prefin")
-    montant_debloque_spot_prefin = fields.Monetary(string="montant débloqué")
+    montant_debloque_spot_prefin = fields.Float(string="montant débloqué", related='deblocage_id.montant_debloque')
     date_deblocage_spot_prefin = fields.Date(string="Date de déblocage SPOT Prefin")
     date_echeance_spot_prefin = fields.Date(string="Date d`échéance SPOT Prefin")
     reference_deblocage_spot_prefin = fields.Char(string="Référence déblocage SPOT Prefin")
@@ -91,7 +92,11 @@ class ImportFolder(models.Model):
     commission_banque_4 = fields.Char(string="Commission banque 04 ")
 
     activation_cur = fields.Char(compute='activate_currencies',store=True)
-
+    deblocage_id = fields.Many2one('credit.operation.deb', string='Deblocage')
+    ref_facture = fields.Char(string='N. facture', related='deblocage_id.ref_interne')
+    delai_payment = fields.Integer(string='Délai de paiement')
+    date_payment = fields.Date(string='Date de paiement de fournisseur')
+    date_validation = fields.Date(string='Date de validation')
     @api.depends('payment_mode')
     def activate_currencies(self):
         for rec in self:
@@ -103,6 +108,8 @@ class ImportFolder(models.Model):
             if val == value:
                 return key
         return "key doesn't exist"
+
+
 
     #la fonction du bouton suivant
     def action_suivant(self):
@@ -254,8 +261,12 @@ class ImportFolder(models.Model):
     @api.model
     def create(self, vals):
         vals['reference'] = self.env['ir.sequence'].next_by_code('purchase.import.folder') or 'New'
-        result = super(ImportFolder, self).create(vals)
-        return result
+        res = super(ImportFolder, self).create(vals)
+        print('deblocage', self.env.context.get('deblocage'))
+        if self.env.context.get('deblocage'):
+            res.deblocage_id = self.env['credit.operation.deb'].browse(self.env.context.get('deblocage'))
+            res.deblocage_id.folder_id = res.id
+        return res
 
     # def action_done(self):
     #     self.state = "done"
@@ -466,12 +477,12 @@ class ImportFolderInvoices(models.Model):
 
     invoice_id = fields.Many2one("account.move", string='Facture', domain=[('move_type', '=', 'in_invoice')])
     partner_id = fields.Many2one(related='invoice_id.partner_id', string='Partenaire')
-    date_invoice = fields.Date(related='invoice_id.date', string='Date')
+    name = fields.Char(string='Réf. Facture')
+    date_invoice = fields.Date( string='Date')
     state = fields.Selection(
         related='invoice_id.state')
     currency_id = fields.Many2one(related='invoice_id.currency_id')
-    amount_total = fields.Monetary(
-        related='invoice_id.amount_total')
+    amount_total = fields.Float(string='Montant')
     folder_id = fields.Many2one(
         'purchase.import.folder',
         string='Lines', readonly=True)

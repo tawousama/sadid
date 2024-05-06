@@ -23,7 +23,7 @@ class Operation_Deb(models.Model):
     montant_rembourser = fields.Float(string="Montant a rembourser", store=True, compute='_compute_reste')
     deblocage_date = fields.Date("Date de déblocage", tracking=True, required=True)
     echeance_date = fields.Date("Date d`échéance", tracking=True, required=True)
-    echeance_fin_date = fields.Date("Date d`échéance", tracking=True, required=True)
+    echeance_fin_date = fields.Date("Date d`échéance", tracking=True)
     note = fields.Text(string='Description', tracking=True)
     reference_credit = fields.Char(string='Référence du dossier banque', tracking=True)
     reference_interne = fields.Many2one('account.move', string='Référence interne (N. facture)', tracking=True)
@@ -57,8 +57,6 @@ class Operation_Deb(models.Model):
     file_accord = fields.Binary(string='Accord de la banque')
     file_name1 = fields.Char(string='File name')
 
-    lc_id = fields.Many2one('purchase.import.folder', string='LC Ouvertes')
-    remdoc = fields.Char(string='REMDOC')
     remboursement = fields.Selection([('m', 'Mensuel'),
                                       ('t', 'Trimestriel'),
                                       ('s', 'Semestriel'),
@@ -66,7 +64,7 @@ class Operation_Deb(models.Model):
     date_validite = fields.Date(string='Date de validité', related='ligne_autorisation.validite')
     taux_apply = fields.Float(string='Taux Appliqué')
     plm = fields.Float(string='PLM')
-    folder_id = fields.Many2one('purchase.import.folder', string='Dossier')
+
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
@@ -88,7 +86,7 @@ class Operation_Deb(models.Model):
             date_ech = datetime.strptime(vals.get('echeance_date'), '%Y-%m-%d').date()
         else:
             date_ech = vals['echeance_date']
-        if date_ech <= self.echeance_date:
+        if date_ech <= self.echeance_date and self.state == 'confirmed':
             raise UserError('Vous devriez saisir une date d\'echeance superieure à l\'ancienne')
         print(date_ech)
         if date_deb > date_ech:
@@ -272,13 +270,14 @@ class Operation_Deb(models.Model):
             if rec.type_ligne == '1':
                 if rec.type == self.env.ref('credit_bancaire.04'):
                     print('LC A VUE')
-                    view_id = self.env.ref('credit_bancaire.view_purchase_import_folder_form').id
+                    view_id = self.env.ref('purchase_import.view_purchase_import_folder_form').id
                     return {
                         'type': 'ir.actions.act_window',
                         'name': _('Créer le dossier'),
                         'res_model': 'purchase.import.folder',
                         'view_mode': 'form',
                         'views': [[view_id, 'form']],
+                        'context': {'deblocage': rec.id}
                     }
 
     def open_folder(self):
@@ -286,7 +285,7 @@ class Operation_Deb(models.Model):
             if rec.type_ligne == '1':
                 if rec.type == self.env.ref('credit_bancaire.04'):
                     print('LC A VUE')
-                    view_id = self.env.ref('credit_bancaire.view_purchase_import_folder_form').id
+                    view_id = self.env.ref('purchase_import.view_purchase_import_folder_form').id
                     dossier = self.env['purchase.import.folder'].search([('deblocage_id', '=', rec.id)])
                     return {
                         'type': 'ir.actions.act_window',

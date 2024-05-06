@@ -6,18 +6,21 @@
         <field name="model">purchase.import.folder</field>
         <field name="arch" type="xml">
             <tree string="Listes des Dossiers">
-                <field name="reference"></field>
-                <field name="date"></field>
-                <field name="partner_id"></field>
-                <field name="proformat"></field>
-                <field name="product_designation"></field>
-                <field name="eta"></field>
-                <field name="etd"></field>
-                <field name="payment_mode"></field>
-
-                <field name="total_cmd"></field>
-                <field name="date_usine"></field>
-                <field name="state_actuel"></field>
+                <field name="partner_id"/>
+                <field name="reference"/>
+                <field name="date_validation"/>
+                <field name="bank_id"/>
+                <field name="montant"/>
+                <field name="devise"/>
+                <field name="montant_dz"/>
+                <field name="payment_mode"/>
+                <field name="delai_payment"/>
+                <field name="proformat"/>
+                <field name="incoterm"/>
+                <field name="date_usine"/>
+                <field name="date_embarquement"/>
+                <field name="ref_facture"/>
+                <field name="state_actuel"/>
 
             </tree>
         </field>
@@ -38,34 +41,33 @@
                 </header>
                 <sheet>
                     <h1>
-                        <label for="reference" string="Référence "/>
+                        <label for="reference" string="N. Commande"/>
                         <field name="reference" class="oe_inline" readonly="1"/>
                     </h1>
                     <group>
                         <group>
-                            <field name="partner_id"></field>
-                            <field name="transitaire_id"></field>
-                            <field name="payment_mode"></field>
-                            <field name="proformat"></field>
-                            <field name="currency_id"></field>
+                            <field name="partner_id"/>
+                            <field name="date_validation"/>
+                            <field name="payment_mode"/>
+                            <field name="proformat"/>
+                            <field name="currency_id"/>
                         </group>
                         <group>
-                            <field name="date"></field>
-                            <field name="date_usine"></field>
-                            <field name="date_embarquement"></field>
-                            <field name="note"></field>
+                            <field name="date"/>
+                            <field name="date_usine"/>
+                            <field name="date_embarquement"/>
+                            <field name="note"/>
+                            <field name="delai_payment"/>
+                            <field name="date_payment"/>
                         </group>
-
                     </group>
                     <notebook>
                         <page string="Liste des facture">
                             <field name="invoice_ids" widget="one2many_list">
                                 <tree editable="bottom">
-                                    <field name="invoice_id"/>
-                                    <field name="partner_id"/>
-                                    <field name="date_invoice"/>
+                                    <field name="name"/>
                                     <field name="amount_total"/>
-                                    <!-- <field name="state"  /> -->
+                                    <field name="date_invoice"/>
                                 </tree>
                             </field>
                         </page>
@@ -99,23 +101,8 @@
                                     <field name="date_reception_document"/>
                                 </group>
                                 <group>
-                                    <field name="deblocage_spot_refin" class="oe_inline"/>
-                                    <field name="montant_debloque_spot_refin" invisible="deblocage_spot_refin != True"/>
-                                    <field name="date_deblocage_spot_refin" invisible="deblocage_spot_refin != True"/>
-                                    <field name="date_echeance_spot_refin" invisible="deblocage_spot_refin != True"/>
-                                    <field name="reference_deblocage_spot_refin"
-                                           invisible="deblocage_spot_refin != True"/>
-                                    <field name="montant_a_rembourser_spot_refin"
-                                           invisible="deblocage_spot_refin != True"/>
-                                    <field name="deblocage_spot_prefin" class="oe_inline"/>
-                                    <field name="montant_debloque_spot_prefin"
-                                           invisible="deblocage_spot_prefin != True"/>
-                                    <field name="date_deblocage_spot_prefin" invisible="deblocage_spot_prefin != True"/>
-                                    <field name="date_echeance_spot_prefin" invisible="deblocage_spot_prefin != True"/>
-                                    <field name="reference_deblocage_spot_prefin"
-                                           invisible="deblocage_spot_prefin != True"/>
-                                    <field name="montant_a_rembourser_spot_prefin"
-                                           invisible="deblocage_spot_prefin != True"/>
+                                    <field name="deblocage_id" readonly="1"/>
+                                    <field name="montant_debloque_spot_prefin"/>
                                     <field name="montant_droits_douane"/>
                                     <field name="financement_droits_douane" class="oe_inline"/>
                                     <field name="date_deblocage_fin_douane"
@@ -128,10 +115,7 @@
                                            invisible="financement_droits_douane != True"/>
                                     <field name="restitution_de_provision" class="oe_inline"/>
                                     <field name="montant_restitue" invisible="restitution_de_provision != True"/>
-                                    <field name="commission_banque_1"/>
-                                    <field name="commission_banque_2"/>
-                                    <field name="commission_banque_3"/>
-                                    <field name="commission_banque_4"/>
+
                                 </group>
                             </group>
                             <group string="Document Exigés">
@@ -185,64 +169,23 @@
                                                 <field name="taux_tcs"/>
                                                 <field name="taux_tva"/>
                                                 <field name="amount_tva"/>
-
                                             </group>
                                             <group>
                                                 <field name="amount_douane"/>
                                                 <field name="amount_tcs"/>
-
                                             </group>
                                         </group>
                                         <group string="Total" name="Total">
                                             <group>
-
                                                 <field name="debours"/>
                                                 <field name="fret"/>
                                                 <field name="frais_douanier"/>
                                                 <field name="total_product_price" invisible="1"/>
                                                 <field name="total_product_poid" invisible="1"/>
-
                                                 <field name="total_frais"/>
-
                                                 <field name="amount_total_d10"/>
-
                                             </group>
-
                                         </group>
-                                        <notebook>
-                                            <page string="Produits">
-                                                <field name="product_ids" widget="one2many_list">
-                                                    <tree editable="bottom">
-                                                        <field name="product_id"/>
-                                                        <field name="quantity"/>
-                                                        <field name="price"/>
-                                                        <field name="price_da"/>
-                                                        <field name="poid"/>
-                                                        <field name="type_produit"/>
-                                                        <field name="cle_repartition"/>
-
-                                                        <field name="taux_douanes"/>
-                                                        <field name="amount_douane"/>
-                                                        <field name="taux_tcs"/>
-                                                        <field name="amount_tcs"/>
-
-
-                                                        <field name="droit_douane"/>
-                                                        <field name="total_tax"/>
-                                                        <field name="total"/>
-                                                        <field name="total_charge"/>
-                                                        <field name="charge_reparti"/>
-
-
-                                                        <field name="cout"/>
-
-
-                                                    </tree>
-                                                </field>
-                                            </page>
-                                        </notebook>
-
-
                                     </sheet>
 
                                 </form>
@@ -261,18 +204,15 @@
         <field name="name">Dossier</field>
         <field name="res_model">purchase.import.folder</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_purchase_import_folder_tree"></field>
+        <field name="view_id" ref="view_purchase_import_folder_tree"/>
     </record>
-
-
     <menuitem
             id="menu_purchase_import_root"
             name="Commerce Extérieur"
             sequence="20"
+            parent="account_accountant.menu_accounting"
             groups="purchase_import.group_importation,purchase_import.group_importation_user"
-            web_icon="purchase_import,static/description/icon.png"
     />
-
     <menuitem
             id="menu_purchase_import"
             name="Importation"

@@ -34,22 +34,3 @@ class Wizard(models.TransientModel):
          })
     def cancel(self):
         return {'type': 'ir.actions.act_window_close'}
-
-
-class Dossier(models.Model):
-    _inherit = 'purchase.import.folder'
-
-    deblocage_id = fields.Many2one('credit.operation.deb', string='Deblocage')
-    computed_field = fields.Boolean(string='Compute', store=True, compute='compute_deblocage')
-    banque_id = fields.Many2one('credit.banque', string='Banque', related='deblocage_id.banque_id')
-    @api.model
-    def create(self, vals):
-        res = super(Dossier, self).create(vals)
-        if self.env.context.get('deblocage'):
-            res.deblocage_id = self.env['credit.operation.deb'].browse(self.env.context.get('deblocage'))
-            res.deblocage_id.folder_id = res.id
-        return res
-
-    def compute_deblocage(self):
-        for rec in self:
-            rec.computed_field = True

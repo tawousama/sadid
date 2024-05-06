@@ -11,7 +11,7 @@
     'description': """
 """,
     'version': '17.0.0.1',
-    'depends': ["purchase", 'stock','base',],
+    'depends': ["purchase", 'stock','base','credit_bancaire'],
     'data': [
     'security/purchase_import_role.xml',
     'views/import_folder_view.xml',

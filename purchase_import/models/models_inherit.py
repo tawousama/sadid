@@ -23,3 +23,11 @@ class StockPicking(models.Model):
 
     import_folder = fields.Many2one("purchase.import.folder", string='Dossier')
     is_import = fields.Boolean(string='Est importation?')
+
+
+class Deblocage(models.Model):
+    _inherit = "credit.operation.deb"
+
+    folder_id = fields.Many2one('purchase.import.folder', string='Dossier')
+    lc_id = fields.Many2one('purchase.import.folder', string='LC Ouvertes')
+    remdoc = fields.Char(string='REMDOC')

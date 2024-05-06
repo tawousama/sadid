@@ -42,3 +42,6 @@ class Gestion_echeance(models.Model):
                     q.montant_debloque = deb.montant_debloque
 
 
+    """def reminder_thread(self):
+        for rec in self:
+"""

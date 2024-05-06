@@ -49,10 +49,6 @@
                             <field name="deblocage_date"/>
                             <field name="echeance_date"/>
                         </group>
-                        <group>
-                            <field name="lc_id" invisible="type not in [6, 7]"/>
-                            <field name="remdoc" invisible="type not in [6, 7]"/>
-                        </group>
                     </group>
                     <notebook>
                         <page string="Echeances partiels" invisible="type not in [9,10,11,12]">

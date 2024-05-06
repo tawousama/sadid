@@ -9,8 +9,8 @@
             <data>
                 <xpath expr="//field[@name='date_order']" position="after">
                     <field name="is_import" readonly="1"/>
-                    <field name="import_folder"  attrs="{'invisible': [ ('is_import', '!=', True)]}"/>
-                    <field name="conditions" attrs="{'invisible': [ ('is_import', '!=', True)]}"/>
+                    <field name="import_folder" invisible="is_import != True"/>
+                    <field name="conditions" invisible="is_import != True"/>
                 </xpath>
 
 
@@ -32,5 +32,23 @@
             </data>
         </field>
     </record>
+
+
+    <record id="view_operation_deb_1_form_inherit" model="ir.ui.view">
+        <field name="name">credit.operation.deb.view.inherit</field>
+        <field name="model">credit.operation.deb</field>
+        <field name="inherit_id" ref="credit_bancaire.view_operation_deb_1_form"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//sheet/group" position="inside">
+                    <group>
+                        <field name="lc_id" invisible="type not in [6, 7]"/>
+                        <field name="remdoc" invisible="type not in [6, 7]"/>
+                    </group>
+                </xpath>
+            </data>
+        </field>
+    </record>
+
 
 </odoo>
