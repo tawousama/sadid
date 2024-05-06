@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from odoo import api, fields, models, _
 
 
@@ -41,7 +43,20 @@ class Gestion_echeance(models.Model):
                     q.echeance_date = deb.echeance_date
                     q.montant_debloque = deb.montant_debloque
 
+    @api.model
+    def reminder_thread(self):
+        date = fields.Date.today() + timedelta(days= 9)
+        print(date)
+        users = self.env.ref('credit_bancaire.group_credit_user').users.mapped('partner_id').mapped('email')
+        mails = ', '.join(users)
+        echeances = self.env['credit.echeance'].search([('echeance_date', '=', date)])
+        if echeances:
+            for echeance in echeances:
+                print(self.env.user.partner_id.email)
+                email_template = self.env.ref('credit_bancaire.reminder_mail_template')
+                email_values = {
+                    'email_from': self.env.user.partner_id.email,
+                    'email_to': mails,
+                }
+                email_template.send_mail(echeance.id, force_send=True, email_values=email_values)
 
-    """def reminder_thread(self):
-        for rec in self:
-"""

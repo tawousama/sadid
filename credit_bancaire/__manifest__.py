@@ -13,6 +13,7 @@
     'data': [
         'security/credit_security.xml',
         'security/ir.model.access.csv',
+        'reports/reminder_mail.xml',
         'data/seq_type.xml',
         'data/type_data.xml',
         'data/banque_data.xml',

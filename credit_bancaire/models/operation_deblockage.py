@@ -86,9 +86,6 @@ class Operation_Deb(models.Model):
             date_ech = datetime.strptime(vals.get('echeance_date'), '%Y-%m-%d').date()
         else:
             date_ech = vals['echeance_date']
-        if date_ech <= self.echeance_date and self.state == 'confirmed':
-            raise UserError('Vous devriez saisir une date d\'echeance superieure à l\'ancienne')
-        print(date_ech)
         if date_deb > date_ech:
             raise ValidationError(_("The echeance_date is less than the deblocage_date !!! "))
         else:

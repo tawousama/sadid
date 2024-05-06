@@ -1,6 +1,16 @@
 <?xml version="1.0"?>
 <odoo>
-
+    <record id="echeance_alert_cron" model="ir.cron">
+        <field name="name">Rappel de paiement d'echeance</field>
+        <field name="model_id" ref="model_credit_echeance"/>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="code">model.reminder_thread()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="True"/>
+    </record>
     <record id="view_gestion_echeance_tree" model="ir.ui.view">
         <field name="name">credit.gestion.echeance.tree</field>
         <field name="model">credit.echeance</field>
