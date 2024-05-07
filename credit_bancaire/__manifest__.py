@@ -14,6 +14,7 @@
         'security/credit_security.xml',
         'security/ir.model.access.csv',
         'reports/reminder_mail.xml',
+        'reports/portal_client.xml',
         'data/seq_type.xml',
         'data/type_data.xml',
         'data/banque_data.xml',

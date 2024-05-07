@@ -34,3 +34,17 @@ class Wizard(models.TransientModel):
          })
     def cancel(self):
         return {'type': 'ir.actions.act_window_close'}
+
+
+class BudgetRequest(models.Model):
+    _name = 'budget.request'
+
+    name = fields.Char()
+    start_date = fields.Date(string='Date debut')
+    end_date = fields.Date(string='Date fin')
+    amount = fields.Float(string='Montant')
+    description = fields.Text(string='Commentaire')
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    state = fields.Selection([('send', 'Envoyé'),
+                              ('deleted', 'Annulé')], default='send',
+                              string='Etat')

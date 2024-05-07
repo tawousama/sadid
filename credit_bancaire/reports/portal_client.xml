@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Portal -->
+    <template id="portal_my_home_menu_bugdet" name="Portal layout : Budget demande"
+              inherit_id="portal.portal_breadcrumbs">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'budget' or budget"
+                t-attf-class="breadcrumb-item #{'active ' if not budget else ''}">
+                <a t-if="budget" t-attf-href="/my/budgets?{{ keep_query() }}">Budgets</a>
+                <t t-else="">Budgets</t>
+            </li>
+            <li t-if="budget" class="breadcrumb-item active">
+                <span t-field="budget.name"/>
+            </li>
+        </xpath>
+    </template>
+
+    <template id="portal_my_home_budget" name="Voir mes budgets" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_client_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_client_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="text">Mes Budgets</t>
+                <t t-set="title">Budgets</t>
+                <t t-set="url" t-value="'/my/budgets'"/>
+                <t t-set="placeholder_count" t-value="'budget_count'"/>
+            </t>
+        </div>
+    </template>
+
+    <template id="portal_my_budgets" name="Mes budgets">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Budgets</t>
+            </t>
+            <div class="text-end mb-3">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#createBudgetModal">Créer une nouvelle demande
+                </button>
+            </div>
+            <t t-if="not budgets">
+                <div class="alert alert-warning" role="alert">
+                    <p class="mb-0">Aucune demande de budget soumise</p>
+                </div>
+            </t>
+            <t t-else="" t-call="portal.portal_table">
+                <t t-set="budgets" t-value="budgets"/>
+                <thead>
+                    <tr>
+                        <th class="text-start">Date Debut</th>
+                        <th class="text-end">Date Fin</th>
+                        <th class="text-end">Montant</th>
+                        <th class="text-end">Commentaire</th>
+                        <th class="text-end">Etat</th>
+                    </tr>
+                </thead>
+                <t t-foreach="budgets" t-as="budgs">
+                    <tbody t-if="grouped_budget and not groupby == 'none'">
+                        <t t-set="groupby_record" t-value="budgs[0]"/>
+                        <t t-set="budgs" t-value="budgs[1]"/>
+                        <tr class="table-light">
+                            <th>
+                                <em class="fw-normal text-muted">Budget par<t
+                                        t-out="searchbar_groupby[groupby]['label']"/>:
+                                </em>
+                                <span t-field="groupby_record.name"/>
+                            </th>
+                            <th class="text-end">
+                                Total:
+                                <span class="text-muted" t-out="len(budgs)"/>
+                            </th>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <t t-foreach="budgs" t-as="budg">
+                            <tr>
+                                <td class="text-start">
+                                    <span t-field="budg.start_date"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="budg.end_date"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="budg.amount"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="budg.description"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="budg.state"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </t>
+            </t>
+        </t>
+        <div class="modal fade" id="createBudgetModal" tabindex="-1" aria-labelledby="createBudgetModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createBudgetModalLabel">Creation de nouvelle demande de budget</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form role="form" action="/create/budget" method="POST" enctype="multipart/form-data"
+                              style="padding: 10px">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <div class="mb-3">
+                                <label for="date_start">Date Debut</label>
+                                <input type="date" t-attf-class="form-control form-control-sm"
+                                       id="start_date" name="start_date" required="required"/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="date_end">Date Fin</label>
+                                <input type="date" t-attf-class="form-control form-control-sm"
+                                       id="end_date" name="end_date" required="required"/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="amount">Montant</label>
+                                <input type="number" t-attf-class="form-control form-control-sm"
+                                       id="amount" name="amount" required="required"/>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description">Commentaire</label>
+                                <input type="text" t-attf-class="form-control form-control-sm"
+                                       id="description" name="description"/>
+                            </div>
+                            <button type="submit" class="btn btn-secondary">Créer la demande</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- Add any additional buttons or actions here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="portal_my_budgets_new" name="Nouvelle demande">
+        <section>
+            <div>
+                Vous devriez saisir la periode
+            </div>
+            <br/>
+        </section>
+    </template>
+</odoo>
