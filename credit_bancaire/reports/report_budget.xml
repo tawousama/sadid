@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <template id="report_budget_request">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h1 class="display-4">Liste des demandes de budget</h1>
+                        <table class="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Département</th>
+                                    <th scope="col">Période</th>
+                                    <th scope="col">Montant demandé</th>
+                                    <th scope="col">Commentaire</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="docs" t-as="doc">
+                                    <tr>
+                                        <th scope="row">
+                                            <span t-field="doc.user_id"/>
+                                        </th>
+                                        <td>Du
+                                            <span t-field="doc.start_date"/>
+                                            au
+                                            <span t-field="doc.end_date"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.amount"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="doc.description"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+        <record id="budget_report" model="ir.actions.report">
+            <field name="name">Rapport demande de budget</field>
+            <field name="model">budget.request</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">credit_bancaire.report_budget_request</field>
+            <field name="report_file">credit_bancaire.report_budget_request</field>
+            <field name="binding_model_id" ref="model_budget_request"/>
+        </record>
+    </data>
+</odoo>

@@ -3,8 +3,8 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_type_user,access_type_user,model_credit_type,group_credit_user,1,1,1,1
 access_type_admin,access_type_admin,model_credit_type,group_credit_admin,1,1,1,1
 
-access_bank_user,access_bank_user,model_credit_banque,group_credit_user,1,1,1,1
-access_bank_admin,access_bank_admin,model_credit_banque,group_credit_admin,1,1,1,1
+access_bank_user,access_bank_user,model_credit_banque,,1,1,1,1
+access_bank_admin,access_bank_admin,model_credit_banque,,1,1,1,1
 
 access_bank_agence_user,access_bank_agence_user,model_credit_banque_agence,group_credit_user,1,1,1,1
 access_bank_agence_admin,access_bank_agence_admin,model_credit_banque_agence,group_credit_admin,1,1,1,1

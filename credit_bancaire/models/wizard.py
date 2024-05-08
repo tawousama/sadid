@@ -44,7 +44,7 @@ class BudgetRequest(models.Model):
     end_date = fields.Date(string='Date fin')
     amount = fields.Float(string='Montant')
     description = fields.Text(string='Commentaire')
-    user_id = fields.Many2one('res.users', default=lambda self: self.env.user)
+    user_id = fields.Many2one('res.users', default=lambda self: self.env.user, string='Département')
     state = fields.Selection([('send', 'Envoyé'),
                               ('deleted', 'Annulé')], default='send',
                               string='Etat')
