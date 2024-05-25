@@ -53,7 +53,7 @@ class ImportFolder(models.Model):
        'res.currency', string="Devise", company_dependent=True,
         help="This currency will be used, instead of the default one, for purchases from the current partner")
     montant_dz = fields.Monetary(string='Montant DZD.')
-    incoterm = fields.Char(string="Incoterm")
+    incoterm = fields.Many2one('account.incoterms',string="Incoterm")
     methode_expedition = fields.Selection([('by_sea','voie maritime'),('by_air','voie aérienne')],string="Méthode d`expédition", default="by_sea")
     provision_ouverture = fields.Char(string="Provision d`ouverture")
     date_limit_embarquement = fields.Date(string="Date limite d'embarquement")
@@ -68,7 +68,7 @@ class ImportFolder(models.Model):
 
     #SPOT PREFIN
     deblocage_spot_prefin = fields.Boolean(string="Déblocage SPOT Prefin")
-    montant_debloque_spot_prefin = fields.Float(string="montant débloqué", related='deblocage_id.montant_debloque')
+    montant_debloque_spot_prefin = fields.Float(string="montant débloqué",)
     date_deblocage_spot_prefin = fields.Date(string="Date de déblocage SPOT Prefin")
     date_echeance_spot_prefin = fields.Date(string="Date d`échéance SPOT Prefin")
     reference_deblocage_spot_prefin = fields.Char(string="Référence déblocage SPOT Prefin")
@@ -266,6 +266,7 @@ class ImportFolder(models.Model):
         if self.env.context.get('deblocage'):
             res.deblocage_id = self.env['credit.operation.deb'].browse(self.env.context.get('deblocage'))
             res.deblocage_id.folder_id = res.id
+            res.montant_debloque_spot_prefin = res.deblocage_id.montant_debloque
         return res
 
     # def action_done(self):

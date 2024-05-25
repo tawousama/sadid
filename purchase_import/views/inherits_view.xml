@@ -42,13 +42,26 @@
             <data>
                 <xpath expr="//sheet/group" position="inside">
                     <group>
+                        <field name="folder_id" invisible="1"/>
                         <field name="lc_id" invisible="type not in [6, 7]"/>
                         <field name="remdoc" invisible="type not in [6, 7]"/>
                     </group>
                 </xpath>
+                <xpath expr="//header" position="inside">
+                    <button id="button_open_file" name="action_create_file" string="Créer un LC"
+                            class="btn-primary" invisible="type != 4 or folder_id"
+                            type="object"/>
+                </xpath>
+                <xpath expr="//sheet/div[@name='button_box']" position="inside">
+                    <button name="open_folder" type="object" class="oe_stat_button"
+                            invisible="type != 4 or not folder_id"
+                            icon="fa-file-text-o">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">LC ouverte</span>
+                        </div>
+                    </button>
+                </xpath>
             </data>
         </field>
     </record>
-
-
 </odoo>

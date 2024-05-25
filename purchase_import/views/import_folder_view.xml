@@ -101,7 +101,7 @@
                                     <field name="date_reception_document"/>
                                 </group>
                                 <group>
-                                    <field name="deblocage_id" readonly="1"/>
+                                    <field name="deblocage_id" />
                                     <field name="montant_debloque_spot_prefin"/>
                                     <field name="montant_droits_douane"/>
                                     <field name="financement_droits_douane" class="oe_inline"/>
