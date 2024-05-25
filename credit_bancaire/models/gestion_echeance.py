@@ -5,7 +5,7 @@ from odoo import api, fields, models, _
 
 class Gestion_echeance(models.Model):
     _name = 'credit.echeance'
-    _inherit = ["mail.thread",'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Échéances a venir"
 
     name = fields.Char(string='Opération', required=True, copy=False, readonly=True,
@@ -24,29 +24,29 @@ class Gestion_echeance(models.Model):
     fournisseur = fields.Many2one('res.partner', string='Client / Fournisseur', index=True, tracking=True)
     facture = fields.Many2one('account.move', string='N. facture', tracking=True)
     echeance = fields.Many2one('credit.operation.deb.echeance', string='echeance partiel',index=True, tracking=True,store=True, ondelete="cascade")
+    state = fields.Selection([('not_paid', 'Non payé'),
+                              ('paid', 'Payé')], default='not_paid', string='Etat')
+    is_retard = fields.Boolean(string='En retard')
 
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
             vals['name'] = self.env['ir.sequence'].next_by_code('credit.operation') or _('New')
-        id= self.id
-        print('id de lecheance'+str(id))
+        id = self.id
         result = super(Gestion_echeance, self).create(vals)
         return result
-
     def action_ech_MAJ(self):
         for rec in self:
             debs = rec.env['credit.operation.deb'].search([])
             for deb in debs:
                 q = self.env['credit.echeance'].search([('name', '=', deb.name)])
-                if q :
+                if q:
                     q.echeance_date = deb.echeance_date
                     q.montant_debloque = deb.montant_debloque
 
     @api.model
     def reminder_thread(self):
-        date = fields.Date.today() + timedelta(days= 9)
-        print(date)
+        date = fields.Date.today() + timedelta(days=9)
         users = self.env.ref('credit_bancaire.group_credit_user').users.mapped('partner_id').mapped('email')
         mails = ', '.join(users)
         echeances = self.env['credit.echeance'].search([('echeance_date', '=', date)])
@@ -59,4 +59,9 @@ class Gestion_echeance(models.Model):
                     'email_to': mails,
                 }
                 email_template.send_mail(echeance.id, force_send=True, email_values=email_values)
+        date_late = fields.Date.today()
+        echeances = self.env['credit.echeance'].search([('echeance_date', '<=', date_late)])
+        if echeances:
+            for echeance in echeances:
+                echeance.is_retard = True
 

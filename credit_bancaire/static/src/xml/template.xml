@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template">
+    <t t-name="EmployeeDashboard" owl="1">
+        <div class="o_content"
+             style="margin-top: 20px;margin-bottom: 20px; overflow-y: scroll; overflow-x:hidden; height:100%">
+            <div class="title" style="flex-shrink: 0;">
+                <div class="form-row align-items-center">
+                    <h2 class="text-center">Chèque en circulation</h2>
+                </div>
+            </div>
+
+            <div class="container o_content">
+                <div class="shadow" style="margin: 30px">
+                    <div class="body" style="margin: 30px; padding:30px">
+                        <div class="title" style="flex-shrink: 0;">
+                            <div class="form-row align-items-center">
+                                <h4 class="text-center">Chèque en circulation</h4>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4" style="margin: 15px">
+                            <label for="start_date">Date de début</label>
+                            <input type="date" id="start_date" t-model="state.startDate" class="form-control"/>
+                        </div>
+                        <div class="form-group col-md-4" style="margin: 15px;">
+                            <label for="end_date">Date de fin</label>
+                            <input type="date" id="end_date" t-model="state.endDate" class="form-control"/>
+                        </div>
+                        <button type="button" id="fetch-data-btn" style="margin: 15px;" class="btn btn-primary">
+                            Rechercher
+                        </button>
+                        <div style="flex-grow: 1; overflow-y: auto;">
+                            <table class="table table-attendance" t-ref="employee-data" style="cursor: pointer;">
+                                <thead>
+                                    <tr>
+                                        <t t-foreach="employeeDashboard.header" t-as="header" t-key="header.id">
+                                            <th t-out="header"/>
+                                        </t>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <t t-foreach="employeeDashboard.pay_customer" t-as="pay_customer"
+                                           t-key="pay_customer.id">
+                                            <t t-foreach="pay_customer" t-as="p" t-key="p">
+                                                <th t-out="p"/>
+                                            </t>
+                                        </t>
+                                    </tr>
+                                    <tr t-foreach="employeeDashboard.data" t-as="data" t-key="data">
+                                        <t t-foreach="data" t-as="d" t-key="d">
+                                            <td t-out="d"/>
+                                        </t>
+                                    </tr>
+                                    <tr>
+                                        <t t-foreach="employeeDashboard.pay_supplier" t-as="pay_supplier"
+                                           t-key="pay_supplier.id">
+                                            <t t-foreach="pay_supplier" t-as="s" t-key="s">
+                                                <th t-out="s"/>
+                                            </t>
+                                        </t>
+                                    </tr>
+                                    <tr t-foreach="employeeDashboard.data_supplier" t-as="data_supplier"
+                                        t-key="data_supplier">
+                                        <t t-foreach="data_supplier" t-as="ds" t-key="ds">
+                                            <td t-out="ds"/>
+                                        </t>
+                                    </tr>
+                                    <tr>
+                                        <t t-foreach="employeeDashboard.total" t-as="total" t-key="total.id">
+                                            <th t-out="total"/>
+                                        </t>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

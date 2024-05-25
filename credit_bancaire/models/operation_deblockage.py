@@ -1,7 +1,7 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class Operation_Deb(models.Model):
@@ -19,10 +19,11 @@ class Operation_Deb(models.Model):
                               ('extended', 'Prolongé')], default='draft')
     montant_debloque = fields.Float(string="Montant débloqué", store=True, required=True)
     montant_add = fields.Float(string="Interet", store=True, compute='compute_interet')
-    montant_total = fields.Float(string="Montant Total", store=True, compute='_compute_total')
+    montant_total = fields.Float(string="Montant Total",)
+    montant_total_comp = fields.Float(string="Montant Total", store=True, compute='_compute_total')
     montant_rembourser = fields.Float(string="Montant a rembourser", store=True, compute='_compute_reste')
     deblocage_date = fields.Date("Date de déblocage", tracking=True, required=True)
-    echeance_date = fields.Date("Date d`échéance", tracking=True, required=True)
+    echeance_date = fields.Date("Date d`échéance", tracking=True)
     echeance_fin_date = fields.Date("Date d`échéance", tracking=True)
     note = fields.Text(string='Description', tracking=True)
     reference_credit = fields.Char(string='Référence du dossier banque', tracking=True)
@@ -39,9 +40,9 @@ class Operation_Deb(models.Model):
                                          domain="[('has_autorisation', '=', True)]")
     type = fields.Many2one(
         'credit.type', string='Ligne de crédit', index=True, tracking=True, required=True,
-                                         domain="[('has_autorisation', '=', True)]")
+                                                    related="ligne_autorisation.type")
     ligne_autorisation = fields.Many2one('credit.autorisation', string='Autorisation',
-                                         domain="[('banque.id', '=', banque_id),('type.id', '=', type)]", required=True,
+                                         domain="[('banque.id', '=', banque_id)]", required=True,
                                          ondelete='cascade')
 
     date_create = fields.Datetime(string='Date de création', required=True, index=True, copy=False,
@@ -50,13 +51,12 @@ class Operation_Deb(models.Model):
                                   readonly=True)
     disponible_id = fields.Many2one('credit.disponible', )
     echeances = fields.One2many('credit.operation.deb.echeance', 'ref_opr_deb')
-    #modif = fields.Float(string='modification', compute='_compute_modif')
-    taux = fields.Float(string='Taux', related='ligne_autorisation.autorisation_global.taux')
-    file_ticket = fields.Binary(string='Ticket d`Autorisation')
+    taux = fields.Float(string='Taux', default=0)
+    amount_invoice = fields.Float(string='Montant de la facture', default=0)
+    file_ticket = fields.Binary(string='Document banque')
     file_name = fields.Char(string='File name')
     file_accord = fields.Binary(string='Accord de la banque')
     file_name1 = fields.Char(string='File name')
-
     remboursement = fields.Selection([('m', 'Mensuel'),
                                       ('t', 'Trimestriel'),
                                       ('s', 'Semestriel'),
@@ -64,13 +64,39 @@ class Operation_Deb(models.Model):
     date_validite = fields.Date(string='Date de validité', related='ligne_autorisation.validite')
     taux_apply = fields.Float(string='Taux Appliqué')
     plm = fields.Float(string='PLM')
+    type_id = fields.Integer(string='type', compute='compute_type', store=True)
+    financement_hauteur = fields.Float(string='Financement à hauteur de %',
+                                       related='ligne_autorisation.financement_hauteur')
+    delai_mobilisation = fields.Integer(string='Délai de mobilisation',
+                                        related='ligne_autorisation.delai_mobilisation')
+
+    @api.depends('type', 'amount_invoice',  'deblocage_date')
+    def compute_type(self):
+        for rec in self:
+            if rec.type:
+                rec.type_id = rec.type.id
+            else:
+                rec.type_id = 0
+            if rec.deblocage_date and rec.delai_mobilisation:
+                date_echeance = rec.deblocage_date + timedelta(days=rec.delai_mobilisation)
+                rec.echeance_date = date_echeance
+            if rec.financement_hauteur and rec.amount_invoice:
+                rec.montant_debloque = rec.financement_hauteur * rec.amount_invoice
 
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
             vals['name'] = self.env['ir.sequence'].next_by_code('credit.operation.deb') or _('New')
-        if self.deblocage_date > self.echeance_date:
-            raise ValidationError(_("The echeance_date is less than the deblocage_date !!! "))
+        if vals['deblocage_date'] and vals['echeance_date']:
+            if self.echeance_date:
+                if self.deblocage_date > self.echeance_date:
+                    raise ValidationError(_("The echeance_date is less than the deblocage_date !!! "))
+                else:
+                    result = super(Operation_Deb, self).create(vals)
+                    return result
+            else:
+                result = super(Operation_Deb, self).create(vals)
+                return result
         else:
             result = super(Operation_Deb, self).create(vals)
             return result
@@ -86,40 +112,41 @@ class Operation_Deb(models.Model):
             date_ech = datetime.strptime(vals.get('echeance_date'), '%Y-%m-%d').date()
         else:
             date_ech = vals['echeance_date']
-        if date_deb > date_ech:
-            raise ValidationError(_("The echeance_date is less than the deblocage_date !!! "))
-        else:
-            for rec in self:
-                if vals.get('montant_debloque') == None:
-                    mnt_debloc = rec.montant_debloque
-                else:
-                    mnt_debloc = vals.get('montant_debloque')
+        if date_deb and date_ech:
+            if date_deb > date_ech:
+                raise ValidationError(_("The echeance_date is less than the deblocage_date !!! "))
+            else:
+                for rec in self:
+                    if vals.get('montant_debloque') == None:
+                        mnt_debloc = rec.montant_debloque
+                    else:
+                        mnt_debloc = vals.get('montant_debloque')
 
-                if vals.get('montant_add') == None:
-                    mnt_interet = rec.montant_add
-                else:
-                    mnt_interet = vals.get('montant_add')
-                if mnt_interet != rec.montant_add or mnt_debloc != rec.montant_debloque:
-                    disponible = rec.env['credit.disponible'].search(
-                        [('ligne_autorisation', '=', rec.ligne_autorisation.id)])
-                    for debl in disponible.debloque:
-                        if debl.id == rec.id:
-                            montant = disponible.montant_disponible + debl.montant_rembourser - (
-                                        mnt_interet + mnt_debloc)
-                            disponible.montant_disponible = montant
-                            print('modification tmchi' + str(disponible.montant_disponible))
-                    for e in rec.echeances:
-                        tmp = e.env['credit.echeance'].search([('echeance', '=', e.id)])
-                        tmp.unlink()
-                        p = e.env['credit.operation.p'].search([('echeance', '=', e.id)])
-                        p.unlink()
+                    if vals.get('montant_add') == None:
+                        mnt_interet = rec.montant_add
+                    else:
+                        mnt_interet = vals.get('montant_add')
+                    if mnt_interet != rec.montant_add or mnt_debloc != rec.montant_debloque:
+                        disponible = rec.env['credit.disponible'].search(
+                            [('ligne_autorisation', '=', rec.ligne_autorisation.id)])
+                        for debl in disponible.debloque:
+                            if debl.id == rec.id:
+                                montant = disponible.montant_disponible + debl.montant_rembourser - (
+                                            mnt_interet + mnt_debloc)
+                                disponible.montant_disponible = montant
+                                print('modification tmchi' + str(disponible.montant_disponible))
+                        for e in rec.echeances:
+                            tmp = e.env['credit.echeance'].search([('echeance', '=', e.id)])
+                            tmp.unlink()
+                            p = e.env['credit.operation.p'].search([('echeance', '=', e.id)])
+                            p.unlink()
 
-                print(len(rec.echeances))
-                if (len(rec.echeances) == 0) and (rec.type in [9,10,11,12]):
-                    echeance = self.env['credit.echeance'].search([('ref_opr_deb', '=', rec.id)])
-                    echeance.unlink()
-                    pay = self.env['credit.operation.p'].search([('ref_opr_deb', '=', rec.id)])
-                    pay.unlink()
+                    print(len(rec.echeances))
+                    if (len(rec.echeances) == 0) and (rec.type in [9,10,11,12]):
+                        echeance = self.env['credit.echeance'].search([('ref_opr_deb', '=', rec.id)])
+                        echeance.unlink()
+                        pay = self.env['credit.operation.p'].search([('ref_opr_deb', '=', rec.id)])
+                        pay.unlink()
 
         result = super(Operation_Deb, self).write(vals)
         return result
@@ -130,9 +157,6 @@ class Operation_Deb(models.Model):
             recupere = disponible.montant_disponible + rec.montant_rembourser
             disponible.montant_disponible = recupere
         return super(Operation_Deb, self).unlink()
-
-    '''@api.depends('echeances')
-    def _compute_modif(self):'''
 
 
     def action_Confirme(self):
@@ -262,37 +286,8 @@ class Operation_Deb(models.Model):
                 rec.echeance_date_old = rec.ligne_autorisation.validite_old'''
                 self.state = 'confirm'
                 print('origin', rec.date_origin)
-    def action_create_file(self):
-        for rec in self:
-            if rec.type_ligne == '1':
-                if rec.type == self.env.ref('credit_bancaire.04'):
-                    print('LC A VUE')
-                    view_id = self.env.ref('purchase_import.view_purchase_import_folder_form').id
-                    return {
-                        'type': 'ir.actions.act_window',
-                        'name': _('Créer le dossier'),
-                        'res_model': 'purchase.import.folder',
-                        'view_mode': 'form',
-                        'views': [[view_id, 'form']],
-                        'context': {'deblocage': rec.id}
-                    }
 
-    def open_folder(self):
-        for rec in self:
-            if rec.type_ligne == '1':
-                if rec.type == self.env.ref('credit_bancaire.04'):
-                    print('LC A VUE')
-                    view_id = self.env.ref('purchase_import.view_purchase_import_folder_form').id
-                    dossier = self.env['purchase.import.folder'].search([('deblocage_id', '=', rec.id)])
-                    return {
-                        'type': 'ir.actions.act_window',
-                        'res_model': 'purchase.import.folder',
-                        'res_id': dossier.id,
-                        'view_mode': 'form',
-                        'views': [[view_id, 'form']],
-                    }
-
-    @api.depends('deblocage_date', 'echeance_date', 'montant_debloque')
+    @api.depends('deblocage_date', 'echeance_date', 'montant_debloque', 'taux')
     def compute_interet(self):
         for rec in self:
             if rec.deblocage_date and rec.echeance_date:
@@ -303,6 +298,7 @@ class Operation_Deb(models.Model):
                 rec.montant_add = (rec.montant_debloque * rec.taux * difference) / 360
             else:
                 rec.montant_add = 0
+            rec._compute_total()
 
     @api.depends('banque', 'type')
     def _compute_autorisation(self):
@@ -314,7 +310,13 @@ class Operation_Deb(models.Model):
     @api.depends('montant_debloque', 'montant_add')
     def _compute_total(self):
         for rec in self:
-            rec.montant_total = rec.montant_debloque + rec.montant_add
+            print('hi')
+            if rec.type_ligne != '2':
+                rec.montant_total = rec.montant_debloque + rec.montant_add
+                rec.montant_total_comp = rec.montant_debloque + rec.montant_add
+            else:
+                rec.montant_total = rec.montant_debloque + rec.montant_add
+                rec.montant_total_comp = rec.montant_debloque + rec.montant_add
 
     @api.depends('montant_total')
     def _compute_reste(self):

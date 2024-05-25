@@ -1,12 +1,541 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!--<record id="montage_plan_charge_report" model="ir.actions.report">
+    <record id="montage_plan_charge_report" model="ir.actions.report">
         <field name="name">Plan des charges</field>
-        <field name="model">montage.plan.charges</field>
+        <field name="model">montage.demande.credit</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">credit_bancaire.plan_charge_report</field>
         <field name="report_file">credit_bancaire.plan_charge_report</field>
-        <field name="binding_model_id" ref="model_montage_plan_charges"/>
+        <field name="binding_model_id" ref="model_montage_demande_credit"/>
         <field name="binding_type">report</field>
-    </record>-->
+    </record>
+    <template id="plan_charge_report">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="text-center">
+                        <h3>
+                            <strong>
+                                <span>Plan des charges pour le dossier
+                                </span>
+                                <span t-field="doc.banque"/>
+                            </strong>
+                        </h3>
+                    </div>
+                    <t t-set="plan_ids"
+                       t-value="doc.env['montage.plan.charges'].search([('montage_demande_credit','=', doc.id)])"/>
+                    <br/>
+                    <t t-if="plan_ids">
+                        <div class="row">
+                            <div>
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Type de marché</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Maitre de l'ouvrage</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Domiciliation Bancaire</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Montant H.T</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Objet du marché</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Date d'ODS</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Délai de réalisation (mois)</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>CBE</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Montant CBE</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Caution CRA</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Montant CRA</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Taux d'avancement</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Paiements encaissés H.T</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Paiements attendus H.T</strong>
+                                                </span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="plan_ids" t-as="plan">
+                                            <tr>
+                                                <td class="text-center">
+                                                    <span t-field="plan.type_marche"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.maitre_ouvrage"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.domiciliation_bancaire"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.montant_ht"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.objet_marche"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.date_ods"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.delai_realisation"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.cbe"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.montant_cbe"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.caution_cra"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.montant_cra"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.taux_avancement"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.paiement_encaisse_ht"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.paiement_attendu_ht"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+
+                </t>
+            </t>
+        </t>
+    </template>
+    <record id="montage_plan_appro_report" model="ir.actions.report">
+        <field name="name">Plan d'approvisionnement local</field>
+        <field name="model">montage.demande.credit</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">credit_bancaire.plan_appro_report</field>
+        <field name="report_file">credit_bancaire.plan_appro_report</field>
+        <field name="binding_model_id" ref="model_montage_demande_credit"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="plan_appro_report">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="text-center">
+                        <h3>
+                            <strong>
+                                <span>Plan d'approvisionnement local
+                                </span>
+                                <span t-field="doc.banque"/>
+                            </strong>
+                        </h3>
+                    </div>
+                    <t t-set="plan_ids"
+                       t-value="doc.env['montage.plan.appro.local'].search([('montage_demande_credit','=', doc.id)])"/>
+                    <br/>
+                    <t t-if="plan_ids">
+                        <div class="row">
+                            <div>
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Nature de marchandise</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Nom du fournisseur</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Mode de reglement</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Type de reglement (avue a terme)</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Montant prévisionnel H.T</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Date prévisionnelle du lancement de commande</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Délai moyen de livraison (en jours)</strong>
+                                                </span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="plan_ids" t-as="plan">
+                                            <tr>
+                                                <td class="text-center">
+                                                    <span t-field="plan.nature_marchandise"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.fournisseur"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.mode_reglement"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.type_reglement"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.montant_previsionnel"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.date_previsionnel"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.delai_moyen_livraision"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="montage_plan_importation_report" model="ir.actions.report">
+        <field name="name">Plan d'importation</field>
+        <field name="model">montage.demande.credit</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">credit_bancaire.plan_importation_report</field>
+        <field name="report_file">credit_bancaire.plan_importation_report</field>
+        <field name="binding_model_id" ref="model_montage_demande_credit"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="plan_importation_report">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="text-center">
+                        <h3>
+                            <strong>
+                                <span>Plan d'importation
+                                </span>
+                                <span t-field="doc.banque"/>
+                            </strong>
+                        </h3>
+                    </div>
+                    <t t-set="plan_ids"
+                       t-value="doc.env['montage.plan.importation'].search([('montage_demande_credit','=', doc.id)])"/>
+                    <br/>
+                    <t t-if="plan_ids">
+                        <div class="row">
+                            <div>
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Marchandises à importer</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Fournisseur</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Pays de fournisseur</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Banque du fournisseur</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Mode de paiement</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Montant en devise</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Montant en DZD</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Tarif douanier</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Montant global DZD</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Lead Time</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Date prévisionnelle du lancement de commande</strong>
+                                                </span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="plan_ids" t-as="plan">
+                                            <tr>
+                                                <td class="text-center">
+                                                    <span t-field="plan.marchandise_importer"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.fournisseur"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.pays_fournisseur"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.banque_fournisseur"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.mode_paiement"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.montant_devise"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.montant_DZD"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.tarif_douanier"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.montant_global_DZD"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.lead_time"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.date_lancement_commande"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="montage_plan_importation_report" model="ir.actions.report">
+        <field name="name">Plan d'importation</field>
+        <field name="model">montage.demande.credit</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">credit_bancaire.plan_importation_report</field>
+        <field name="report_file">credit_bancaire.plan_importation_report</field>
+        <field name="binding_model_id" ref="model_montage_demande_credit"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="plan_importation_report">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="text-center">
+                        <h3>
+                            <strong>
+                                <span>Plan d'importation
+                                </span>
+                                <span t-field="doc.banque"/>
+                            </strong>
+                        </h3>
+                    </div>
+                    <t t-set="plan_ids"
+                       t-value="doc.env['montage.plan.importation'].search([('montage_demande_credit','=', doc.id)])"/>
+                    <br/>
+                    <t t-if="plan_ids">
+                        <div class="row">
+                            <div>
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Marchandises à importer</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Fournisseur</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Pays de fournisseur</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Banque du fournisseur</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Mode de paiement</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Montant en devise</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Montant en DZD</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Tarif douanier</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Montant global DZD</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Lead Time</strong>
+                                                </span>
+                                            </th>
+                                            <th class="text-center">
+                                                <span>
+                                                    <strong>Date prévisionnelle du lancement de commande</strong>
+                                                </span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="plan_ids" t-as="plan">
+                                            <tr>
+                                                <td class="text-center">
+                                                    <span t-field="plan.marchandise_importer"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.fournisseur"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.pays_fournisseur"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.banque_fournisseur"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.mode_paiement"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.montant_devise"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.montant_DZD"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.tarif_douanier"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.montant_global_DZD"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.lead_time"/>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span t-field="plan.date_lancement_commande"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+
+                </t>
+            </t>
+        </t>
+    </template>
 </odoo>

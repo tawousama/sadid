@@ -48,5 +48,97 @@
             <field name="report_file">credit_bancaire.report_budget_request</field>
             <field name="binding_model_id" ref="model_budget_request"/>
         </record>
+        <template id="report_deblocage_recap">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h1 class="display-4">Rapport d'Endettement</h1>
+                        <table class="table">
+                            <thead class="thead-light">
+                                <t t-set="list_vals" t-value="docs._prepare_modif()"/>
+                                <tr>
+                                    <t t-foreach="list_vals" t-as="line">
+                                        <th scope="col">
+                                            <t t-esc="line"/>
+                                        </th>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="solde" t-value="docs._get_solde()"/>
+                                <tr>
+                                    <td scope="row">
+                                        Solde du compte
+                                    </td>
+                                    <t t-foreach="solde[1:]" t-as="line">
+                                        <td>
+                                            <t t-esc="'{0:,.0f}'.format(line)"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                                <t t-set="body" t-value="docs._prepare_body()"/>
+                                <t t-foreach="body" t-as="line">
+                                    <tr>
+                                        <td scope="row">
+                                            <t t-esc="line[0]"/>
+                                        </td>
+                                        <t t-foreach="line[1:]" t-as="cell">
+                                            <td>
+                                                <t t-esc="'{0:,.0f}'.format(cell)"/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                                <t t-set="tres" t-value="docs._get_tresorerie()"/>
+                                <tr>
+                                    <td scope="row">
+                                        Total financement par Trésorerie
+                                    </td>
+                                    <t t-foreach="tres[1:]" t-as="line">
+                                        <td>
+                                            <t t-esc="'{0:,.0f}'.format(line)"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                                <t t-set="signature" t-value="docs._get_signature()"/>
+                                <tr>
+                                    <td scope="row">
+                                        Total financement par Signature
+                                    </td>
+                                    <t t-foreach="signature[1:]" t-as="line">
+                                        <td>
+                                            <t t-esc="'{0:,.0f}'.format(line)"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                                <t t-set="endett" t-value="docs._get_endettement()"/>
+                                <tr>
+                                    <td scope="row">
+                                        % Endettement global
+                                    </td>
+                                    <t t-foreach="endett[1:]" t-as="line">
+                                        <td>
+                                            <t t-esc="'{0:,.0f}'.format(line * 100)"/>%
+                                        </td>
+                                    </t>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div>
+
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <record id="endettement_report" model="ir.actions.report">
+            <field name="name">Rapport d'Endettemant</field>
+            <field name="model">credit.disponible</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">credit_bancaire.report_deblocage_recap</field>
+            <field name="report_file">credit_bancaire.report_deblocage_recap</field>
+            <field name="binding_model_id" ref="model_credit_disponible"/>
+        </record>
     </data>
 </odoo>

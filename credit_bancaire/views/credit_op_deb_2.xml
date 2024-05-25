@@ -27,6 +27,8 @@
                             <field name="reference_credit"/>
                             <field name="ref_interne"/>
                             <field name="client" string="Fournisseur"/>
+                            <field name="type_ligne" invisible="1"/>
+                            <field name="taux" widget="percentage"/>
                         </group>
                         <group>
                             <field name="montant_debloque"/>
@@ -35,7 +37,8 @@
                             <field name="echeance_date" string="Date de 1er échéance"/>
                             <field name="echeance_fin_date" string="Date du dernier échéance"/>
                             <field name="taux_apply" string="Taux Appliqué"/>
-                            <field name="montant_total" string="Montant de l`échéance"/>
+                            <field name="montant_total" string="Montant de l`échéance" readonly="type_ligne in ['1', '3']"/>
+                            <field name="montant_total_comp" invisible="1"/>
                         </group>
                     </group>
                     <notebook invisible="type not in [9,10,11,12]">

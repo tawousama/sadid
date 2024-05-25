@@ -35,17 +35,20 @@ class Gestion_payement(models.Model):
     facture = fields.Many2one('account.move', string='N. facture', tracking=True,readonly=True, compute='_compute_facture')
     montant_a_rembourser = fields.Float(string="Montant à rembourser", store=True,readonly=True, compute='_compute_montant_rembourser')
     paiements = fields.One2many('credit.operation.paiementdetail','paiement_global')
-    echeance =fields.Many2one('credit.operation.deb.echeance',index=True, tracking=True,store=True, ondelete="cascade")
+    echeance = fields.Many2one('credit.operation.deb.echeance',index=True, tracking=True,store=True, ondelete="cascade")
     montant_paye = fields.Float(string="Montant paye", store=True,readonly=True, compute='_compute_montant_paye')
 
     @api.model
-    def create(self,vals):
+    def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
             vals['name'] = self.env['ir.sequence'].next_by_code('credit.operation.p') or _('New')
         result = super(Gestion_payement, self).create(vals)
         return result
+
     def validate_payment(self):
         for rec in self:
+            if not rec.date_echeance:
+                rec.date_echeance = fields.Date.today()
             if rec.state == 'draft':
                 rec.state = 'confirmed'
             view_id = self.env.ref('credit_bancaire.deblocage_wizard_form').id
@@ -56,14 +59,16 @@ class Gestion_payement(models.Model):
                 'res_model': 'wizard.credit.deblocage',
                 'view_id': view_id,
                 'target': 'new',
-                'context': {'payment': rec.id},
+                'context': {'payment': rec.id,
+                            'deb_id': rec.ref_opr_deb.id},
             }
+
     def unlink(self):
         for rec in self:
-            if len(rec.paiements)!= 0:
+            if len(rec.paiements) != 0:
                 raise ValidationError(_("Vous devriez d`abord supprimer les lignes de paiements "))
             else:
-                return super(Gestion_payement,self).unlink()
+                return super(Gestion_payement, self).unlink()
 
 
     @api.depends('paiements')
@@ -139,7 +144,10 @@ class Gestion_payement(models.Model):
     @api.depends('ref_opr_deb')
     def _compute_date_echeance(self):
         for rec in self:
-            rec.date_echeance = rec.ref_opr_deb.echeance_date
+            if rec.ref_opr_deb.echeance_date:
+                rec.date_echeance = rec.ref_opr_deb.echeance_date
+            else:
+                rec.date_echeance = rec.ref_opr_deb.deblocage_date
 
     @api.depends('ref_opr_deb')
     def _compute_montant_echeance(self):

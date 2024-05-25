@@ -19,7 +19,11 @@ class BudgetPortal(portal.CustomerPortal):
         print(values)
         if 'budget_count' in counters:
             domain = self._get_portal_default_domain()
-            values['budget_count'] = request.env['budget.request'].search_count(domain)
+            exist = request.env['budget.request'].search_count(domain)
+            if exist:
+                values['budget_count'] = exist
+            else:
+                values['budget_count'] = 1
         print(values)
         return values
 

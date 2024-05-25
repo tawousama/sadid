@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <!-- Définition de l'action client -->
+        <record id="action_client_example" model="ir.actions.client">
+            <field name="name">Chèques en circulation</field>
+            <field name="tag">tag_test</field>
+        </record>
+
+        <!-- Menu pour déclencher l'action client -->
+        <menuitem id="menu_client_action_example"
+                  name="Chèques en circulation"
+                  action="credit_bancaire.action_client_example"
+                  parent="menu_credit"/>
+    </data>
+</odoo>

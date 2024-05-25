@@ -47,12 +47,19 @@
         #'views/new_model.xml',
         #'reports/bank_financing_request.xml',
         'reports/report_plan_charge.xml',
+        'views/credit_report.xml',
         #'wizard/create_peace_bank_views_wizard.xml'
 
 
     ],
     'demo': [],
     'qweb': [],
+    'assets': {
+            'web.assets_backend': [
+                'credit_bancaire/static/src/js/report_js.js',
+                'credit_bancaire/static/src/xml/template.xml',
+            ],
+        },
     'installable': True,
     'application': True,
     'auto_install': False,

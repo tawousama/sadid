@@ -14,20 +14,33 @@
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" string="Plan des charges" name="open_plan_charge"
                                 icon="fa-solid fa-folder-open"/>
-                        <button class="oe_stat_button" type="object" string="Plan d'approvisionnement local" name="open_plan_local"
+                        <button class="oe_stat_button" type="object" string="Plan d'approvisionnement local"
+                                name="open_plan_local"
                                 icon="fa-solid fa-folder-open"/>
                         <button class="oe_stat_button" type="object" string="Plan d'importation" name="open_plan_import"
                                 icon="fa-solid fa-folder-open"/>
-                        <button class="oe_stat_button" type="object" string="Saisie des données" name="open_saisi_donnee"
+                        <!--<button class="oe_stat_button" type="object" string="Saisie des données"
+                                name="open_saisi_donnee"
                                 icon="fa-solid fa-folder-open"/>
-                        <button class="oe_stat_button" type="object" string="Variation des postes comptables" name="open_variation"
-                                icon="fa-solid fa-folder-open"/>
+                        <button class="oe_stat_button" type="object" string="Variation des postes comptables"
+                                name="open_variation"
+                                icon="fa-solid fa-folder-open"/>-->
                     </div>
                     <group>
-                        <field name="name"/>
+                        <field name="banque"/>
                         <field name="date"/>
+                        <field name="agence"/>
+                        <field name="partner_id"/>
+                        <field name="email"/>
                     </group>
+                    <button class="btn-primary" type="object" string="Envoyer le dossier"
+                            name="send_folder"/>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
             </form>
         </field>
     </record>
@@ -46,4 +59,90 @@
               parent="montage_credit"
               action="montage_demande_credit_action"
               sequence="14"/>
+
+    <record id="montage_mail_send_form" model="ir.ui.view">
+        <field name="name">montage.mail.send.form</field>
+        <field name="model">montage.mail.send</field>
+        <field name="arch" type="xml">
+            <form>
+                <!-- Invisible fields -->
+                <field name="company_id" invisible="1"/>
+                <field name="folder_id" invisible="1"/>
+
+                <!-- Mail -->
+                <div>
+                    <group>
+                        <label for="mail_partner_ids" string="Recipients"/>
+                        <div>
+                            <span>Les abonnées de ce dossier et</span>
+                            <field name="mail_partner_ids"
+                                   widget="many2many_tags_email"
+                                   placeholder="Add contacts to notify..."
+                                   context="{'force_email': True, 'show_email': True}"/>
+                        </div>
+                        <field name="mail_subject"
+                               placeholder="Subject..."
+                               required="mail_subject == False"/>
+                    </group>
+                    <field name="mail_body"
+                           class="oe-bordered-editor"
+                           options="{'style-inline': true}"/>
+                    <group>
+                        <group>
+                            <field name="mail_attachments_widget"
+                                   widget="mail_attachments"
+                                   string="Attach a file"
+                                   nolabel="1"
+                                   colspan="2"/>
+                        </group>
+                        <group>
+                            <field name="mail_template_id"
+                                   options="{'no_create': True, 'no_edit': True}"
+                                   context="{'default_model': 'montage.demande.credit'}"/>
+                        </group>
+                    </group>
+                </div>
+
+                <footer>
+                    <button string="Send &amp; Print"
+                            data-hotkey="q"
+                            name="action_send_and_print"
+                            type="object"
+                            class="print btn-primary o_mail_send">
+                    </button>
+                    <button string="Cancel"
+                            data-hotkey="x"
+                            special="cancel"
+                            class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="email_template_montage" model="mail.template">
+        <field name="name">Dossier</field>
+        <field name="model_id" ref="credit_bancaire.model_montage_demande_credit"/>
+        <field name="email_from">{{ (object.company_id.email_formatted or
+            user.email_formatted) }}
+        </field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="subject">{{ object.company_id.name }} Dossier pour Banque {{ object.banque.name or 'n/a' }})</field>
+        <field name="description">Dossier</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Bonjour
+                    <t t-out="object.partner_id.name or ''">Brandon Freeman</t>,
+                    <br/>
+                    <br/>
+                    Veuillez trouver en piece jointe le dossier de notre entreprise.
+
+                    <br/>
+                        <br/>
+                    Nos sincères salutations.
+                </p>
+            </div>
+        </field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
 </odoo>

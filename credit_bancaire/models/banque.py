@@ -14,6 +14,7 @@ class banque(models.Model):
     code = fields.Char(string='Code', required=True, copy=False)
     #note = fields.Text(string='Description', tracking=True)
     adresse_siege = fields.Char(string='Adresse du siège social')
+    journal_id = fields.Many2one('account.journal', string='Journal')
     web_site = fields.Char(string='Site web')
     nbr_agences = fields.Integer(string='Nombre d`agence')
     agences = fields.One2many('credit.banque.agence','banque',string='Liste des agences')

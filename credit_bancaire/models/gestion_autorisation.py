@@ -2,12 +2,16 @@ import datetime
 
 from odoo import api, fields, models, _
 from dateutil.relativedelta import relativedelta
+from odoo.exceptions import UserError
+
 
 class Gestion_autorisation(models.Model):
     _name = 'credit.autorisation'
     _inherit = ["mail.thread", 'mail.activity.mixin']
     _description = "Autorisation des lignes de crédit bancaire"
+    _rec_name = 'display_name'
 
+    display_name = fields.Char(string='Nom', compute='_compute_display', store=True)
     name = fields.Char(string='Autorisation', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
     banque = fields.Many2one(
@@ -24,7 +28,7 @@ class Gestion_autorisation(models.Model):
                                  help="Indicates the date the autorisation was created.",
                                  readonly=True)
     validite = fields.Date("Validité de la ligne", tracking=True, required=True)
-    date_limit = fields.Date("Date limite", tracking=True, required=True)
+    date_limit = fields.Date("Date limite", tracking=True)
     validite_due = fields.Date("Vérification de la date", tracking=True,default=fields.Datetime.now)
     condition = fields.Char(string='Condition non bloquante a réaliser', tracking=True)
     rappel = fields.Date("Date de rappel de renouvellement", tracking=True, store=True)
@@ -32,6 +36,28 @@ class Gestion_autorisation(models.Model):
         'res.users', string='Order representative', index=True, tracking=True, readonly=True,
         default=lambda self: self.env.user, check_company=True)
     autorisation_global = fields.Many2one('credit.autorisation_global', ondelete='cascade', string='Autorisation global')
+    financement_hauteur = fields.Float(string='Financement à hauteur de %')
+    delai_mobilisation = fields.Integer(string='Délai de mobilisation')
+    is_decouvert = fields.Boolean(compute='_compute_decouvert',)
+    state = fields.Selection([('draft', 'Brouillon'),
+                              ('confirmed', 'Confirmé')], string='Etat')
+
+    @api.depends('type', 'montant')
+    def _compute_display(self):
+        for rec in self:
+            if rec.type and rec.montant:
+                rec.display_name = rec.type.name + ' ( ' + str(rec.montant) + ' DA)'
+            else:
+                rec.display_name = 'Nouveau'
+
+    @api.depends('type', 'montant')
+    def _compute_decouvert(self):
+        print('_compute_decouvert executed')
+        for rec in self:
+            if rec.type and rec.montant:
+                if rec.type.id == 1 and rec.montant >= 0:
+                    raise UserError(_('Vous devriez saisir une valeur négatif pour le montant de l\'autorisation'))
+            rec.is_decouvert = False
 
     @api.model
     def create(self, vals):
@@ -45,7 +71,6 @@ class Gestion_autorisation(models.Model):
         for rec in self:
             rec.banque = rec.autorisation_global.banque
 
-
     @api.depends('validite')
     def _compute_date(self):
         for rec in self:
@@ -53,18 +78,28 @@ class Gestion_autorisation(models.Model):
                 rec.validite_due = rec.validite
                 #rec.rappel = datetime.datetime.strptime(str(rec.validite), '%Y-%m-%d') - relativedelta(days=+ 7)
 
+    def action_Disponible(self):
+        for record in self:
+            if record.type.id == 1 and record.montant >= 0:
+                raise UserError(_('Vous devriez saisir une valeur négatif pour le montant de l\'autorisation'))
+            q = record.env['credit.disponible'].search([('ligne_autorisation', '=', record.id)])
+            print(q)
+            print(record.banque)
+            val = {
+                'montant_disponible': record.montant,
+                'ligne_autorisation': record.id,
+                'banque': record.autorisation_global.banque.id,
+                'type': record.type.id,
+            }
+            if not q:
+                record.env['credit.disponible'].create(val)
+            record.state = 'confirmed'
+
+
 class Autorisation_global(models.Model):
     _name = 'credit.autorisation_global'
     _inherit = ["mail.thread", 'mail.activity.mixin']
     _description = "Ensemble des autorisations des lignes de crédit bancaire"
-
-    @api.model
-    def create(self, vals):
-        if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('credit.autorisation_global') or _('New')
-
-        result = super(Autorisation_global, self).create(vals)
-        return result
 
     name = fields.Char(string='Ensemble d`autorisations', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
@@ -74,6 +109,29 @@ class Autorisation_global(models.Model):
     taux = fields.Float(string='Taux')
     file_ticket = fields.Binary(string='Ticket d`Autorisation')
     file_name = fields.Char(string='File name')
+    state = fields.Selection([('draft', 'Brouillon'),
+                              ('confirmed', 'Confirmé')], string='Etat')
+
+    @api.model
+    def create(self, vals):
+        print(vals['banque'])
+        exist = self.env['credit.autorisation_global'].search([('banque', '=', vals['banque'])])
+        if exist:
+            raise UserError('Cette banque existe deja dans la liste des autorisations')
+        else:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('credit.autorisation_global') or _('New')
+        result = super(Autorisation_global, self).create(vals)
+        return result
+
+    @api.model
+    def write(self, vals):
+        if 'banque' in vals:
+            exist = self.env['credit.autorisation_global'].search([('banque', '=', vals['banque'])])
+            if exist:
+                raise UserError('Cette banque existe deja dans la liste des autorisations')
+        result = super(Autorisation_global, self).write(vals)
+        return result
 
     @api.depends('banque')
     def action_Disponible(self):
@@ -89,3 +147,5 @@ class Autorisation_global(models.Model):
                 }
                 if not q:
                     aut.env['credit.disponible'].create(val)
+                    aut.state = 'confirmed'
+            record.state = 'confirmed'

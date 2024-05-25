@@ -136,11 +136,6 @@
         <field name="res_model">montage.saisi.donnee</field>
         <field name="view_mode">tree</field>
     </record>
-    <menuitem id="montage_saisi_donnee"
-              name="Saisi des données"
-              parent="montage_credit"
-              action="montage_saisi_donnee_action"
-              sequence="5"/>
 
      <!--les vues de variation des postes comptables-->
     <record id="view_montage_variation_poste_comptable_tree" model="ir.ui.view">
@@ -162,9 +157,4 @@
         <field name="res_model">montage.variation.poste.comptable</field>
         <field name="view_mode">tree</field>
     </record>
-    <menuitem id="montage_variation_poste_comptable"
-              name="Variations des postes comptables"
-              parent="montage_credit"
-              action="montage_variation_poste_comptable_action"
-              sequence="6"/>
 </odoo>

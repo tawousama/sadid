@@ -91,5 +91,8 @@ access_proposed_guarantees,proposed.guarantees,model_proposed_guarantees,base.gr
 access_obligations_banks,obligations.banks,model_obligations_banks,base.group_user,1,1,1,1
 access_wizard_credit_deblocage,access.wizard.credit.deblocage,model_wizard_credit_deblocage,base.group_user,1,1,1,1
 access_budget_request,access.budget.request,model_budget_request,,1,1,1,1
+access_wizard_credit_endettement,access.wizard.credit.endettement,model_wizard_credit_endettement,,1,1,1,1
+
+access_montage_mail_send,access.montage.mail.send,model_montage_mail_send,,1,1,1,1
 
 

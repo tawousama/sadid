@@ -9,6 +9,7 @@
                     <button id="button_Disponibilité" name="action_Disponible" string="Confirmer"
                             class="btn-primary"
                             type="object"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -18,7 +19,7 @@
                     </div>
                     <group>
                         <field name="banque"/>
-                        <field name="taux"/>
+                        <field name="taux" widget="percentage"/>
                     </group>
                     <notebook>
                         <page string="Autorisations">
@@ -29,19 +30,32 @@
                                     <field name="validite"/>
                                     <field name="rappel"/>
                                     <field name="montant" sum="Total amount" widget="monetary" optional="show"/>
+                                    <field name="state" optional="show"/>
                                 </tree>
                                 <form>
-                                    <group>
-                                        <field name="type"/>
-                                        <field name="montant"/>
-                                        <field name="condition_objet"/>
-                                        <field name="condition"/>
-                                    </group>
-                                    <group>
-                                        <field name="date_limit"/>
-                                        <field name="validite"/>
-                                        <field name="rappel"/>
-                                    </group>
+                                    <header>
+                                        <button id="button_Disponibilité" name="action_Disponible" string="Confirmer"
+                                                class="btn-primary"
+                                                type="object"/>
+                                        <field name="state" widget="statusbar"/>
+                                    </header>
+                                    <sheet>
+                                        <group>
+                                            <field name="type"/>
+                                            <field name="montant"/>
+                                            <field name="financement_hauteur" widget="percentage"
+                                                   invisible="type not in [2,3]"/>
+                                            <field name="delai_mobilisation" invisible="type not in [2,3]"/>
+                                            <field name="condition_objet"/>
+                                            <field name="condition"/>
+                                            <field name="is_decouvert" invisible="1"/>
+                                        </group>
+                                        <group>
+                                            <field name="date_limit"/>
+                                            <field name="validite"/>
+                                            <field name="rappel"/>
+                                        </group>
+                                    </sheet>
                                 </form>
                             </field>
                         </page>

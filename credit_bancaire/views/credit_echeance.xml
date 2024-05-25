@@ -11,6 +11,23 @@
         <field name="numbercall">-1</field>
         <field name="doall" eval="True"/>
     </record>
+    <record id="credit_echeance_view_search" model="ir.ui.view">
+            <field name="name">credit.echeance.search</field>
+            <field name="model">credit.echeance</field>
+            <field name="arch" type="xml">
+                <search string="Echeances">
+                    <field name="banque" string="Banque"/>
+                    <field name="type" string="Ligne de crédit"/>
+                    <field name="facture" string="N° Facture"/>
+                    <filter name="en_retard" string="En retard" domain="[('is_retard', '=', True)]"/>
+                    <filter name="paid" string="Payé" domain="[('state', '=', 'paid')]"/>
+                    <filter name="not_paid" string="Non Payé" domain="[('state', '=', 'not_paid')]"/>
+                    <group expand="0" string="Group By">
+                        <filter name="state" string="Etat" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+             </field>
+        </record>
     <record id="view_gestion_echeance_tree" model="ir.ui.view">
         <field name="name">credit.gestion.echeance.tree</field>
         <field name="model">credit.echeance</field>
@@ -27,6 +44,7 @@
                 <field name="montant_a_rembourser" sum="Total amount" widget="monetary" optional="show"/>
                 <field name="fournisseur" optional="show"/>
                 <field name="facture" optional="show"/>
+                <field name="state" column_invisible="True"/>
             </tree>
         </field>
     </record>
@@ -35,6 +53,7 @@
         <field name="name">Échéances a venir</field>
         <field name="res_model">credit.echeance</field>
         <field name="view_mode">tree</field>
+        <field name="context">{'search_default_not_paid': 1}</field>
     </record>
 
     <menuitem id="gestion_echeance_menu"

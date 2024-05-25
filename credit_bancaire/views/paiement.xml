@@ -1,5 +1,19 @@
 <?xml version="1.0"?>
 <odoo>
+    <record id="payment_account_view_inherited" model="ir.ui.view">
+            <field name="name">account.payment.form.inherit</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <field name="ref" position="after">
+                    <field name="date_encaissement" invisible="partner_type != 'customer'"/>
+                    <field name="date_decaissement" invisible="partner_type != 'supplier'"/>
+                </field>
+                <field name="ref" position="attributes">
+                    <attribute name="string">Numéro de chèque</attribute>
+                </field>
+            </field>
+        </record>
     <record id="view_operation_p_form" model="ir.ui.view">
         <field name="name">credit.operation.p.form</field>
         <field name="model">credit.operation.p</field>
