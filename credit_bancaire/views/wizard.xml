@@ -109,8 +109,11 @@
             <field name="arch" type="xml">
                 <form string="Rapport">
                     <sheet>
+
+                        <p>Télécharger le rapport d'endettement</p>
                         <group>
-                            <p>Télécharger le rapport d'endettement</p>
+                            <field name="date_report"/>
+                            <field name="comment"/>
                         </group>
                         <footer>
                             <button name="send" string="Imprimer" type="object" class="oe_highlight" data-hotkey="q"/>

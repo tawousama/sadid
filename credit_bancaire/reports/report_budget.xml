@@ -48,16 +48,49 @@
             <field name="report_file">credit_bancaire.report_budget_request</field>
             <field name="binding_model_id" ref="model_budget_request"/>
         </record>
+        <!-- my_module/data/report_paperformat.xml -->
+        <odoo>
+            <record id="paperformat_landscape" model="report.paperformat">
+                <field name="name">Landscape A4</field>
+                <field name="default" eval="False"/>
+                <field name="format">A4</field>
+                <field name="orientation">Landscape</field>
+                <field name="margin_top">20</field>
+                <field name="margin_bottom">20</field>
+                <field name="margin_left">10</field>
+                <field name="margin_right">10</field>
+            </record>
+        </odoo>
+
         <template id="report_deblocage_recap">
             <t t-call="web.html_container">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h1 class="display-4">Rapport d'Endettement</h1>
-                        <table class="table">
+                        <center>
+                            <h1 class="display-4">ENDETTEMENT DES BANQUES (SADID) AU
+                                <t t-esc="docs[0].date_report"/>
+                            </h1>
+                        </center>
+                        <br/>
+                        <table class="table"
+                               style="border-top: none; border-left: none; border-right: none; border-bottom: none;">
                             <thead class="thead-light">
                                 <t t-set="list_vals" t-value="docs._prepare_modif()"/>
-                                <tr>
-                                    <t t-foreach="list_vals" t-as="line">
+                                <tr style="border-top: none; border-left: none; border-right: none; border-bottom: none;">
+                                    <th style="border-top: none; border-left: none; border-right: none; border-bottom: none;">
+                                        <t t-esc="line"/>
+                                    </th>
+                                    <th scope="col">
+                                        <span>
+                                            TOTAL BANQUES
+                                        </span>
+                                    </th>
+                                    <th scope="col" width="100px">
+                                        <span>
+
+                                        </span>
+                                    </th>
+                                    <t t-foreach="list_vals[1:]" t-as="line">
                                         <th scope="col">
                                             <t t-esc="line"/>
                                         </th>
@@ -65,10 +98,106 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <t t-set="echeances" t-value="docs._get_echeances()"/>
+                                <tr style="border-top: none; border-left: none; border-right: none; border-bottom: none;">
+                                    <td scope="row">
+                                      Date D'écheance des lignes de crédit
+                                    </td>
+                                    <td>
+                                      /
+                                    </td>
+                                    <td width="100px">
+                                    </td>
+                                    <t t-foreach="echeances" t-as="line">
+                                        <td>
+                                            <t t-esc="line"/>
+                                        </td>
+                                    </t>
+                                </tr>
+
+                                <t t-set="taux" t-value="docs._get_taux()"/>
+                                <t t-set="taux_total" t-value="docs._get_taux_total()"/>
+                                <tr style="border-top: none; border-left: none; border-right: none; border-bottom: none;">
+                                    <td scope="row">
+                                        Taux d'intérêt
+                                    </td>
+                                    <td>
+                                        <t t-esc="'{0:,.0f}'.format(taux_total * 100)"/>%
+                                    </td>
+                                    <td width="100px">
+                                    </td>
+                                    <t t-foreach="taux" t-as="line">
+                                        <td>
+                                            <t t-esc="'{0:,.0f}'.format(line* 100)"/>%
+                                        </td>
+                                    </t>
+                                </tr>
+                                <t t-set="total_engagement" t-value="docs._get_total_engagement()"/>
+                                <t t-set="total_eng" t-value="docs._get_total_eng()"/>
+                                <tr>
+                                    <td scope="row">
+                                        Total engagements
+                                    </td>
+                                    <td>
+                                        <t t-esc="'{0:,.0f}'.format(total_eng)"/>
+                                    </td>
+                                    <td width="100px">
+                                    </td>
+                                    <t t-foreach="total_engagement" t-as="line">
+                                        <td>
+                                            <t t-esc="'{0:,.0f}'.format(line)"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td t-att-colspan="len(list_vals) + 2"></td>
+                                </tr>
+                                <t t-set="total_deb" t-value="docs._get_total_deb()"/>
+                                <t t-set="total_deblo" t-value="docs._get_total_deblo()"/>
+                                <tr>
+                                    <td scope="row">
+                                        Consommation des lignes en valeur
+                                    </td>
+                                    <td>
+                                        <t t-esc="'{0:,.0f}'.format(total_deblo)"/>
+                                    </td>
+                                    <td width="100px">
+                                    </td>
+                                    <t t-foreach="total_deb" t-as="line">
+                                        <td>
+                                            <t t-esc="'{0:,.0f}'.format(line)"/>
+                                        </td>
+                                    </t>
+                                </tr>
+                                <t t-set="total_deb_ratio" t-value="docs._get_total_deb_ratio()"/>
+                                <t t-set="total_deblo_ratio" t-value="docs._get_total_deblo_ratio()"/>
+                                <tr>
+                                    <td scope="row">
+                                        Consommation des lignes en %
+                                    </td>
+                                    <td>
+                                        <t t-esc="'{0:,.0f}'.format(total_deblo_ratio * 100)"/>%
+                                    </td>
+                                    <td width="100px">
+                                    </td>
+                                    <t t-foreach="total_deb_ratio" t-as="line">
+                                        <td>
+                                            <t t-esc="'{0:,.0f}'.format(line * 100)"/>%
+                                        </td>
+                                    </t>
+                                </tr>
+                                <tr>
+                                    <td t-att-colspan="len(list_vals) + 2"></td>
+                                </tr>
                                 <t t-set="solde" t-value="docs._get_solde()"/>
                                 <tr>
                                     <td scope="row">
                                         Solde du compte
+                                    </td>
+                                    <td>
+                                        <t t-esc="'{0:,.0f}'.format(sum(solde[1:]))"/>
+                                    </td>
+                                    <td width="100px">
                                     </td>
                                     <t t-foreach="solde[1:]" t-as="line">
                                         <td>
@@ -82,6 +211,11 @@
                                         <td scope="row">
                                             <t t-esc="line[0]"/>
                                         </td>
+                                        <td>
+                                            <t t-esc="'{0:,.0f}'.format(sum(line[1:]))"/>
+                                        </td>
+                                        <td width="100px">
+                                        </td>
                                         <t t-foreach="line[1:]" t-as="cell">
                                             <td>
                                                 <t t-esc="'{0:,.0f}'.format(cell)"/>
@@ -89,10 +223,19 @@
                                         </t>
                                     </tr>
                                 </t>
+
+                                <tr>
+                                    <td t-att-colspan="len(list_vals) + 2"></td>
+                                </tr>
                                 <t t-set="tres" t-value="docs._get_tresorerie()"/>
                                 <tr>
                                     <td scope="row">
                                         Total financement par Trésorerie
+                                    </td>
+                                    <td>
+                                        <t t-esc="'{0:,.0f}'.format(sum(tres[1:]))"/>
+                                    </td>
+                                    <td width="100px">
                                     </td>
                                     <t t-foreach="tres[1:]" t-as="line">
                                         <td>
@@ -105,6 +248,11 @@
                                     <td scope="row">
                                         Total financement par Signature
                                     </td>
+                                    <td>
+                                        <t t-esc="'{0:,.0f}'.format(sum(signature[1:]))"/>
+                                    </td>
+                                    <td width="100px">
+                                    </td>
                                     <t t-foreach="signature[1:]" t-as="line">
                                         <td>
                                             <t t-esc="'{0:,.0f}'.format(line)"/>
@@ -116,6 +264,12 @@
                                     <td scope="row">
                                         % Endettement global
                                     </td>
+                                    <td>
+                                        <t t-esc="'{0:,.0f}'.format(sum(endett[1:]) * 100)"/>
+                                        %
+                                    </td>
+                                    <td width="100px">
+                                    </td>
                                     <t t-foreach="endett[1:]" t-as="line">
                                         <td>
                                             <t t-esc="'{0:,.0f}'.format(line * 100)"/>%
@@ -124,8 +278,16 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <br/>
                         <div>
-
+                            <span>
+                                <strong>
+                                    Commentaire
+                                </strong>
+                            </span>
+                            <p>
+                                <t t-esc="docs[0].comment"/>
+                            </p>
                         </div>
                     </div>
                 </t>
@@ -138,6 +300,7 @@
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">credit_bancaire.report_deblocage_recap</field>
             <field name="report_file">credit_bancaire.report_deblocage_recap</field>
+            <field name="paperformat_id" ref="credit_bancaire.paperformat_landscape"/>
             <field name="binding_model_id" ref="model_credit_disponible"/>
         </record>
     </data>

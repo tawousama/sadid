@@ -94,5 +94,7 @@ access_budget_request,access.budget.request,model_budget_request,,1,1,1,1
 access_wizard_credit_endettement,access.wizard.credit.endettement,model_wizard_credit_endettement,,1,1,1,1
 
 access_montage_mail_send,access.montage.mail.send,model_montage_mail_send,,1,1,1,1
+access_cashflow_report,access.cashflow.report,model_cashflow_report,,1,1,1,1
+access_account_card,access.account.card,model_account_card,,1,1,1,1
 
 

@@ -9,7 +9,7 @@
     'description': """ Gestion des credit bancaire  """,
     'images' : [],
     'web_icon': ['credit_bancaire,static/description/icon.png'],
-    'depends' : ['base', 'mail', 'account', 'account_accountant'],
+    'depends' : ['base', 'mail', 'account', 'account_accountant','hr'],
     'data': [
         'security/credit_security.xml',
         'security/ir.model.access.csv',
@@ -58,6 +58,8 @@
             'web.assets_backend': [
                 'credit_bancaire/static/src/js/report_js.js',
                 'credit_bancaire/static/src/xml/template.xml',
+                'credit_bancaire/static/src/js/cashflow_report.js',
+                'credit_bancaire/static/src/xml/cashflow_template.xml',
             ],
         },
     'installable': True,

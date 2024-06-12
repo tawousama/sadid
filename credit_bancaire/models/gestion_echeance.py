@@ -15,6 +15,8 @@ class Gestion_echeance(models.Model):
         'credit.banque', string='Banque', index=True, tracking=True, )
     type = fields.Many2one(
         'credit.type', string='Ligne de crédit', index=True, tracking=True)
+    type_ids = fields.Many2many(
+        'credit.type', string='Ligne de crédit', index=True, tracking=True, related="ref_opr_deb.type_ids")
 
     echeance_date = fields.Date("Date d`échéance", tracking=True)
     montant_a_rembourser = fields.Float(string="Montant à rembourser", store=True)
@@ -27,6 +29,22 @@ class Gestion_echeance(models.Model):
     state = fields.Selection([('not_paid', 'Non payé'),
                               ('paid', 'Payé')], default='not_paid', string='Etat')
     is_retard = fields.Boolean(string='En retard')
+
+    def validate_payment(self):
+        for rec in self:
+            if not rec.echeance_date:
+                rec.echeance_date = fields.Date.today()
+            view_id = self.env.ref('credit_bancaire.deblocage_wizard_form').id
+            return {
+                'name': 'Information',
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'res_model': 'wizard.credit.deblocage',
+                'view_id': view_id,
+                'target': 'new',
+                'context': {'payment': rec.id,
+                            'deb_id': rec.ref_opr_deb.id},
+            }
 
     @api.model
     def create(self, vals):

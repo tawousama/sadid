@@ -8,20 +8,42 @@
             <tree string="Listes des Dossiers">
                 <field name="partner_id"/>
                 <field name="reference"/>
-                <field name="date_validation"/>
+                <field name="date_validation" invisible="1"/>
                 <field name="bank_id"/>
                 <field name="montant"/>
-                <field name="devise"/>
+                <field name="currency_id"/>
                 <field name="montant_dz"/>
                 <field name="payment_mode"/>
                 <field name="delai_payment"/>
                 <field name="proformat"/>
+                <field name="montant_proformat" optional="hide"/>
+                <field name="designation_marchandise" optional="hide"/>
                 <field name="incoterm"/>
                 <field name="date_usine"/>
                 <field name="date_embarquement"/>
                 <field name="ref_facture"/>
+                <field name="port_embarquement" optional="hide"/>
+                <field name="navire" optional="hide"/>
+                <field name="compagnieie_maritime" optional="hide"/>
+                <field name="n_bl" optional="hide"/>
+                <field name="reference_dossier_banque" optional="hide"/>
+                <field name="date_ouverture_lc" optional="hide"/>
+                <field name="methode_expedition" optional="hide"/>
+                <field name="provision_ouverture" optional="hide"/>
+                <field name="date_limit_embarquement" optional="hide"/>
+                <field name="date_reception_document" optional="hide"/>
+                <field name="montant_debloque_spot_prefin" optional="hide"/>
+                <field name="montant_droits_douane" optional="hide"/>
+                <field name="financement_droits_douane" optional="hide"/>
+                <field name="date_deblocage_fin_douane" optional="hide"/>
+                <field name="date_echeance_fin_douane" optional="hide"/>
+                <field name="reference_deblocage_fin_douane" optional="hide"/>
+                <field name="montant_a_rembourser_fin_douane" optional="hide"/>
+                <field name="restitution_de_provision" optional="hide"/>
+                <field name="montant_restitue" optional="hide"/>
+                <field name="deblocage_id" optional="hide"/>
+                <field name="date_payment" optional="hide"/>
                 <field name="state_actuel"/>
-
             </tree>
         </field>
     </record>
@@ -40,28 +62,64 @@
                     <field name="etat" widget="statusbar"/>
                 </header>
                 <sheet>
-                    <h1>
-                        <label for="reference" string="N. Commande"/>
+                    <h4>
                         <field name="reference" class="oe_inline" readonly="1"/>
-                    </h1>
+                    </h4>
                     <group>
                         <group>
                             <field name="partner_id"/>
-                            <field name="date_validation"/>
+                            <field name="date_validation" invisible="1"/>
                             <field name="payment_mode"/>
                             <field name="proformat"/>
+                            <field name="montant_proformat"/>
                             <field name="currency_id"/>
+                            <field name="designation_marchandise"/>
                         </group>
                         <group>
-                            <field name="date"/>
-                            <field name="date_usine"/>
-                            <field name="date_embarquement"/>
-                            <field name="note"/>
+                            <field name="date" invisible="1"/>
                             <field name="delai_payment"/>
                             <field name="date_payment"/>
+                            <field name="payment_id" invisible="payment_id == False" />
+
+                            <button name="create_payment" type="object" string="Créer un paiement"
+                                    class="btn-primary" invisible="payment_id != False"/>
                         </group>
                     </group>
                     <notebook>
+                        <page string="Détails de Dom. ">
+                            <group>
+                                <group>
+                                    <field name="bank_id"/>
+                                    <field name="journal_id" invisible="1"/>
+                                    <field name="reference_dossier_banque"/>
+                                    <field name="date_ouverture_lc"/>
+                                    <field name="incoterm"/>
+                                    <field name="methode_expedition"/>
+                                    <field name="provision_id"/>
+                                    <field name="provision_ouverture" invisible="1"/>
+                                    <field name="date_limit_embarquement"/>
+                                    <field name="date_reception_document"/>
+                                    <field name="date_usine"/>
+                                    <field name="date_embarquement"/>
+                                </group>
+                                <group>
+                                    <field name="deblocage_id" invisible="1"/>
+                                    <field name="montant_debloque_spot_prefin" string="Montant LC"/>
+                                    <field name="montant_droits_douane"/>
+                                    <field name="douane_id"/>
+
+                                </group>
+                                <group>
+                                    <field name="port_embarquement"/>
+                                    <field name="compagnieie_maritime"/>
+                                </group>
+                                <group>
+                                    <field name="navire"/>
+                                    <field name="n_bl"/>
+                                </group>
+                            </group>
+
+                        </page>
                         <page string="Liste des facture">
                             <field name="invoice_ids" widget="one2many_list">
                                 <tree editable="bottom">
@@ -71,71 +129,7 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="Info. Expédition">
-                            <group>
-                                <group>
-                                    <field name="port_embarquement"/>
-                                    <field name="compagnieie_maritime"/>
-                                    <field name="etd"/>
-                                    <field name="tracking_doc"/>
-                                </group>
-                                <group>
-                                    <field name="navire"/>
-                                    <field name="n_bl"/>
-                                    <field name="eta"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Détails de Dom. ">
-                            <group>
-                                <group>
-                                    <field name="bank_id"/>
-                                    <field name="reference_dossier_banque"/>
-                                    <field name="date_ouverture_lc"/>
-                                    <field name="montant"/>
-                                    <field name="devise"/>
-                                    <field name="incoterm"/>
-                                    <field name="methode_expedition"/>
-                                    <field name="provision_ouverture"/>
-                                    <field name="date_limit_embarquement"/>
-                                    <field name="date_reception_document"/>
-                                </group>
-                                <group>
-                                    <field name="deblocage_id" />
-                                    <field name="montant_debloque_spot_prefin"/>
-                                    <field name="montant_droits_douane"/>
-                                    <field name="financement_droits_douane" class="oe_inline"/>
-                                    <field name="date_deblocage_fin_douane"
-                                           invisible="financement_droits_douane != True"/>
-                                    <field name="date_echeance_fin_douane"
-                                           invisible="financement_droits_douane != True"/>
-                                    <field name="reference_deblocage_fin_douane"
-                                           invisible="financement_droits_douane != True"/>
-                                    <field name="montant_a_rembourser_fin_douane"
-                                           invisible="financement_droits_douane != True"/>
-                                    <field name="restitution_de_provision" class="oe_inline"/>
-                                    <field name="montant_restitue" invisible="restitution_de_provision != True"/>
-
-                                </group>
-                            </group>
-                            <group string="Document Exigés">
-                                <field name="facture_commerciale" class="oe_inline"/>
-                                <field name="jeu_complet_connaissement" class="oe_inline"/>
-                                <field name="lettre_transport" class="oe_inline"/>
-                                <field name="certificat_origine" class="oe_inline"/>
-                                <field name="certificat_analyse" class="oe_inline"/>
-                                <field name="certificat_sanitaire" class="oe_inline"/>
-                                <field name="certificat_confirmite" class="oe_inline"/>
-                                <field name="certificat_controle_qualite" class="oe_inline"/>
-                                <field name="certificat_non_radioactivite" class="oe_inline"/>
-                                <field name="liste_colisage" class="oe_inline"/>
-                                <field name="note_poids" class="oe_inline"/>
-                                <field name="autre_document_transport" class="oe_inline"/>
-                                <field name="autres" class="oe_inline"/>
-                            </group>
-                        </page>
-
-                        <page string="D10">
+                        <page string="D10" invisible="1">
                             <field name="d10_ids" widget="one2many_list" nolabel="1">
                                 <tree>
                                     <field name="d10_number"/>

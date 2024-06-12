@@ -21,6 +21,9 @@ class Gestion_operation_pd(models.Model):
         'credit.banque', string='Banque', index=True, tracking=True, required=True, domain="[('has_deblocage', '=', True)]")
     type = fields.Many2one(
         'credit.type', string='Ligne de crédit', index=True, tracking=True, domain="[('has_deblocage', '=', True)]")
+    type_ids = fields.Many2many(
+        'credit.type', string='Ligne de crédit', index=True, tracking=True, related="ligne_autorisation.type_ids")
+
     ligne_autorisation = fields.Many2one('credit.autorisation', string='Autorisation',
                                         domain="[('banque.id', '=', banque),('type.id', '=', type),('state', '=', 'confirmed')]",
                                          ondelete='cascade')

@@ -9,7 +9,7 @@
                     <button id="button_Confirm" name="action_Confirme" string="Confirmer"
                             class="btn-primary"
                             type="object"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -20,22 +20,25 @@
                     <group>
                         <group>
                             <field name="banque_id"/>
-                            <field name="type"/>
+                            <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
                             <field name="ligne_autorisation"/>
+                            <field name="type"/>
                             <field name="date_validite"/>
                             <field name="reference_credit"/>
                             <field name="ref_interne"/>
                             <field name="client" string="Fournisseur"/>
                             <field name="taux" widget="percentage"/>
                         </group>
-                        <group >
+                        <group>
                             <field name="montant_debloque"/>
                             <field name="remboursement"/>
+                            <field name="date_prevue_deblocage"/>
                             <field name="deblocage_date"/>
                             <field name="echeance_date" string="Date de 1er échéance"/>
                             <field name="echeance_fin_date" string="Date du dernier échéance"/>
                             <field name="taux_apply" string="Taux Appliqué"/>
-                            <field name="montant_total" string="Montant de l'échéance" readonly="type_ligne in ['1', '3']"/>
+                            <field name="montant_total" string="Montant de l'échéance"
+                                   readonly="type_ligne in ['1', '3']"/>
                             <field name="montant_total_comp" invisible="1"/>
                             <field name="type_ligne" invisible="1"/>
                             <field name="plm" widget="percentage"/>
@@ -43,8 +46,18 @@
 
 
                     </group>
-                    <notebook invisible="type not in [9,10,11,12]">
+                    <notebook invisible="type_id not in [9,10,11,12]">
                         <page string="Echeances partiels">
+                            <group>
+                                <field name="template_file" filename="template_name"/>
+                                <field name="template_name" invisible="1"/>
+                                <field name="type_id" invisible="1"/>
+                                <field name="import_file" filename="import_name"/>
+                                <field name="import_name" invisible="1"/>
+                            </group>
+                            <button name="importExcel" string="Importer"
+                                    class="btn-primary"
+                                    type="object"/>
                             <tree>
                                 <field name="echeances"/>
                             </tree>
@@ -72,15 +85,18 @@
             <tree sample="1">
                 <field name="name" readonly="1"/>
                 <field name="ligne_autorisation"/>
-                <field name="banque_id"/>
                 <field name="type"/>
+                <field name="banque_id"/>
+                <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
                 <field name="deblocage_date"/>
                 <field name="echeance_date" optional="show"/>
                 <field name="reference_credit" optional="hide"/>
                 <field name="ref_interne" optional="hide"/>
-                <field name="client"/>
+                <field name="partner_id"/>
                 <field name="montant_debloque" sum="Total amount" widget="monetary" optional="show"/>
                 <field name="montant_rembourser" sum="Total amount" widget="monetary" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'"
+                       decoration-warning="state == 'extended'"/>
             </tree>
         </field>
     </record>
@@ -100,6 +116,127 @@
               name="Leasing"
               parent="operation_deb_menu"
               action="operation_deb_3_action"
+              sequence="20"/>
+
+    <record id="view_operation_deb_4_form" model="ir.ui.view">
+        <field name="name">credit.operation.deb.form</field>
+        <field name="model">credit.operation.deb</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button id="button_Confirm" name="action_Confirme" string="Confirmer"
+                            class="btn-primary"
+                            type="object"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="banque_id"/>
+                            <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
+                            <field name="ligne_autorisation"/>
+                            <field name="type"/>
+                            <field name="partner_id"/>
+                            <field name="date_validite"/>
+                            <field name="reference_credit"/>
+                            <field name="ref_interne"/>
+                            <field name="partner_id" string="Fournisseur"/>
+                            <field name="taux" widget="percentage"/>
+                            <field name="montant_total_comp" invisible="1"/>
+                            <field name="montant_remb_comp" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="montant_debloque"/>
+                            <field name="remboursement"/>
+                            <field name="date_prevue_deblocage"/>
+                            <field name="deblocage_date"/>
+                            <field name="echeance_date" string="Date de 1er échéance"/>
+                            <field name="echeance_fin_date" string="Date du dernier échéance"/>
+                            <field name="taux_apply" string="Taux Appliqué"/>
+                            <field name="montant_total" string="Montant de l'échéance"
+                                   readonly="type_ligne in ['1', '3']"/>
+                            <field name="montant_total_comp" invisible="1"/>
+                            <field name="type_ligne" invisible="1"/>
+                            <field name="plm" widget="percentage"/>
+                        </group>
+
+
+                    </group>
+                    <notebook invisible="type_id not in [9,10,11,12]">
+                        <page string="Echeances partiels">
+                            <group>
+                                <field name="template_file" filename="template_name"/>
+                                <field name="template_name" invisible="1"/>
+                                <field name="type_id" invisible="1"/>
+                                <field name="import_file" filename="import_name"/>
+                                <field name="import_name" invisible="1"/>
+                            </group>
+                            <button name="importExcel" string="Importer"
+                                    class="btn-primary"
+                                    type="object"/>
+                            <tree>
+                                <field name="echeances"/>
+                            </tree>
+                        </page>
+                    </notebook>
+                    <group>
+                        <field name="file_ticket" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_operation_deb_4_tree" model="ir.ui.view">
+        <field name="name">credit.operation.deb.tree</field>
+        <field name="model">credit.operation.deb</field>
+        <field name="arch" type="xml">
+            <tree sample="1">
+                <field name="name" readonly="1"/>
+                <field name="ligne_autorisation"/>
+                <field name="type"/>
+                <field name="banque_id"/>
+                <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
+                <field name="deblocage_date"/>
+                <field name="echeance_date" optional="show"/>
+                <field name="reference_credit" optional="hide"/>
+                <field name="ref_interne" optional="hide"/>
+                <field name="partner_id"/>
+                <field name="montant_debloque" sum="Total amount" widget="monetary" optional="show"/>
+                <field name="montant_rembourser" sum="Total amount" widget="monetary" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'"
+                       decoration-warning="state == 'extended'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="operation_deb_4_action" model="ir.actions.act_window">
+        <field name="name">Leasing</field>
+        <field name="res_model">credit.operation.deb</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('type_ligne', '=', '4')]</field>
+        <field name="context">{'default_type_ligne': '4'}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('credit_bancaire.view_operation_deb_4_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('credit_bancaire.view_operation_deb_4_form')})]"/>
+    </record>
+
+    <menuitem id="operation_deb_4_menu"
+              name="Leasing adossé"
+              parent="operation_deb_menu"
+              action="operation_deb_4_action"
               sequence="20"/>
 
 </odoo>

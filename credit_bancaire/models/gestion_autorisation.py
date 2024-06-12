@@ -17,6 +17,8 @@ class Gestion_autorisation(models.Model):
     banque = fields.Many2one(
         'credit.banque', string='Banque', index=True, tracking=True, related="autorisation_global.banque",store=True)
     type = fields.Many2one(
+        'credit.type', string='Ligne de crédit', index=True, tracking=True,)
+    type_ids = fields.Many2many(
         'credit.type', string='Ligne de crédit', index=True, tracking=True, required=True)
     currency_id = fields.Many2one(
         'res.currency', string="Devise", company_dependent=True, default='base.DZD',
@@ -39,23 +41,44 @@ class Gestion_autorisation(models.Model):
     financement_hauteur = fields.Float(string='Financement à hauteur de %')
     delai_mobilisation = fields.Integer(string='Délai de mobilisation')
     is_decouvert = fields.Boolean(compute='_compute_decouvert',)
+    type_id = fields.Integer(string='type', compute='compute_type', store=True)
     state = fields.Selection([('draft', 'Brouillon'),
-                              ('confirmed', 'Confirmé')], string='Etat')
+                              ('confirmed', 'Confirmé')], string='Etat', default='draft')
 
-    @api.depends('type', 'montant')
+    @api.depends('type_ids')
+    def compute_type(self):
+        for rec in self:
+            if rec.type_ids:
+                asf = rec.type_ids.filtered(lambda l: l.id in [2, 3])
+                if asf:
+                    rec.type_id = 2
+
+            else:
+                rec.type_id = 0
+
+    @api.depends('type_ids', 'montant')
     def _compute_display(self):
         for rec in self:
-            if rec.type and rec.montant:
-                rec.display_name = rec.type.name + ' ( ' + str(rec.montant) + ' DA)'
-            else:
-                rec.display_name = 'Nouveau'
+            print('_compute_disp executed')
+            display_name = ''
+            if rec.type_ids and rec.montant:
+                for type in rec.type_ids:
+                    print(type.name)
+                    if type == rec.type_ids[0]:
+                        display_name = type.name
+                    else:
+                        display_name = display_name + ' / ' + type.name
+                    print(display_name)
+                display_name = display_name + ' ( ' + str(rec.montant) + ' DA)'
 
-    @api.depends('type', 'montant')
+            rec.display_name = display_name
+
+    @api.depends('type_ids', 'montant')
     def _compute_decouvert(self):
         print('_compute_decouvert executed')
         for rec in self:
-            if rec.type and rec.montant:
-                if rec.type.id == 1 and rec.montant >= 0:
+            if rec.type_ids and rec.montant:
+                if 1 in rec.type_ids.ids and rec.montant >= 0:
                     raise UserError(_('Vous devriez saisir une valeur négatif pour le montant de l\'autorisation'))
             rec.is_decouvert = False
 
@@ -89,7 +112,7 @@ class Gestion_autorisation(models.Model):
                 'montant_disponible': record.montant,
                 'ligne_autorisation': record.id,
                 'banque': record.autorisation_global.banque.id,
-                'type': record.type.id,
+                'type_ids': record.type_ids.ids,
             }
             if not q:
                 record.env['credit.disponible'].create(val)
@@ -143,9 +166,13 @@ class Autorisation_global(models.Model):
                     'montant_disponible': aut.montant,
                     'ligne_autorisation': aut.id,
                     'banque': record.banque.id,
-                    'type': aut.type.id,
+                    'type_ids': aut.type_ids.ids,
                 }
                 if not q:
                     aut.env['credit.disponible'].create(val)
+                    aut.state = 'confirmed'
+                else:
+                    q.write({'montant_disponible': aut.montant,
+                             'type_ids': aut.type_ids.ids})
                     aut.state = 'confirmed'
             record.state = 'confirmed'

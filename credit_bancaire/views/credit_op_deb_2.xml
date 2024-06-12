@@ -9,7 +9,7 @@
                     <button id="button_Confirm" name="action_Confirme" string="Confirmer"
                             class="btn-primary"
                             type="object"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -21,28 +21,43 @@
                     <group>
                         <group>
                             <field name="banque_id"/>
-                            <field name="type"/>
+                            <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
                             <field name="ligne_autorisation"/>
+                            <field name="type"/>
                             <field name="date_validite"/>
                             <field name="reference_credit"/>
                             <field name="ref_interne"/>
-                            <field name="client" string="Fournisseur"/>
+                            <field name="partner_id" string="Fournisseur" invisible="1"/>
                             <field name="type_ligne" invisible="1"/>
+                            <field name="montant_total_comp" invisible="1"/>
+                            <field name="montant_remb_comp" invisible="1"/>
                             <field name="taux" widget="percentage"/>
                         </group>
                         <group>
                             <field name="montant_debloque"/>
                             <field name="remboursement"/>
+                            <field name="date_prevue_deblocage"/>
                             <field name="deblocage_date"/>
                             <field name="echeance_date" string="Date de 1er échéance"/>
                             <field name="echeance_fin_date" string="Date du dernier échéance"/>
                             <field name="taux_apply" string="Taux Appliqué"/>
-                            <field name="montant_total" string="Montant de l`échéance" readonly="type_ligne in ['1', '3']"/>
+                            <field name="montant_total" string="Montant de l`échéance"
+                                   readonly="type_ligne in ['1', '3']" invisible="1"/>
                             <field name="montant_total_comp" invisible="1"/>
                         </group>
                     </group>
-                    <notebook invisible="type not in [9,10,11,12]">
+                    <notebook invisible="type_id not in [9,10,11,12]">
                         <page string="Echeances partiels">
+                            <group>
+                                <field name="template_file" filename="template_name"/>
+                                <field name="type_id" invisible="1"/>
+                                <field name="template_name" invisible="1"/>
+                                <field name="import_file" filename="import_name"/>
+                                <field name="import_name" invisible="1"/>
+                            </group>
+                            <button name="importExcel" string="Importer"
+                                    class="btn-primary"
+                                    type="object"/>
                             <tree>
                                 <field name="echeances"/>
                             </tree>
@@ -70,15 +85,17 @@
             <tree sample="1">
                 <field name="name" readonly="1"/>
                 <field name="ligne_autorisation"/>
-                <field name="banque_id"/>
                 <field name="type"/>
+                <field name="banque_id"/>
+                <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
                 <field name="deblocage_date"/>
                 <field name="echeance_date" optional="show"/>
                 <field name="reference_credit" optional="hide"/>
                 <field name="ref_interne" optional="hide"/>
-                <field name="client"/>
+                <field name="partner_id"/>
                 <field name="montant_debloque" sum="Total amount" widget="monetary" optional="show"/>
                 <field name="montant_rembourser" sum="Total amount" widget="monetary" optional="show"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'" decoration-warning="state == 'extended'" />
             </tree>
         </field>
     </record>

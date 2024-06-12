@@ -32,12 +32,10 @@ class Deblocage(models.Model):
     lc_id = fields.Many2one('purchase.import.folder', string='LC Ouvertes')
     remdoc = fields.Char(string='REMDOC')
 
-
     def action_create_file(self):
         for rec in self:
             if rec.type_ligne == '1':
                 if rec.type == self.env.ref('credit_bancaire.04'):
-                    print('LC A VUE')
                     view_id = self.env.ref('purchase_import.view_purchase_import_folder_form').id
                     return {
                         'type': 'ir.actions.act_window',
@@ -45,7 +43,12 @@ class Deblocage(models.Model):
                         'res_model': 'purchase.import.folder',
                         'view_mode': 'form',
                         'views': [[view_id, 'form']],
-                        'context': {'default_deblocage_id': rec.id,'deblocage': rec.id}
+                        'context': {'default_deblocage_id': rec.id,
+                                    'default_partner_id': rec.partner_id.id,
+                                    'default_bank_id': rec.banque_id.id,
+                                    'default_montant_debloque_spot_prefin': rec.montant_debloque,
+                                    'default_date_ouverture_lc': rec.deblocage_date,
+                                    'deblocage': rec.id}
                     }
 
     def open_folder(self):
@@ -62,3 +65,21 @@ class Deblocage(models.Model):
                         'view_mode': 'form',
                         'views': [[view_id, 'form']],
                     }
+
+
+class Payment(models.Model):
+    _inherit = 'account.payment'
+
+    dossier = fields.Many2one('purchase.import.folder', string='Référence Dom.',
+                              domain="[('partner_id', '=', partner_id)]")
+    lc_id = fields.Many2one('purchase.import.folder', string='Référence LC',
+                            domain="[('journal_id', '=', journal_id)]")
+
+    @api.model
+    def create(self, vals):
+        res = super(Payment, self).create(vals)
+        if 'dossier_id' in self.env.context:
+            dossier = self.env['purchase.import.folder'].browse(self.env.context.get('dossier_id'))
+            if dossier:
+                dossier.payment_id = res.id
+        return res

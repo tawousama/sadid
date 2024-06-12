@@ -33,6 +33,18 @@
         </field>
     </record>
 
+    <record id="account_payment_inherit" model="ir.ui.view">
+        <field name="name">account.payment.view.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_bank_id" position="after">
+                <field name="dossier" invisible="partner_type != 'supplier' or type_supplier != 'etranger'"/>
+                <field name="lc_id" invisible="partner_type != 'supplier' or autre_type not in ['provision']"/>
+            </field>
+        </field>
+    </record>
+
 
     <record id="view_operation_deb_1_form_inherit" model="ir.ui.view">
         <field name="name">credit.operation.deb.view.inherit</field>
@@ -43,18 +55,21 @@
                 <xpath expr="//sheet/group" position="inside">
                     <group>
                         <field name="folder_id" invisible="1"/>
-                        <field name="lc_id" invisible="type not in [6, 7]"/>
-                        <field name="remdoc" invisible="type not in [6, 7]"/>
+                        <field name="lc_id" invisible="type_id not in [6, 7]"/>
+                        <field name="lc_id" invisible="type_id not in [5]"
+                               string="Référence COMEX"
+                               domain="[('bank_id', '=', banque_id)]"/>
+                        <field name="remdoc" invisible="type_id not in [6, 7]"/>
                     </group>
                 </xpath>
                 <xpath expr="//header" position="inside">
-                    <button id="button_open_file" name="action_create_file" string="Créer un LC"
-                            class="btn-primary" invisible="type != 4 or folder_id"
+                    <button id="button_open_file" name="action_create_file" string="Créer une LC"
+                            class="btn-primary" invisible="type_id != 4 or folder_id"
                             type="object"/>
                 </xpath>
                 <xpath expr="//sheet/div[@name='button_box']" position="inside">
                     <button name="open_folder" type="object" class="oe_stat_button"
-                            invisible="type != 4 or not folder_id"
+                            invisible="type_id != 4 or not folder_id"
                             icon="fa-file-text-o">
                         <div class="o_field_widget o_stat_info">
                             <span class="o_stat_text">LC ouverte</span>
@@ -64,4 +79,23 @@
             </data>
         </field>
     </record>
+    <record id="payment_provision_action" model="ir.actions.act_window">
+        <field name="name">Provision LC</field>
+        <field name="res_model">account.payment</field>
+        <field name="domain">[('autre_type', '=', 'provision')]</field>
+        <field name="context">{
+            'default_payment_type': 'outbound',
+            'default_partner_type': 'supplier',
+            'default_autre_type': 'provision',
+            'default_move_journal_types': ('bank', 'cash'),
+            'display_account_trust': True,
+            }
+        </field>
+        <field name="view_mode">tree,kanban,form,graph,activity</field>
+    </record>
+
+    <menuitem id="payment_provision_menu"
+              name="Provision LC"
+              parent="credit_bancaire.payment_autre_menu"
+              action="payment_provision_action"/>
 </odoo>

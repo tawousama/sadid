@@ -25,7 +25,7 @@
                         <page string="Autorisations">
                             <field name="ligne_autorisation">
                                 <tree>
-                                    <field name="type"/>
+                                    <field name="type_ids" widget="many2many_tags"/>
                                     <field name="condition" optional="hide"/>
                                     <field name="validite"/>
                                     <field name="rappel"/>
@@ -36,19 +36,21 @@
                                     <header>
                                         <button id="button_Disponibilité" name="action_Disponible" string="Confirmer"
                                                 class="btn-primary"
-                                                type="object"/>
+                                                type="object" invisible="1"/>
                                         <field name="state" widget="statusbar"/>
                                     </header>
                                     <sheet>
                                         <group>
-                                            <field name="type"/>
+
+                                            <field name="type_ids" widget="many2many_tags"/>
                                             <field name="montant"/>
                                             <field name="financement_hauteur" widget="percentage"
-                                                   invisible="type not in [2,3]"/>
-                                            <field name="delai_mobilisation" invisible="type not in [2,3]"/>
+                                                   invisible="type_id in [2, 3]"/>
+                                            <field name="delai_mobilisation" invisible="type_id in [2, 3]"/>
                                             <field name="condition_objet"/>
                                             <field name="condition"/>
                                             <field name="is_decouvert" invisible="1"/>
+                                            <field name="type_id" invisible="1"/>
                                         </group>
                                         <group>
                                             <field name="date_limit"/>

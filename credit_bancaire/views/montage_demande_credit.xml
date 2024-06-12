@@ -27,6 +27,7 @@
                                 icon="fa-solid fa-folder-open"/>-->
                     </div>
                     <group>
+                        <field name="name"/>
                         <field name="banque"/>
                         <field name="date"/>
                         <field name="agence"/>
@@ -50,6 +51,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="name"/>
+                <field name="banque"/>
                 <field name="date"/>
             </tree>
         </field>

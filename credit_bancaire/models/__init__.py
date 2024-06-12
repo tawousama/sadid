@@ -6,3 +6,4 @@ from . import type_credit_line, banque, gestion_autorisation, \
     operation_payement, operation_prolongement_date, gestion_echeance, mon_agence, montage_demande_credit
 from . import new_model
 from . import wizard
+from . import cashflow

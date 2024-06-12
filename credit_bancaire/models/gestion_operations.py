@@ -30,6 +30,8 @@ class Gestion_operation(models.Model):
     partner = fields.Many2one('res.partner', string='Client / Fournisseur', index=True, tracking=True)
     paiement = fields.Boolean('paiement.xml', default=False)
     prorogation = fields.Boolean('prorogation', default=False)
+    type_ids = fields.Many2many(
+        'credit.type', string='Ligne de crédit', index=True, tracking=True, related="ligne_autorisation.type_ids")
 
     ligne_autorisation = fields.Many2one('credit.autorisation', string='Autorisation', compute='_compute_autorisation', readonly=True)
 

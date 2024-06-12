@@ -14,7 +14,7 @@
 
                     <group>
                         <field name="banque"/>
-                        <field name="type"/>
+                        <field name="type_ids" widget="many2many_tags"/>
                         <field name="montant_disponible"/>
                         <field name="ligne_autorisation"/>
                     </group>
@@ -35,7 +35,7 @@
         <field name="arch" type="xml">
             <tree sample="1" create="false">
                 <field name="banque"/>
-                <field name="type"/>
+                <field name="type_ids" widget="many2many_tags"/>
                 <field name="montant_autorisation" sum="Total amount" widget="monetary" optional="show"/>
                 <field name="montant_disponible" sum="Total amount" widget="monetary" optional="show"/>
             </tree>

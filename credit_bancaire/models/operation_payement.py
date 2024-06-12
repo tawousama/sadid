@@ -21,6 +21,9 @@ class Gestion_payement(models.Model):
         'credit.banque', string='Banque',  index=True, tracking=True, required=True)
     type = fields.Many2one(
         'credit.type', string='Ligne de crédit', index=True, tracking=True,compute="_compute_type")
+    type_ids = fields.Many2many(
+        'credit.type', string='Ligne de crédit', index=True, tracking=True, related="ligne_autorisation.type_ids")
+
     ligne_autorisation = fields.Many2one('credit.autorisation', string='Autorisation',domain="[('banque.id', '=', banque),('type.id', '=', type)]", required=True,ondelete='cascade',compute='_compute_ligne_autorisation' )
     state = fields.Selection([('draft', 'Brouillon'),
                               ('confirmed', 'Confirmé')], default='draft')

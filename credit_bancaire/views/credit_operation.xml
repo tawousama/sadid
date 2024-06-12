@@ -15,7 +15,7 @@
 
                     <group>
                         <field name="banque"/>
-                        <field name="type"/>
+                    <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
                         <field name="deblocage_date"/>
                         <field name="montant_debloque"/>
                         <field name="montant_rembourser"/>
@@ -52,7 +52,7 @@
         <field name="arch" type="xml">
             <tree sample="1">
                 <field name="banque"/>
-                <field name="type"/>
+                    <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
                 <field name="deblocage_date"/>
                 <field name="montant_debloque" sum="Total amount" widget="monetary" optional="show"/>
                 <field name="montant_rembourser" sum="Total amount" widget="monetary" optional="show"/>

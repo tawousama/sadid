@@ -12,7 +12,10 @@ class Gestion_disponible(models.Model):
     banque = fields.Many2one(
         'credit.banque', string='Banque', index=True, tracking=True, required=True, readonly=True,)
     type = fields.Many2one(
-        'credit.type', string='Ligne de crédit', index=True, tracking=True, required=True, readonly=True,)
+        'credit.type', string='Ligne de crédit', index=True, tracking=True, readonly=True,)
+    type_ids = fields.Many2many(
+        'credit.type', string='Ligne de crédit', index=True, tracking=True, required=True)
+
     currency_id = fields.Many2one(
         'res.currency', string="Devise", company_dependent=True, default='base.DZD',
         help="This currency will be used, instead of the default one, for purchases from the current partner")
@@ -22,6 +25,8 @@ class Gestion_disponible(models.Model):
     montant_autorisation = fields.Float(string="Autorisation", compute='_compute_montant', store=True, readonly=True)
     montant_difference = fields.Float(string="Montant Debloqué", compute='_compute_montant_diff', store=True)
     debloque = fields.One2many('credit.operation.deb', 'disponible_id', string='Opération de déblocage', )
+    comment = fields.Text(string='Commentaire')
+    date_report = fields.Date(string='Date')
 
     @api.model
     def create(self, vals):
@@ -40,7 +45,7 @@ class Gestion_disponible(models.Model):
         for rec in self:
 
             autorisations = rec.env['credit.autorisation'].search([])
-            print('autorisations = ',autorisations)
+            print('autorisations = ', autorisations)
 
             for auto in autorisations:
                 qsdeb = rec.env['credit.operation.deb'].search([('ligne_autorisation.banque.id', '=', auto.banque.id),
@@ -164,6 +169,114 @@ class Gestion_disponible(models.Model):
                 somme = sum(tresorerie.mapped('montant_difference'))
             signature_list.append(somme)
         return signature_list
+
+    @api.model
+    def _get_taux(self):
+        header = self._prepare_modif()
+        signature_list = []
+        for h in header[1:]:
+            banque_id = self.env['credit.banque'].search([('name', '=', h)])
+            autorisation = self.env['credit.autorisation_global'].search([('banque', '=', banque_id.id)])
+            if autorisation:
+                signature_list.append(autorisation.taux)
+        return signature_list
+
+    @api.model
+    def _get_taux_total(self):
+        total = self._get_taux()
+        try:
+            taux = sum(total) / len(total)
+        except:
+            taux = 0
+        return taux
+
+    @api.model
+    def _get_total_eng(self):
+        total = self._get_total_engagement()
+        try:
+            taux = sum(total)
+        except:
+            taux = 0
+        return taux
+
+    @api.model
+    def _get_total_deblo(self):
+        total = self._get_total_deb()
+        try:
+            taux = sum(total)
+        except:
+            taux = 0
+        return taux
+
+    @api.model
+    def _get_total_deblo_ratio(self):
+        tot = self._get_total_eng()
+        total = self._get_total_deblo()
+        print('tot', tot)
+        print('total', total)
+        try:
+            taux = total / tot
+        except:
+            taux = 0
+        return taux
+
+    @api.model
+    def _get_total_engagement(self):
+        header = self._prepare_modif()
+        signature_list = []
+        for h in header[1:]:
+            banque_id = self.env['credit.banque'].search([('name', '=', h)])
+            autorisation = self.env['credit.autorisation_global'].search([('banque', '=', banque_id.id)])
+            if autorisation:
+                somme = sum(autorisation.ligne_autorisation.mapped('montant'))
+                signature_list.append(somme)
+        return signature_list
+
+    @api.model
+    def _get_total_deb(self):
+        header = self._prepare_modif()
+        signature_list = []
+        for h in header[1:]:
+            banque_id = self.env['credit.banque'].search([('name', '=', h)])
+            deb = self.env['credit.operation.deb'].search([('banque_id', '=', banque_id.id)])
+            if deb:
+                somme = sum(deb.mapped('montant_debloque'))
+                signature_list.append(somme)
+
+        return signature_list
+
+    @api.model
+    def _get_echeances(self):
+        header = self._prepare_modif()
+        signature_list = []
+        for h in header[1:]:
+            banque_id = self.env['credit.banque'].search([('name', '=', h)])
+            echeance = self.env['credit.echeance'].search([('banque', '=', banque_id.id), ('echeance_date', '!=', False)])
+            if echeance:
+                sorted_echeance = sorted(echeance.mapped('echeance_date'))
+                print(sorted_echeance)
+                signature_list.append(sorted_echeance[0])
+            else:
+                signature_list.append('-')
+        return signature_list
+
+    @api.model
+    def _get_total_deb_ratio(self):
+        header = self._prepare_modif()
+
+        signature_list = []
+        for h in header[1:]:
+            banque_id = self.env['credit.banque'].search([('name', '=', h)])
+            deb = self.env['credit.operation.deb'].search([('banque_id', '=', banque_id.id)])
+            autorisation = self.env['credit.autorisation_global'].search([('banque', '=', banque_id.id)])
+            if deb:
+                total_aut = sum(autorisation.ligne_autorisation.mapped('montant'))
+                somme = sum(deb.mapped('montant_debloque'))
+                ratio = somme / total_aut if total_aut != 0 else 0
+                signature_list.append(ratio)
+
+        return signature_list
+
     @api.model
     def _get_solde(self):
         somme = 0
@@ -174,7 +287,7 @@ class Gestion_disponible(models.Model):
             banque_id = self.env['credit.banque'].search([('name', '=', h)])
             journ = banque_id.journal_id._get_journal_dashboard_outstanding_payments()
             print(journ)
-            print(journ[banque_id.journal_id.id][1])
+            #print(journ[banque_id.journal_id.id][1])
             if journ:
                 somme = journ[banque_id.journal_id.id][1]
             solde_list.append(somme)

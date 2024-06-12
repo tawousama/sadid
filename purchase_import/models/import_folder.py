@@ -12,7 +12,9 @@ class ImportFolder(models.Model):
     reference = fields.Char(string='N. Commande')
     note = fields.Text(string='Note')
     proformat = fields.Char(string="Proforma")
-    partner_id = fields.Many2one("res.partner", string='Fournisseur')
+    montant_proformat = fields.Float(string="Montant de Proforma")
+    designation_marchandise = fields.Text(string="Designation de marchandise")
+    partner_id = fields.Many2one("res.partner", string='Fournisseur', domain="[('partner_type', '=', 'supplier')]")
     #transitaire_id = fields.Many2one("res.partner", string='Transitaire')
     date_usine = fields.Date(string="Date d'arrivage")
     currency_id = fields.Many2one(
@@ -25,6 +27,7 @@ class ImportFolder(models.Model):
         ('LC_a_DP', 'LC à DP'),
         ('REMDOC_a_vue', 'REMDOC à vue'),
         ('REMDOC_a_DP', 'REMDOC à DP'),
+        ('transfert_libre', 'Transfert Libre')
     ],
         default='LC_a_vue',
         string="Mode de paiement",
@@ -49,9 +52,6 @@ class ImportFolder(models.Model):
     reference_dossier_banque = fields.Char(string="Référence dossier banque")
     date_ouverture_lc = fields.Date(string="Date d`ouverture LC")
     montant = fields.Monetary(string="Montant")
-    devise = fields.Many2one(
-       'res.currency', string="Devise", company_dependent=True,
-        help="This currency will be used, instead of the default one, for purchases from the current partner")
     montant_dz = fields.Monetary(string='Montant DZD.')
     incoterm = fields.Many2one('account.incoterms',string="Incoterm")
     methode_expedition = fields.Selection([('by_sea','voie maritime'),('by_air','voie aérienne')],string="Méthode d`expédition", default="by_sea")
@@ -75,7 +75,7 @@ class ImportFolder(models.Model):
     montant_a_rembourser_spot_prefin = fields.Monetary(string="Montant à rembourser SPOT Prefin")
 
     #douane
-    montant_droits_douane = fields.Monetary(string="Montant droits de douane")
+    montant_droits_douane = fields.Float(string="Montant droits de douane")
     financement_droits_douane = fields.Boolean(string="Financement droits de douane")
     date_deblocage_fin_douane = fields.Date(string="Date de déblocage Fin.Douane")
     date_echeance_fin_douane = fields.Date(string="Date d`échéance Fin.Douan")
@@ -97,6 +97,31 @@ class ImportFolder(models.Model):
     delai_payment = fields.Integer(string='Délai de paiement')
     date_payment = fields.Date(string='Date de paiement de fournisseur')
     date_validation = fields.Date(string='Date de validation')
+    payment_id = fields.Many2one('account.payment', string='Référence Paiement')
+    journal_id = fields.Many2one('account.journal', string='Journal', related='bank_id.journal_id')
+    douane_id = fields.Many2one('credit.operation.deb',
+                                string='Financement droit de douane',
+                                domain="[('banque_id', '=', bank_id)]")
+    provision_id = fields.Many2one('account.payment', string='Provision d\'ouverture',
+                                   domain="[('autre_type', '=', 'provision'), ('journal_id', '=', journal_id), ('lc_id', '=', id)]")
+    def create_payment(self):
+        for rec in self:
+            view_id = self.env.ref('account.view_account_payment_form').id
+            context = {'dossier_id': rec.id,
+                       'default_partner_type': 'supplier',
+                       'default_type_supplier': 'local',
+                       'default_payment_type': 'outbound',
+                       'default_journal_id': rec.bank_id.journal_id.id}
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _('Paiement'),
+                'view_mode': 'form',
+                'res_model': 'account.payment',
+                'target': 'new',
+                'view_id': view_id,
+                'context': context,
+            }
+
     @api.depends('payment_mode')
     def activate_currencies(self):
         for rec in self:
@@ -130,22 +155,21 @@ class ImportFolder(models.Model):
             print("get_keys"+self.get_key_actuel(self.state_actuel)+" dddd"+self.state_actuel)
 
     nouv_list = [
-        ('1', 'Brouillon'),
-        ('2', 'Confirmation'),
-        ('3', 'Pré-domiciliation'),
-        ('4', 'Ouverture LC'),
-        ('5', 'En cours de production'),
-        ('6', 'Expédition marchandise'),
-        ('7', 'Récéption documants (Banque)'),
-        ('8', 'Paiement fournisseur'),
-        ('9', 'Retrait documents (banque)'),
-        ('10', 'Dépôt transitaire/Documents'),
-        ('11', 'Arrivée marchandise'),
-        ('12', 'Dédouanement en cours'),
-        ('13', 'Chèque de douane'),
-        ('14', 'Réception marchandise'),
-        ('15', 'Récéption dossier Transit'),
-        ('16', 'Terminée')
+        ('1', 'Taxe de Domiciliation'),
+        ('2', 'Pré-domiciliation'),
+        ('3', 'Ouverture LC'),
+        ('4', 'En cours de production'),
+        ('5', 'Expédition marchandise'),
+        ('6', 'Récéption documants (Banque)'),
+        ('7', 'Paiement fournisseur'),
+        ('8', 'Retrait documents (banque)'),
+        ('9', 'Dépôt transitaire/Documents'),
+        ('10', 'Arrivée marchandise'),
+        ('11', 'Dédouanement en cours'),
+        ('12', 'Chèque de douane'),
+        ('13', 'Réception marchandise'),
+        ('14', 'Récéption dossier Transit'),
+        ('15', 'Terminée')
     ]
     etat = fields.Selection(selection=nouv_list, string="etat",required=True, readonly=True, copy=False,
                                 tracking=True, default='1')

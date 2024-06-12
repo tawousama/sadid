@@ -46,7 +46,6 @@ class Montage_demande_credit(models.Model):
                 'target': 'new',
                 'context': {
                     'default_folder_id': self.id,
-
                     'default_mail_template_id': template.id,
                 },
             }

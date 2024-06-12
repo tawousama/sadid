@@ -15,14 +15,14 @@
                     </group>
                 </sheet>
                 <button id="button_Linkedin" name="action_linkedin" string="Chercher ce profil sur linkedin"
-                                class="btn-primary"
-                                type="object"/>
+                        class="btn-primary"
+                        type="object"/>
                 <button id="button_Linkedin_cancel" name="action_cancel_linkedin" string="Annuler"
-                                class="btn-secondary"
-                                type="object"/>
+                        class="btn-secondary"
+                        type="object"/>
                 <field name="linkedin_accounts" string="Resultats de recherche" mode="tree" readonly="1">
                     <tree>
-                        <field name="title" />
+                        <field name="title"/>
                         <field name="link" widget="url" text="voir le profil"/>
                     </tree>
                 </field>
@@ -55,6 +55,49 @@
         <field name="view_mode">form</field>
     </record>
 
+    <record id="res_partner_view_inherited" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='internal_notes']" position="after">
+                <page name="cards" string="Cartes">
+                    <field name="cart_ids" context="{'default_partner_id': id}">
+                        <tree>
+                            <field name="number_card"/>
+                            <field name="validity_date"/>
+                        </tree>
+                        <form>
+                            <group>
+                                <field name="number_card"/>
+                                <field name="validity_date"/>
+                            </group>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='company_type']" position="after">
+                <br/>
+                <field name="partner_type" widget="radio" options="{'horizontal': true}"/>
+                <br/>
+                <field name="supplier_type" widget="radio" options="{'horizontal': true}"
+                       invisible="partner_type != 'supplier'"/>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='vat']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='vat']" position="after">
+
+                    <field name="nif" placeholder="NIF"/>
+                    <field name="nis" placeholder="NIS"/>
+                    <field name="rc" placeholder="RC"/>
+
+            </xpath>
+        </field>
+    </record>
     <!--<menuitem id="credit_contact_menu_credit"
               name="Mes contacts"
               parent="conf_credit"

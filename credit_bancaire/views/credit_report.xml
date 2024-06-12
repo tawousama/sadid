@@ -12,6 +12,17 @@
         <menuitem id="menu_client_action_example"
                   name="Chèques en circulation"
                   action="credit_bancaire.action_client_example"
-                  parent="menu_credit"/>
+                  parent="analyse_credit"/>
+
+        <record id="cashflow_report_example" model="ir.actions.client">
+            <field name="name">Cash-Flow Prévisionnel</field>
+            <field name="tag">cashflow_dashboard</field>
+        </record>
+
+        <!-- Menu pour déclencher l'action client -->
+        <menuitem id="menu_cashflow_report"
+                  name="Cash-Flow Prévisionnel"
+                  action="credit_bancaire.cashflow_report_example"
+                  parent="analyse_credit"/>
     </data>
 </odoo>

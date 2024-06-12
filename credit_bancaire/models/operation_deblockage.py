@@ -1,3 +1,7 @@
+import base64
+import io
+from openpyxl import load_workbook
+import xlsxwriter
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError, UserError
 
@@ -13,19 +17,24 @@ class Operation_Deb(models.Model):
                        default=lambda self: _('New'))
     type_ligne = fields.Selection([('1', 'Crédit d\'exploitation'),
                                    ('2', 'Crédit d\'investissement'),
-                                   ('3', 'Leasing')], )
-    state = fields.Selection([('draft', 'Brouillon'),
+                                   ('3', 'Leasing'),
+                                   ('4', 'Leasing adossé')], )
+    state = fields.Selection([('draft', 'Prévisionnel'),
                               ('confirmed', 'Confirmé'),
                               ('extended', 'Prolongé')], default='draft')
     montant_debloque = fields.Float(string="Montant débloqué", store=True, required=True)
-    montant_add = fields.Float(string="Interet", store=True, compute='compute_interet')
+    montant_add = fields.Float(string="Interet", store=True)
+    montant_add_compute = fields.Float(string="Interet", store=True, compute='compute_interet')
     montant_total = fields.Float(string="Montant Total",)
     montant_total_comp = fields.Float(string="Montant Total", store=True, compute='_compute_total')
-    montant_rembourser = fields.Float(string="Montant a rembourser", store=True, compute='_compute_reste')
-    deblocage_date = fields.Date("Date de déblocage", tracking=True, required=True)
+    montant_rembourser = fields.Float(string="Montant a rembourser")
+    montant_remb_comp = fields.Float(string="Montant a rembourser", store=True, compute='_compute_reste')
+    deblocage_date = fields.Date("Date de déblocage", tracking=True,)
+    date_prevue_deblocage = fields.Date("Date prévue de déblocage", tracking=True)
     echeance_date = fields.Date("Date d`échéance", tracking=True)
     echeance_fin_date = fields.Date("Date d`échéance", tracking=True)
     note = fields.Text(string='Description', tracking=True)
+    partner_id = fields.Many2one('res.partner', string='Client/ Fournisseur')
     reference_credit = fields.Char(string='Référence du dossier banque', tracking=True)
     reference_interne = fields.Many2one('account.move', string='Référence interne (N. facture)', tracking=True)
     ref_interne = fields.Char(string='Référence interne (N. facture)')
@@ -34,17 +43,24 @@ class Operation_Deb(models.Model):
         'res.users', string='Order representative', index=True, tracking=True, readonly=True,
         default=lambda self: self.env.user, check_company=True)
     partner = fields.Many2one('res.partner', string='Client / Fournisseur', index=True, tracking=True)
-
+    template_file = fields.Binary(string='Template', compute='_compute_template_file')
+    template_name = fields.Char(string='template', default='Template Excel')
+    import_file = fields.Binary(string='Importation')
+    import_name = fields.Char(string='template', default='Fichier Excel')
     banque_id = fields.Many2one(
         'credit.banque', string='Banque', index=True, tracking=True, required=True,
                                          domain="[('has_autorisation', '=', True)]")
     type = fields.Many2one(
-        'credit.type', string='Ligne de crédit', index=True, tracking=True, required=True,
-                                                    related="ligne_autorisation.type")
+        'credit.type', string='Ligne de crédit', index=True, tracking=True, domain="[('id', 'in', type_ids)]")
     ligne_autorisation = fields.Many2one('credit.autorisation', string='Autorisation',
                                          domain="[('banque.id', '=', banque_id)]", required=True,
                                          ondelete='cascade')
-
+    type_ids = fields.Many2many(
+        'credit.type',
+        string='Ligne de crédit',
+        compute='_compute_type_ids',
+        store=True
+    )
     date_create = fields.Datetime(string='Date de création', required=True, index=True, copy=False,
                                   default=fields.Datetime.now,
                                   help="Indicates the date the operation deb was created.",
@@ -69,12 +85,37 @@ class Operation_Deb(models.Model):
                                        related='ligne_autorisation.financement_hauteur')
     delai_mobilisation = fields.Integer(string='Délai de mobilisation',
                                         related='ligne_autorisation.delai_mobilisation')
+    numero_traite = fields.Char(string='Numéro traite')
+
+    @api.depends('ligne_autorisation')
+    def _compute_type_ids(self):
+        for record in self:
+            if record.ligne_autorisation:
+                if record.ligne_autorisation.type_ids:
+                    record.type_ids = record.ligne_autorisation.type_ids
+                    record.type = record.ligne_autorisation.type_ids[0]
+                else:
+                    record.type_ids = [(5, 0, 0)]
+            else:
+                record.type_ids = [(5, 0, 0)]  # Clear the field if no ligne_autorisation
 
     @api.depends('type', 'amount_invoice',  'deblocage_date')
     def compute_type(self):
         for rec in self:
             if rec.type:
                 rec.type_id = rec.type.id
+                """asf = rec.type_ids.filtered(lambda l: l.id in [2, 3])
+                if asf:
+                    rec.type_id = 2
+                traite = rec.type_ids.filtered(lambda l: l.id in [13])
+                if traite:
+                    rec.type_id = 13
+                lc = rec.type_ids.filtered(lambda l: l.id in [4])
+                if lc:
+                    rec.type_id = 4
+                leasing = rec.type_ids.filtered(lambda l: l.id in [9, 10, 11, 12])
+                if leasing:
+                    rec.type_id = 9"""
             else:
                 rec.type_id = 0
             if rec.deblocage_date and rec.delai_mobilisation:
@@ -82,6 +123,47 @@ class Operation_Deb(models.Model):
                 rec.echeance_date = date_echeance
             if rec.financement_hauteur and rec.amount_invoice:
                 rec.montant_debloque = rec.financement_hauteur * rec.amount_invoice
+
+    def _compute_template_file(self):
+        for rec in self:
+            output = io.BytesIO()
+            workbook = xlsxwriter.Workbook(output)
+            worksheet = workbook.add_worksheet()
+
+            # Ajouter les en-têtes de colonne
+            headers = ['Montant à rembourser', 'Date d\'écheance']
+            for col, header in enumerate(headers):
+                worksheet.write(0, col, header)
+
+            workbook.close()
+            output.seek(0)
+
+            # Convertir le fichier Excel en une chaîne d'octets et le sauvegarder dans le champ binaire
+            rec.template_file = base64.b64encode(output.getvalue())
+
+    def importExcel(self):
+        for rec in self:
+            if rec.import_file:
+                wb = load_workbook(filename=io.BytesIO(base64.b64decode(rec.import_file)))
+                ws = wb.active
+
+                records_to_create = []
+
+                # Iterate through rows and create records
+                for row in ws.iter_rows(min_row=2, values_only=True):  # Assuming data starts from the second row
+                    amount, due_date = row[:2]
+                    print(row)
+                    print(due_date)
+                    record_vals = {
+                        'montant_rembourser': amount,
+                        'echeance_date': due_date,
+                        'ref_opr_deb': rec.id
+                    }
+                    records_to_create.append(record_vals)
+                print(records_to_create)
+                # Create records using Odoo ORM
+                for item in records_to_create:
+                    self.env['credit.operation.deb.echeance'].create(item)
 
     @api.model
     def create(self, vals):
@@ -163,8 +245,13 @@ class Operation_Deb(models.Model):
         for rec in self:
             disponible = rec.env['credit.disponible'].search([('ligne_autorisation', '=', rec.ligne_autorisation.id)])
             m_dispo = rec.ligne_autorisation.montant - rec.montant_rembourser
+
+
             print('mdispo1 = ', m_dispo)
+            if not rec.deblocage_date:
+                raise UserError('Vous devriez saisir d\'abord la date de deblocage')
             if rec.montant_rembourser < rec.ligne_autorisation.montant:
+                m_dispo = disponible.montant_disponible - rec.montant_rembourser
                 if not disponible:
                     disponible.create({
                         'montant_disponible': m_dispo,
@@ -174,8 +261,9 @@ class Operation_Deb(models.Model):
                         'debloque': rec
                     })
                 elif disponible.debloque != rec:
-                    m_dispo = disponible.montant_disponible - rec.montant_rembourser
                     print('mdispo2 = ', m_dispo)
+                    if m_dispo < 0:
+                        raise UserError('Montant non disponible')
                     disponible.write({'debloque': rec, 'montant_disponible': m_dispo})
             else:
                 raise ValidationError(_("Le montant à rembourser est superieur à l'autorisé"))
@@ -274,7 +362,8 @@ class Operation_Deb(models.Model):
             else:
                 print(rec.echeance_date_new)
                 rec.ref_opr_deb.echeance_date = rec.echeance_date_new
-                ech = rec.env['credit.echeance'].search([('ref_opr_deb','=',rec.ref_opr_deb.id),('echeance','=',None)])
+                ech = rec.env['credit.echeance'].search([('ref_opr_deb', '=', rec.ref_opr_deb.id),
+                                                         ('echeance', '=', None)])
                 ech.echeance_date = rec.echeance_date_new
                 pay = rec.env['credit.operation.p'].search(
                     [('ref_opr_deb', '=', rec.ref_opr_deb.id), ('echeance', '=', None)])
@@ -300,12 +389,12 @@ class Operation_Deb(models.Model):
                 rec.montant_add = 0
             rec._compute_total()
 
-    @api.depends('banque', 'type')
+    '''@api.depends('banque', 'type')
     def _compute_autorisation(self):
         for rec in self:
             rec.ligne_autorisation = rec.env['credit.autorisation'].search(
                 [('banque.name', '=', rec.banque_id.name), ('type.name', '=', rec.type.name)])
-            print(rec.ligne_autorisation)
+            print(rec.ligne_autorisation)'''
 
     @api.depends('montant_debloque', 'montant_add')
     def _compute_total(self):

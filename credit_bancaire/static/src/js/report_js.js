@@ -8,10 +8,7 @@ const actionRegistry = registry.category('actions');
 class EmployeeDashboard extends Component {
     setup() {
         super.setup();
-        this.state = useState({
-            startDate: '',
-            endDate: '',
-        });
+
         this.orm = useService("orm");
         this.employeeDashboard = useState({ data: [] , header : [], pay_customer: [], data_supplier: [], pay_supplier:[], total: []});
         onMounted(() => {
@@ -21,10 +18,10 @@ class EmployeeDashboard extends Component {
 
     async loadData() {
         try {
-            console.log(this.state.startDate);
             const data = await this.orm.call(
-                'account.payment','get_time_off',[this.state.startDate,this.state.endDate],
+                'account.payment','get_time_off',[],
             );
+            console.log(1);
             var payCustomerRow = data.filter(function(row) {
                 return row[0] === 'Paiement clients';
             });
@@ -36,8 +33,10 @@ class EmployeeDashboard extends Component {
             this.employeeDashboard.data = invCustomerRow;
 
             const supplier_data = await this.orm.call(
-                'account.payment','get_supplier_off',[this.state.startDate,this.state.endDate],
+                'account.payment','get_supplier_off',[],
             );
+
+            console.log(2);
             var paySupplierRow = supplier_data.filter(function(row) {
                 return row[0] === 'Paiement fournisseurs';
             });
@@ -48,13 +47,16 @@ class EmployeeDashboard extends Component {
             this.employeeDashboard.pay_supplier = paySupplierRow;
             this.employeeDashboard.data_supplier = invSupplierRow;
             const total = await this.orm.call(
-                'account.payment','get_total',[this.state.startDate,this.state.endDate],
+                'account.payment','get_total',[],
             );
+
+            console.log(3);
             this.employeeDashboard.total = total;
             console.log(total);
             const header = await this.orm.call(
-                'account.payment','get_header',[this.state.startDate,this.state.endDate],
+                'account.payment','get_header',[],
             );
+            console.log(4);
             this.employeeDashboard.header = header;
         } catch (error) {
             console.error('Failed to fetch data:', error);

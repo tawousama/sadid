@@ -1,23 +1,104 @@
 <?xml version="1.0"?>
 <odoo>
     <record id="payment_account_view_inherited" model="ir.ui.view">
-            <field name="name">account.payment.form.inherit</field>
-            <field name="model">account.payment</field>
-            <field name="inherit_id" ref="account.view_account_payment_form"/>
-            <field name="arch" type="xml">
-                <field name="ref" position="after">
-                    <field name="date_encaissement" invisible="partner_type != 'customer'"/>
-                    <field name="date_decaissement" invisible="partner_type != 'supplier'"/>
-                </field>
-                <field name="ref" position="attributes">
-                    <attribute name="string">Numéro de chèque</attribute>
-                </field>
+        <field name="name">account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="autre_type" invisible="1"/>
+                <field name="state_payment" invisible="autre_type not in ['salaire', 'g50', 'provision']"
+                       widget="statusbar"
+                       statusbar_visible="draft,posted"/>
             </field>
-        </record>
+            <field name="state" position="attributes">
+                <attribute name="invisible">autre_type in ['salaire', 'g50', 'provision']</attribute>
+            </field>
+            <field name="partner_id" position="after">
+                <field name="partner_id"
+                       invisible="partner_type != 'supplier' or autre_type in ['salaire', 'g50', 'provision'] or is_internal_transfer or type_supplier != 'local'"
+                       domain="[('partner_type', '=', 'supplier'),('supplier_type', '=', 'local')]"/>
+                <field name="type_supplier"
+                       invisible="partner_type != 'supplier' or autre_type in ['salaire', 'g50', 'provision']"/>
+                <field name="month" invisible="autre_type != 'salaire'"/>
+                <field name="year" invisible="autre_type != 'salaire'"/>
+            </field>
+            <field name="ref" position="after">
+                <field name="ref_supplier"
+                       invisible="partner_type != 'supplier' or autre_type  == 'salaire' or type_supplier != 'local' or (type_supplier == 'local' and payment_mode not in ['cheque', 'bank_cheque'])"
+                       string="Numéro de chèque"/>
+                <field name="date_encaissement_dec" invisible="partner_type != 'customer'"/>
+                <field name="date_encaissement_dec" string="Date de débit"
+                       invisible="partner_type != 'supplier' or autre_type in ['salaire'] or type_supplier != 'etranger'"/>
+                <field name="comment"/>
+            </field>
+            <field name="ref" position="attributes">
+                <attribute name="invisible">partner_type != 'customer' or payment_mode_client not in ['cheque', 'bank_cheque']
+                </attribute>
+                <attribute name="string">Numéro de chèque</attribute>
+            </field>
+            <field name="payment_method_line_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="currency_id" position="attributes">
+                <attribute name="invisible">type_supplier != 'etranger'</attribute>
+            </field>
+            <xpath expr="//field[@name='partner_id'][2]" position="attributes">
+                <attribute name="required">autre_type not in ['salaire', 'g50', 'provision']</attribute>
+                <attribute name="invisible">partner_type != 'supplier' or autre_type in ['salaire', 'g50', 'provision'] or is_internal_transfer or type_supplier != 'etranger'
+                </attribute>
+                <attribute name="domain">[('partner_type', '=', 'supplier'),('supplier_type', '=', 'etranger')]
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id'][2]" position="attributes">
+                <attribute name="invisible">partner_type != 'supplier' or autre_type in ['salaire', 'g50', 'provision']
+                </attribute>
+                <attribute name="required" add="False" separator=" and "/>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id'][3]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <field name="partner_bank_id" position="after">
+                <field name="payment_mode_et" invisible="partner_type != 'customer' or type_supplier != 'etranger'"/>
+                <field name="payment_mode" invisible="partner_type != 'supplier' or type_supplier != 'local'"/>
+                <field name="payment_mode" invisible="autre_type not in ['g50']"/>
+                <field name="payment_mode_client" invisible="partner_type != 'customer'"/>
+                <field name="carte_id" invisible="payment_mode != 'carte'"/>
+                <field name="accuse_par"
+                       invisible="payment_mode not in ['cheque', 'bank_cheque'] or type_supplier != 'local'"/>
+                <field name="date_cheque"
+                       invisible="payment_mode not in ['cheque', 'bank_cheque'] or type_supplier != 'local'"/>
+                <field name="dept_id" invisible="type_supplier != 'local'"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="payment_account_view_tree_inherited" model="ir.ui.view">
+        <field name="name">account.payment.tree.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="date_cheque"/>
+                <field name="accuse_par"/>
+                <field name="dept_id"/>
+            </field>
+        </field>
+    </record>
+    <record id="payment_account_view_search_inherited" model="ir.ui.view">
+        <field name="name">account.payment.seq\arch.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='state_draft']" position="attributes">
+                <attribute name="string">En circulation</attribute>
+            </xpath>
+        </field>
+    </record>
     <record id="view_operation_p_form" model="ir.ui.view">
         <field name="name">credit.operation.p.form</field>
         <field name="model">credit.operation.p</field>
-        <field name="arch" type="xml" >
+        <field name="arch" type="xml">
             <form create="false">
                 <header>
                     <button id="button_Confirm" name="validate_payment" string="Confirmer"
@@ -47,11 +128,11 @@
                             <field name="facture"/>
                         </group>
                     </group>
-                        <notebook>
-                            <tree string="Paiements" >
-                                <field name="paiements"/>
-                            </tree>
-                        </notebook>
+                    <notebook>
+                        <tree string="Paiements">
+                            <field name="paiements"/>
+                        </tree>
+                    </notebook>
 
                 </sheet>
                 <div class="oe_chatter">
@@ -91,5 +172,72 @@
               parent="oper_credit"
               action="operation_p_action"
               sequence="20"/>
+    <record id="account.action_account_payments_payable" model="ir.actions.act_window">
+        <field name="name">Vendor Payments</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">tree,kanban,form,graph,activity</field>
+        <field name="domain">[('autre_type', 'not in', ['salaire', 'g50', 'provision'])]</field>
+        <field name="context">{
+            'default_payment_type': 'outbound',
+            'default_partner_type': 'supplier',
+            'default_type_supplier': 'local',
+            'search_default_outbound_filter': 1,
+            'default_move_journal_types': ('bank', 'cash'),
+            'display_account_trust': True,
+            }
+        </field>
+        <field name="view_id" ref="account.view_account_supplier_payment_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Register a payment
+            </p>
+            <p>
+                Payments are used to register liquidity movements. You can process those payments by your own means or
+                by using installed facilities.
+            </p>
+        </field>
+    </record>
+
+    <record id="payment_salaire_action" model="ir.actions.act_window">
+        <field name="name">Salaire</field>
+        <field name="res_model">account.payment</field>
+        <field name="domain">[('autre_type', '=', 'salaire')]</field>
+        <field name="context">{
+            'default_payment_type': 'outbound',
+            'default_partner_type': 'supplier',
+            'default_autre_type': 'salaire',
+            'default_move_journal_types': ('bank', 'cash'),
+            'display_account_trust': True,
+            }
+        </field>
+        <field name="view_mode">tree,kanban,form,graph,activity</field>
+    </record>
+
+    <record id="payment_g50_action" model="ir.actions.act_window">
+        <field name="name">G50</field>
+        <field name="res_model">account.payment</field>
+        <field name="domain">[('autre_type', '=', 'g50')]</field>
+        <field name="context">{
+            'default_payment_type': 'outbound',
+            'default_partner_type': 'supplier',
+            'default_autre_type': 'g50',
+            'default_move_journal_types': ('bank', 'cash'),
+            'display_account_trust': True,
+            }
+        </field>
+        <field name="view_mode">tree,kanban,form,graph,activity</field>
+    </record>
+
+    <menuitem id="payment_autre_menu"
+              name="Autres paiements"
+              parent="account_accountant.menu_accounting"
+              sequence="3">
+        <menuitem id="payment_salaire_menu"
+                  name="Salaires"
+                  action="payment_salaire_action"/>
+        <menuitem id="payment_g50_menu"
+                  name="G50"
+                  action="payment_g50_action"/>
+    </menuitem>
 
 </odoo>
