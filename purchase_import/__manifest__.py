@@ -16,11 +16,11 @@
     'security/purchase_import_role.xml',
     'data/tarif_douanier_data.xml',
     'views/import_folder_view.xml',
-    'views/inherits_view.xml',
     'views/sequence.xml',
     'views/purchase_international.xml',
     'views/d10_products_view.xml',
     'views/model_dossier_view.xml',
+    'views/inherits_view.xml',
     'views/d10_view.xml',
     'security/ir.model.access.csv',
 
