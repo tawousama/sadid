@@ -24,11 +24,11 @@ class Gestion_autorisation(models.Model):
         'res.currency', string="Devise", company_dependent=True, default='base.DZD',
         help="This currency will be used, instead of the default one, for purchases from the current partner")
     montant = fields.Float(string="Montant de l`autorisation", store=True, required=True)
-    condition_objet = fields.Text(string="Objet et Conditions", store=True, required=True)
+    condition_objet = fields.Text(string="Objet et Conditions", store=True)
     date_create = fields.Datetime(string='Date de création', required=True, index=True, copy=False,
-                                 default=fields.Datetime.now,
-                                 help="Indicates the date the autorisation was created.",
-                                 readonly=True)
+                                     default=fields.Datetime.now,
+                                     help="Indicates the date the autorisation was created.",
+                                     readonly=True)
     validite = fields.Date("Validité de la ligne", tracking=True, required=True)
     date_limit = fields.Date("Date limite", tracking=True)
     validite_due = fields.Date("Vérification de la date", tracking=True,default=fields.Datetime.now)

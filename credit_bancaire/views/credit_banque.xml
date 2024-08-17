@@ -11,6 +11,7 @@
                         <field name="code"/>
                         <field name="adresse_siege"/>
                         <field name="journal_id"/>
+                        <field name="partner_id"/>
                         <field name="web_site" widget="url"/>
                         <field name="nbr_agences"/>
                         <field name="agences"/>

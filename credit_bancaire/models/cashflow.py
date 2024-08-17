@@ -15,9 +15,11 @@ class CashflowReport(models.AbstractModel):
     _name = 'cashflow.report'
 
     @api.model
-    def get_header(self, bank=1):
+    def get_header(self, dateEnd, bank=1):
         dateStart = fields.Date.today()
-        dateEnd = fields.Date.today() + timedelta(days=30)
+        print(dateEnd)
+        if dateEnd == '':
+            dateEnd = fields.Date.today() + timedelta(days=30)
         domain = [('state', '=', 'draft')]
         if dateStart:
             domain.append(('date_prevue_deblocage', '!=', False))
@@ -70,10 +72,12 @@ class CashflowReport(models.AbstractModel):
         return headers_dict
 
     @api.model
-    def get_values(self, bank=1):
+    def get_values(self, dateEnd, bank=1):
         dateStart = fields.Date.today()
-        dateEnd = fields.Date.today() + timedelta(days=30)
-        headers_items = self.get_header(bank)
+        print(dateEnd)
+        if dateEnd != '':
+            dateEnd = fields.Date.today() + timedelta(days=30)
+        headers_items = self.get_header(dateEnd, bank)
         headers = []
         for item in headers_items:
             headers.append(item['value'])
@@ -321,10 +325,11 @@ class CashflowReport(models.AbstractModel):
         return sorted_dict
 
     @api.model
-    def index_header_red(self, bank=1):
+    def index_header_red(self,dateEnd, bank=1):
         dateStart = fields.Date.today()
-        dateEnd = fields.Date.today() + timedelta(days=30)
-        headers = self.get_header(bank)
+        if not dateEnd:
+            dateEnd = fields.Date.today() + timedelta(days=30)
+        headers = self.get_header(dateEnd, bank)
         index_red = 0
         for index, header in enumerate(headers):
             for cle, valeur in header.items():
@@ -335,10 +340,11 @@ class CashflowReport(models.AbstractModel):
         return header_red
 
     @api.model
-    def index_header_green(self, bank=1):
+    def index_header_green(self, dateEnd, bank=1):
         dateStart = fields.Date.today()
-        dateEnd = fields.Date.today() + timedelta(days=30)
-        headers = self.get_header(bank)
+        if not dateEnd:
+            dateEnd = fields.Date.today() + timedelta(days=30)
+        headers = self.get_header(dateEnd, bank)
         index_red = 0
         for index, header in enumerate(headers):
             for cle, valeur in header.items():

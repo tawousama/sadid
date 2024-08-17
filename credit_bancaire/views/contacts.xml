@@ -61,6 +61,12 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='internal_notes']" position="after">
+                <page name="bank" string="Banque" invisible="partner_type != 'supplier'">
+                    <group>
+                        <field name="swift"/>
+                        <field name="bank_address"/>
+                    </group>
+                </page>
                 <page name="cards" string="Cartes">
                     <field name="cart_ids" context="{'default_partner_id': id}">
                         <tree>
@@ -91,9 +97,9 @@
             </xpath>
             <xpath expr="//label[@for='vat']" position="after">
 
-                    <field name="nif" placeholder="NIF"/>
-                    <field name="nis" placeholder="NIS"/>
-                    <field name="rc" placeholder="RC"/>
+                <field name="nif" placeholder="NIF"/>
+                <field name="nis" placeholder="NIS"/>
+                <field name="rc" placeholder="RC"/>
 
             </xpath>
         </field>

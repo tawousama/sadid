@@ -68,6 +68,10 @@
                        invisible="payment_mode not in ['cheque', 'bank_cheque'] or type_supplier != 'local'"/>
                 <field name="date_cheque"
                        invisible="payment_mode not in ['cheque', 'bank_cheque'] or type_supplier != 'local'"/>
+                <field name="date_echeance" invisible="type_supplier != 'etranger'"/>
+                <field name="date_ddl_depot" invisible="type_supplier != 'etranger'"/>
+                <field name="date_debit" invisible="type_supplier != 'etranger'"/>
+                <field name="date_valeur" invisible="type_supplier != 'etranger'"/>
                 <field name="dept_id" invisible="type_supplier != 'local'"/>
             </field>
         </field>

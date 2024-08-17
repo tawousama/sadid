@@ -24,6 +24,9 @@
                                     <option t-att-value="bank.id" t-out="bank.name"/>
                                 </t>
                             </select>
+                            <label for="end-date">End Date:</label>
+                            <input type="date" id="end-date" t-model="state.endDate"/>
+
                         </div>
                         <button type="button" id="fetch-data-btn" style="margin: 15px;" class="btn btn-primary">
                             Rechercher

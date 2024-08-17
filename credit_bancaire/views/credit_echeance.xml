@@ -55,8 +55,9 @@
             <form create="false">
                 <header>
                     <button name="validate_payment" string="Payer"
-                                class="btn-primary"
+                                class="btn-primary" invisible="state == 'paid'"
                                 type="object"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>

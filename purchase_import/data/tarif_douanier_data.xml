@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="tarif_01" model="import.tarif">
+            <field name="name">Equipement de laboratoire</field>
+            <field name="tarif">9027899000</field>
+        </record>
+        <record id="tarif_02" model="import.tarif">
+            <field name="name">Réactifs de laboratoire</field>
+            <field name="tarif">3822199200</field>
+        </record>
+        <record id="tarif_03" model="import.tarif">
+            <field name="name">Réactifs d'immunologie</field>
+            <field name="tarif">3822191000</field>
+        </record>
+        <record id="tarif_04" model="import.tarif">
+            <field name="name">solution de lavage</field>
+            <field name="tarif">3402509000</field>
+        </record>
+        <record id="tarif_05" model="import.tarif">
+            <field name="name">Cuvettes</field>
+            <field name="tarif">3926909990</field>
+        </record>
+        <record id="tarif_06" model="import.tarif">
+            <field name="name">Constitution du sang</field>
+            <field name="tarif">3002121000</field>
+        </record>
+    </data>
+</odoo>

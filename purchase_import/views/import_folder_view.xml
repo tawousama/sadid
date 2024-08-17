@@ -10,6 +10,7 @@
                 <field name="reference"/>
                 <field name="date_validation" invisible="1"/>
                 <field name="bank_id"/>
+                <field name="depot_taxe_date"/>
                 <field name="montant"/>
                 <field name="currency_id"/>
                 <field name="montant_dz"/>
@@ -74,12 +75,14 @@
                             <field name="montant_proformat"/>
                             <field name="currency_id"/>
                             <field name="designation_marchandise"/>
+                            <field name="tarif_id"/>
                         </group>
                         <group>
                             <field name="date" invisible="1"/>
                             <field name="delai_payment"/>
                             <field name="date_payment"/>
-                            <field name="payment_id" invisible="payment_id == False" />
+                            <field name="payment_id" invisible="payment_id == False"/>
+                            <field name="num_commande"/>
 
                             <button name="create_payment" type="object" string="Créer un paiement"
                                     class="btn-primary" invisible="payment_id != False"/>
@@ -92,12 +95,16 @@
                                     <field name="bank_id"/>
                                     <field name="journal_id" invisible="1"/>
                                     <field name="reference_dossier_banque"/>
-                                    <field name="date_ouverture_lc"/>
+                                    <field name="date_ouverture_lc"
+                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP']"/>
+                                    <field name="echeance_date_lc"
+                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP']"/>
                                     <field name="incoterm"/>
                                     <field name="methode_expedition"/>
                                     <field name="provision_id"/>
                                     <field name="provision_ouverture" invisible="1"/>
-                                    <field name="date_limit_embarquement"/>
+                                    <field name="date_limit_embarquement"
+                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP']"/>
                                     <field name="date_reception_document"/>
                                     <field name="date_usine"/>
                                     <field name="date_embarquement"/>
@@ -189,7 +196,18 @@
                         </page>
 
                     </notebook>
+                    <group>
+                        <group>
+                            <field name="facture_file"/>
+                            <field name="validation_file"/>
+                        </group>
+                    </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>

@@ -14,6 +14,7 @@
     'depends': ["purchase", 'stock','base','credit_bancaire'],
     'data': [
     'security/purchase_import_role.xml',
+    'data/tarif_douanier_data.xml',
     'views/import_folder_view.xml',
     'views/inherits_view.xml',
     'views/sequence.xml',

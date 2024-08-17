@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="view_import_tarif_action" model="ir.actions.act_window">
+        <field name="name">Tarif Douane</field>
+        <field name="res_model">import.tarif</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="import_tarif_tree" model="ir.ui.view">
+        <field name="name">import.tarif.tree</field>
+        <field name="model">import.tarif</field>
+        <field name="arch" type="xml">
+            <tree string="Listes des Tarifs Douane" editable="bottom">
+                <field name="name"/>
+                <field name="tarif"/>
+            </tree>
+        </field>
+    </record>
 
     <record id="purchase_order_inherit" model="ir.ui.view">
         <field name="name">purchase.order.view.inherit</field>
@@ -94,8 +109,18 @@
         <field name="view_mode">tree,kanban,form,graph,activity</field>
     </record>
 
+
     <menuitem id="payment_provision_menu"
               name="Provision LC"
               parent="credit_bancaire.payment_autre_menu"
               action="payment_provision_action"/>
+
+    <menuitem
+            id="menu_purchase_import_tarif"
+            name="Tarif Douane"
+            parent="menu_purchase_import_config"
+            action="view_import_tarif_action"
+            sequence="31"
+            groups="purchase_import.group_importation,purchase_import.group_importation_user"
+    />
 </odoo>

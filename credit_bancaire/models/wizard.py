@@ -13,6 +13,7 @@ class Wizard(models.TransientModel):
             print(deblocage)
             deb_payment = self.env['account.payment'].create({'payment_type': 'inbound',
                                                 'amount': deblocage.montant_debloque,
+                                                'partner_id': deblocage.banque_id.partner_id.id,
                                                 'journal_id': deblocage.banque_id.journal_id.id,
                                                 'date': deblocage.deblocage_date,
                                                 'ref': deblocage.name})
@@ -121,6 +122,10 @@ class AccountPayment(models.Model):
                                       ('posted', 'Comptabilisé'),
                                       ('cancel', 'Annulé')], default='draft', string='Statut', compute='_compute_state_autre', store=True)
 
+    date_echeance = fields.Date(string='Date d\'échéance')
+    date_ddl_depot = fields.Date(string='Date de dépôt de virement au plus tard')
+    date_debit = fields.Date(string='Date de débit')
+    date_valeur = fields.Date(string='Date de valeur')
     month = fields.Selection([('1', 'Janvier'),
                               ('2', 'Fevrier'),
                               ('3', 'Mars'),
@@ -314,6 +319,8 @@ class Partner(models.Model):
     nif = fields.Char(string='NIF')
     rc = fields.Char(string='RC')
     nis = fields.Char(string='NIS')
+    swift = fields.Char(string='SWIFT')
+    bank_address = fields.Char(string='Adresse de la banque')
     cart_ids = fields.One2many('account.card', 'partner_id', string='Cartes bancaire')
     partner_type = fields.Selection([('customer', 'Client'),
                                      ('supplier', 'Fournisseur')])

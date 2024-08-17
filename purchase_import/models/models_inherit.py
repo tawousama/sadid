@@ -25,6 +25,13 @@ class StockPicking(models.Model):
     is_import = fields.Boolean(string='Est importation?')
 
 
+class Tarif(models.Model):
+    _name = "import.tarif"
+
+    name = fields.Char(string='Article')
+    tarif = fields.Char(string='Tarif douane')
+
+
 class Deblocage(models.Model):
     _inherit = "credit.operation.deb"
 

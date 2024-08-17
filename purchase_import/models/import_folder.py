@@ -6,6 +6,7 @@ from odoo.exceptions import UserError
 
 class ImportFolder(models.Model):
     _name = "purchase.import.folder"
+    _inherit = ["mail.thread",'mail.activity.mixin']
     _rec_name = "reference"
 
     #champs principale
@@ -14,7 +15,9 @@ class ImportFolder(models.Model):
     proformat = fields.Char(string="Proforma")
     montant_proformat = fields.Float(string="Montant de Proforma")
     designation_marchandise = fields.Text(string="Designation de marchandise")
-    partner_id = fields.Many2one("res.partner", string='Fournisseur', domain="[('partner_type', '=', 'supplier')]")
+    tarif_id = fields.Many2one('import.tarif', string='Tarif douanier')
+    partner_id = fields.Many2one("res.partner", string='Fournisseur',
+                                 domain="[('partner_type', '=', 'supplier'),('supplier_type', '=', 'etranger')]")
     #transitaire_id = fields.Many2one("res.partner", string='Transitaire')
     date_usine = fields.Date(string="Date d'arrivage")
     currency_id = fields.Many2one(
@@ -22,6 +25,7 @@ class ImportFolder(models.Model):
         help="This currency will be used, instead of the default one, for purchases from the current partner")
     date = fields.Date(string='Date')
     date_embarquement = fields.Date(string="Date d'embarquement")
+    num_commande = fields.Char(string='Numéro de commande', related='payment_id.name')
     payment_mode = fields.Selection([
         ('LC_a_vue', 'LC à vue'),
         ('LC_a_DP', 'LC à DP'),
@@ -48,7 +52,7 @@ class ImportFolder(models.Model):
 
 
     #champs du detail de Dom
-    bank_id = fields.Many2one("credit.banque", string="Banque de domiciliation")
+    bank_id = fields.Many2one("credit.banque", string="Banque de domiciliation", domain="[('journal_id', '!=', False)]")
     reference_dossier_banque = fields.Char(string="Référence dossier banque")
     date_ouverture_lc = fields.Date(string="Date d`ouverture LC")
     montant = fields.Monetary(string="Montant")
@@ -81,7 +85,8 @@ class ImportFolder(models.Model):
     date_echeance_fin_douane = fields.Date(string="Date d`échéance Fin.Douan")
     reference_deblocage_fin_douane = fields.Char(string="Référence déblocage Fin.Douane")
     montant_a_rembourser_fin_douane = fields.Monetary(string="Montant a rembourser Fin.Douane")
-
+    facture_file = fields.Binary(string='Facture proforma')
+    validation_file = fields.Binary(string='Fiche de validation')
     #restitution de provision
     restitution_de_provision = fields.Boolean(string="Restitution de Provision", default=False)
     #si restitution de provision est vrai
@@ -104,6 +109,9 @@ class ImportFolder(models.Model):
                                 domain="[('banque_id', '=', bank_id)]")
     provision_id = fields.Many2one('account.payment', string='Provision d\'ouverture',
                                    domain="[('autre_type', '=', 'provision'), ('journal_id', '=', journal_id), ('lc_id', '=', id)]")
+    depot_taxe_date = fields.Date(string='Date dépôt taxe de Dom.')
+    echeance_date_lc = fields.Date(string='Date échéance LC')
+
     def create_payment(self):
         for rec in self:
             view_id = self.env.ref('account.view_account_payment_form').id
@@ -155,12 +163,13 @@ class ImportFolder(models.Model):
             print("get_keys"+self.get_key_actuel(self.state_actuel)+" dddd"+self.state_actuel)
 
     nouv_list = [
+        ('0', 'Réception commande'),
         ('1', 'Taxe de Domiciliation'),
         ('2', 'Pré-domiciliation'),
         ('3', 'Ouverture LC'),
         ('4', 'En cours de production'),
         ('5', 'Expédition marchandise'),
-        ('6', 'Récéption documants (Banque)'),
+        ('6', 'Récéption documents (Banque)'),
         ('7', 'Paiement fournisseur'),
         ('8', 'Retrait documents (banque)'),
         ('9', 'Dépôt transitaire/Documents'),
@@ -172,7 +181,7 @@ class ImportFolder(models.Model):
         ('15', 'Terminée')
     ]
     etat = fields.Selection(selection=nouv_list, string="etat",required=True, readonly=True, copy=False,
-                                tracking=True, default='1')
+                                tracking=True, default='0')
 
     '''@api.onchange('model_id')
     def _onchange_model_id(self):
