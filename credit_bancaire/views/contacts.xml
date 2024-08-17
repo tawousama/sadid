@@ -89,7 +89,7 @@
                 <field name="supplier_type" widget="radio" options="{'horizontal': true}"
                        invisible="partner_type != 'supplier'"/>
             </xpath>
-            <xpath expr="//field[@name='vat']" position="attributes">
+            <!--<xpath expr="//field[@name='vat']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//label[@for='vat']" position="attributes">
@@ -101,7 +101,7 @@
                 <field name="nis" placeholder="NIS"/>
                 <field name="rc" placeholder="RC"/>
 
-            </xpath>
+            </xpath>-->
         </field>
     </record>
     <!--<menuitem id="credit_contact_menu_credit"
