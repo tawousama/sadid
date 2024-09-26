@@ -5,7 +5,7 @@ class Type_credit(models.Model):
     _name = 'credit.type'
     _inherit = ["mail.thread",'mail.activity.mixin']
     _description = "types de ligne de crédit"
-
+    _rec_name = "titre"
     name = fields.Char(string='Nom', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
     titre = fields.Char(string='Types de ligne de crédit', required=True)
