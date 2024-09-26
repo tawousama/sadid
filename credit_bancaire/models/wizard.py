@@ -323,9 +323,9 @@ class Partner(models.Model):
     bank_address = fields.Char(string='Adresse de la banque')
     cart_ids = fields.One2many('account.card', 'partner_id', string='Cartes bancaire')
     partner_type = fields.Selection([('customer', 'Client'),
-                                     ('supplier', 'Fournisseur')])
+                                     ('supplier', 'Fournisseur')], default='customer', string='Client/Fournisseur')
     supplier_type = fields.Selection([('local', 'Local'),
-                                      ('etranger', 'Etranger')])
+                                      ('etranger', 'Etranger')], default='local', string='Etranger/Local')
 
 
 class Card(models.Model):

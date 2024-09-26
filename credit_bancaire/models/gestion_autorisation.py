@@ -65,9 +65,9 @@ class Gestion_autorisation(models.Model):
                 for type in rec.type_ids:
                     print(type.name)
                     if type == rec.type_ids[0]:
-                        display_name = type.name
+                        display_name = type.titre
                     else:
-                        display_name = display_name + ' / ' + type.name
+                        display_name = display_name + ' / ' + type.titre
                     print(display_name)
                 display_name = display_name + ' ( ' + str(rec.montant) + ' DA)'
 
@@ -78,7 +78,7 @@ class Gestion_autorisation(models.Model):
         print('_compute_decouvert executed')
         for rec in self:
             if rec.type_ids and rec.montant:
-                if 1 in rec.type_ids.ids and rec.montant >= 0:
+                if 49 in rec.type_ids.ids and rec.montant >= 0:
                     raise UserError(_('Vous devriez saisir une valeur négatif pour le montant de l\'autorisation'))
             rec.is_decouvert = False
 
@@ -103,7 +103,7 @@ class Gestion_autorisation(models.Model):
 
     def action_Disponible(self):
         for record in self:
-            if record.type.id == 1 and record.montant >= 0:
+            if record.type.id in [1, 49] and record.montant >= 0:
                 raise UserError(_('Vous devriez saisir une valeur négatif pour le montant de l\'autorisation'))
             q = record.env['credit.disponible'].search([('ligne_autorisation', '=', record.id)])
             print(q)
