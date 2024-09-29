@@ -77,9 +77,9 @@ class Gestion_autorisation(models.Model):
     def _compute_decouvert(self):
         print('_compute_decouvert executed')
         for rec in self:
-            if rec.type_ids and rec.montant:
+            '''if rec.type_ids and rec.montant:
                 if 49 in rec.type_ids.ids and rec.montant >= 0:
-                    raise UserError(_('Vous devriez saisir une valeur négatif pour le montant de l\'autorisation'))
+                    raise UserError(_('Vous devriez saisir une valeur négatif pour le montant de l\'autorisation'))'''
             rec.is_decouvert = False
 
     @api.model
