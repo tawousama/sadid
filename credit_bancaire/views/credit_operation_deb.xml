@@ -29,8 +29,8 @@
                             <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
                             <field name="ligne_autorisation"/>
                             <field name="type"/>
-                            <field name="reference_credit"/>
-                            <field name="ref_interne"/>
+                            <field name="reference_credit" invisible="type_id not in [39,45,48]"/>
+                            <field name="ref_interne" invisible="type_id not in [39,45,48]"/>
                             <field name="ref_interne" string="Reference LC" invisible="type_id not in [39,45,48]"/>
                             <field name="ref_cheque" invisible="type_id != 40"/>
                             <field name="numero_traite" invisible="type_id != 32"/>
