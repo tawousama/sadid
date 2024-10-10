@@ -70,7 +70,7 @@
                 <xpath expr="//sheet/group" position="inside">
                     <group>
                         <field name="folder_id" invisible="1"/>
-                        <field name="lc_id" invisible="type_id not in [6, 7]"/>
+                        <field name="lc_id" invisible="type_id not in [39,45,48]"/>
                         <field name="lc_id" invisible="type_id not in [5]"
                                string="Référence COMEX"
                                domain="[('bank_id', '=', banque_id)]"/>

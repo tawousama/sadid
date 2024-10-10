@@ -88,7 +88,8 @@ class Operation_Deb(models.Model):
     delai_mobilisation = fields.Integer(string='Délai de mobilisation',
                                         related='ligne_autorisation.delai_mobilisation')
     numero_traite = fields.Char(string='Numéro traite')
-
+    devise = fields.Many2one('res.currency', string="Devise")
+    montant_devise = fields.Float(string='Montant en devise')
     @api.depends('ligne_autorisation')
     def _compute_type_ids(self):
         for record in self:
