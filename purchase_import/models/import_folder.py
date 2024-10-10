@@ -54,6 +54,7 @@ class ImportFolder(models.Model):
     #champs du detail de Dom
     bank_id = fields.Many2one("credit.banque", string="Banque de domiciliation", domain="[('journal_id', '!=', False)]")
     reference_dossier_banque = fields.Char(string="Référence dossier banque")
+    dom_ref = fields.Many2one('import.dom', string='Reference dossier Dom.', compute='compute_ref_dom', store=True)
     date_ouverture_lc = fields.Date(string="Date d`ouverture LC")
     montant = fields.Monetary(string="Montant")
     montant_dz = fields.Monetary(string='Montant DZD.')
@@ -142,6 +143,14 @@ class ImportFolder(models.Model):
                 return key
         return "key doesn't exist"
 
+    @api.onchange('reference_dossier_banque')
+    def compute_ref_dom(self):
+        for rec in self:
+            exist = self.env['import.dom'].search([('name', '=', rec.reference_dossier_banque)])
+            if exist:
+                rec.dom_ref = exist.id
+            else:
+                rec.dom_ref = self.env['import.dom'].create({'name': rec.reference_dossier_banque})
 
 
     #la fonction du bouton suivant

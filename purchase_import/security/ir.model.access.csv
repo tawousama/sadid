@@ -25,3 +25,4 @@ purchase_import_model_frais1,purchase.import.model.frais,model_purchase_import_m
 purchase_import_model_frais_products1,purchase.import.model.frais.products,model_purchase_import_model_frais_products,purchase_import.group_importation_user,1,0,0,0
 
 access_import_tarif_user,access.import.tarif.user,model_import_tarif,purchase_import.group_importation_user,1,0,0,0
+access_import_dom_user,access.import.dom.user,model_import_dom,purchase_import.group_importation_user,1,0,0,0

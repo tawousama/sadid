@@ -38,7 +38,7 @@ class Deblocage(models.Model):
     folder_id = fields.Many2one('purchase.import.folder', string='Dossier')
     lc_id = fields.Many2one('purchase.import.folder', string='LC Ouvertes')
     remdoc = fields.Char(string='REMDOC')
-
+    dom_ref = fields.Many2one('import.dom', string='Reference dossier Dom.')
     def action_create_file(self):
         for rec in self:
             if rec.type_ligne == '1':
@@ -90,3 +90,9 @@ class Payment(models.Model):
             if dossier:
                 dossier.payment_id = res.id
         return res
+
+
+class RefDom(models.Model):
+    _name = "import.dom"
+
+    name = fields.Char(string='Reference')

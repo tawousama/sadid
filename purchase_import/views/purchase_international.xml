@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
-
         <record model="ir.ui.view" id="view_purchase_order_tree_inherit">
             <field name="name">purchase.order.tree.inherit</field>
             <field name="model">purchase.order</field>
@@ -14,11 +12,6 @@
                 </xpath>
             </field>
         </record>
-
-
-
-
-
         <record id="purchase_order_list" model="ir.actions.act_window">
             <field name="name">Commerce Extérieur</field>
             <field name="type">ir.actions.act_window</field>
