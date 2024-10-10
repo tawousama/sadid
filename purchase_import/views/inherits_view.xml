@@ -78,7 +78,7 @@
                     </group>
                 </xpath>
                 <xpath expr="//field[@name='reference_credit']" position="after">
-                    <field name="dom_ref" invisible="type_id != 41"/>
+                    <field name="dom_ref" invisible="type_id not in [41,43,46]"/>
                 </xpath>
                 <xpath expr="//header" position="inside">
                     <button id="button_open_file" name="action_create_file" string="Créer une LC"
