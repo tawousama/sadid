@@ -29,13 +29,13 @@
                             <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
                             <field name="ligne_autorisation"/>
                             <field name="type"/>
-                            <field name="reference_credit" invisible="type_id not in [39,45,48]"/>
-                            <field name="ref_interne" invisible="type_id not in [39,45,48]"/>
+                            <field name="reference_credit" invisible="type_id in [39,45,48]"/>
+                            <field name="ref_interne" invisible="type_id in [39,45,48]"/>
                             <field name="ref_interne" string="Reference LC" invisible="type_id not in [39,45,48]"/>
                             <field name="ref_cheque" invisible="type_id != 40"/>
                             <field name="numero_traite" invisible="type_id != 32"/>
                             <field name="amount_invoice" invisible="type_id not in [2,3]"/>
-                            <field name="partner_id" invisible="type_id in [39,5]"/>
+                            <field name="partner_id" invisible="type_id in [39,45,48,5]"/>
                             <field name="partner_id" invisible="type_id not in [39,45,48,5]" string="Fournisseur" domain="[('partner_type', '=', 'supplier'),('supplier_type', '=', 'etranger')]"/>
                             <field name="taux" widget="percentage" invisible="type_id in [39,45,48]"/>
                             <field name="type_ligne" invisible="1"/>
