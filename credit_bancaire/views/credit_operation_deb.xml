@@ -31,6 +31,7 @@
                             <field name="type"/>
                             <field name="reference_credit"/>
                             <field name="ref_interne"/>
+                            <field name="ref_cheque" invisible="type_id != 40"/>
                             <field name="numero_traite" invisible="type_id != 32"/>
                             <field name="amount_invoice" invisible="type_id not in [2,3]"/>
                             <field name="partner_id" invisible="type_id in [39,5]"/>
@@ -40,6 +41,8 @@
                             <field name="type_id" invisible="1"/>
                             <field name="montant_total_comp" invisible="1"/>
                             <field name="montant_remb_comp" invisible="1"/>
+
+                            <field name="lib" invisible="type_id != 40"/>
                             <!--<field name="folder_id" invisible="1"/>-->
                         </group>
                         <group invisible="type_id in [39]">

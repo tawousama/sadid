@@ -94,6 +94,7 @@
                                 <group>
                                     <field name="bank_id"/>
                                     <field name="journal_id" invisible="1"/>
+                                    <field name="dom_ref" invisible="1"/>
                                     <field name="reference_dossier_banque"/>
                                     <field name="date_ouverture_lc"
                                            invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP']"/>

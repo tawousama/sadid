@@ -38,6 +38,8 @@ class Operation_Deb(models.Model):
     reference_credit = fields.Char(string='Référence du dossier banque', tracking=True)
     reference_interne = fields.Many2one('account.move', string='Référence interne (N. facture)', tracking=True)
     ref_interne = fields.Char(string='Référence interne (N. facture)')
+    ref_cheque = fields.Char(string='N. Cheque')
+    lib = fields.Char(string='Libellé')
     client = fields.Char(string='Client/ Fournisseur')
     user_id = fields.Many2one(
         'res.users', string='Order representative', index=True, tracking=True, readonly=True,
