@@ -146,12 +146,14 @@ class ImportFolder(models.Model):
     @api.onchange('reference_dossier_banque')
     def compute_ref_dom(self):
         for rec in self:
-            exist = self.env['import.dom'].search([('name', '=', rec.reference_dossier_banque)])
-            if exist:
-                rec.dom_ref = exist.id
+            if rec.reference_dossier_banque and not rec.reference_dossier_banque.isspace():
+                exist = self.env['import.dom'].search([('name', '=', rec.reference_dossier_banque)])
+                if exist:
+                    rec.dom_ref = exist.id
+                else:
+                    rec.dom_ref = self.env['import.dom'].create({'name': rec.reference_dossier_banque})
             else:
-                rec.dom_ref = self.env['import.dom'].create({'name': rec.reference_dossier_banque})
-
+                rec.dom_ref = False
 
     #la fonction du bouton suivant
     def action_suivant(self):
