@@ -35,6 +35,9 @@ class Operation_Deb(models.Model):
     echeance_fin_date = fields.Date("Date d`échéance", tracking=True)
     note = fields.Text(string='Description', tracking=True)
     partner_id = fields.Many2one('res.partner', string='Client/ Fournisseur')
+    type_caution = fields.Selection([('cs', 'CS'),
+                                     ('cbe', 'CBE'),
+                                     ('cra', 'CRA')], string='Type')
     reference_credit = fields.Char(string='Référence du dossier banque', tracking=True)
     reference_interne = fields.Many2one('account.move', string='Référence interne (N. facture)', tracking=True)
     ref_interne = fields.Char(string='Référence interne (N. facture)')

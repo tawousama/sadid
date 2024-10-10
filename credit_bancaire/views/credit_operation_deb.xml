@@ -72,6 +72,7 @@
                             <field name="deblocage_date" string="Date d'émission"/>
                             <field name="date_prevue_deblocage" string="Date de dépôt"/>
                             <field name="echeance_date"/>
+                            <field name="type_caution"/>
                             <field name="taux" widget="percentage" string="Prov %"/>
                         </group>
                     </group>
