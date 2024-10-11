@@ -271,8 +271,6 @@ class Operation_Deb(models.Model):
                     if m_dispo < 0:
                         raise UserError('Montant non disponible')
                     disponible.write({'debloque': rec, 'montant_disponible': m_dispo})
-            elif rec.type_id != 9:
-                raise ValidationError(_("Le montant à rembourser est superieur à l'autorisé"))
             print(rec.echeances)
             if not rec.echeances:
                 echeance = self.env['credit.echeance'].search([('ref_opr_deb', '=', rec.id)])
