@@ -256,7 +256,7 @@ class Operation_Deb(models.Model):
             print('mdispo1 = ', m_dispo)
             if not rec.deblocage_date:
                 raise UserError('Vous devriez saisir d\'abord la date de deblocage')
-            if rec.montant_rembourser < rec.ligne_autorisation.montant:
+            if rec.montant_rembourser < rec.ligne_autorisation.montant and rec.type_id != 9:
                 m_dispo = disponible.montant_disponible - rec.montant_rembourser
                 if not disponible:
                     disponible.create({
@@ -271,7 +271,7 @@ class Operation_Deb(models.Model):
                     if m_dispo < 0:
                         raise UserError('Montant non disponible')
                     disponible.write({'debloque': rec, 'montant_disponible': m_dispo})
-            else:
+            elif rec.type_id != 9:
                 raise ValidationError(_("Le montant à rembourser est superieur à l'autorisé"))
             print(rec.echeances)
             if not rec.echeances:
