@@ -251,8 +251,6 @@ class Operation_Deb(models.Model):
         for rec in self:
             disponible = rec.env['credit.disponible'].search([('ligne_autorisation', '=', rec.ligne_autorisation.id)])
             m_dispo = rec.ligne_autorisation.montant - rec.montant_rembourser
-
-
             print('mdispo1 = ', m_dispo)
             if not rec.deblocage_date:
                 raise UserError('Vous devriez saisir d\'abord la date de deblocage')

@@ -11,16 +11,32 @@
                             <field name="name" readonly="1"/>
                         </h1>
                     </div>
-
                     <group>
-                        <field name="banque"/>
-                        <field name="type_ids" widget="many2many_tags"/>
-                        <field name="montant_disponible"/>
-                        <field name="ligne_autorisation"/>
+                        <field name="banque" readonly="1"/>
+                        <field name="type_ids" widget="many2many_tags" readonly="1"/>
+                        <field name="montant_disponible" readonly="1"/>
+                        <field name="ligne_autorisation" readonly="1"/>
                     </group>
 
                     <notebook>
-
+                        <page name="debloque" string="Debloqué">
+                            <field name="debloque_ids">
+                                <tree>
+                                    <field name="ligne_autorisation"/>
+                                    <field name="type"/>
+                                    <field name="banque_id"/>
+                                    <field name="deblocage_date"/>
+                                    <field name="echeance_date" optional="show"/>
+                                    <field name="reference_credit" optional="hide"/>
+                                    <field name="ref_interne" optional="hide"/>
+                                    <field name="partner_id"/>
+                                    <field name="montant_debloque" sum="Total amount" widget="monetary"
+                                           optional="show"/>
+                                    <field name="montant_rembourser" sum="Total amount" widget="monetary"
+                                           optional="show"/>
+                                </tree>
+                            </field>
+                        </page>
                     </notebook>
 
                 </sheet>
