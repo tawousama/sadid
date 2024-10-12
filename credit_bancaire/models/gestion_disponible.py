@@ -67,30 +67,16 @@ class Gestion_disponible(models.Model):
 
     def action_MAJ(self):
         for rec in self:
-
-            autorisations = rec.env['credit.autorisation'].search([])
-            print('autorisations = ', autorisations)
-
-            for auto in autorisations:
-                qsdeb = rec.env['credit.operation.deb'].search([('ligne_autorisation.banque.id', '=', auto.banque.id),
-                                                         ('ligne_autorisation.type', '=', auto.type.id)])
-                m = auto.montant
-                print('qsdeb = ', qsdeb)
-                for q in qsdeb:
-                    m = m - q.montant_debloque
-
-                qsp = rec.env['credit.operation.p'].search([('ref_opr_deb.ligne_autorisation.banque', '=', auto.banque.id),
-                                                             ('ref_opr_deb.ligne_autorisation.type', '=', auto.type.id)])
-                print('qsp = ', qsp)
-                for q in qsp:
-                    m = m + q.montant_paye
-
-                disponibles = rec.env['credit.disponible'].search([])
-                print('disponibles = ', disponibles)
-                for disponible in disponibles:
-                    if auto.id == disponible.ligne_autorisation.id:
-                        disponible.montant_disponible = m
-                        print(disponible.montant_disponible)
+            dispo = 0
+            total_autorisation = rec.montant_autorisation
+            total_deb = 0
+            total_ech = 0
+            if rec.has_deblocage:
+                total_deb = sum(rec.debloque_ids.mapped('montant_debloque'))
+            if rec.has_echeance:
+                total_ech = sum(rec.echeance_ids.mapped('montant_a_rembourser'))
+            dispo = total_autorisation - total_deb + total_ech
+            rec.montant_disponible = dispo
 
     @api.depends('ligne_autorisation')
     def _compute_montant(self):

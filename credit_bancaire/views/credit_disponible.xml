@@ -5,6 +5,11 @@
         <field name="model">credit.disponible</field>
         <field name="arch" type="xml">
             <form create="false">
+                <header>
+                    <button name="action_MAJ" type="object"
+                            class="btn-primary"
+                            string="Mise a jour"/>
+                </header>
                 <sheet>
                     <div class="oe_title">
                         <h1>
