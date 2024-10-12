@@ -37,7 +37,7 @@ class Gestion_echeance(models.Model):
         for rec in self:
             if not rec.echeance_date:
                 rec.echeance_date = fields.Date.today()
-            rec.disponble_id = rec.ref_opr_deb.disponible_id.id
+            rec.disponible_id = rec.ref_opr_deb.disponible_id.id
             total_autorisation = rec.disponible_id.montant_autorisation
             total_deb = 0
             total_ech = 0
