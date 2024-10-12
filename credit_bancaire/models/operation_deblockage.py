@@ -244,14 +244,10 @@ class Operation_Deb(models.Model):
                     disponible.create({
                         'ligne_autorisation': rec.ligne_autorisation.id,
                         'banque': rec.banque_id.id,
-                        'type': rec.type.id,
-                        'debloque': rec
+                        'type': rec.type.id
                     })
-                elif disponible.debloque != rec:
-                    if m_dispo < 0:
-                        raise UserError('Montant non disponible')
-                    disponible.write({'debloque': rec})
-                    disponible.action_MAJ()
+                disponible.action_MAJ()
+
             if not rec.echeances:
                 echeance = self.env['credit.echeance'].search([('ref_opr_deb', '=', rec.id)])
                 if not echeance:
