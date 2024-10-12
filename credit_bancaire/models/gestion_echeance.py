@@ -11,6 +11,8 @@ class Gestion_echeance(models.Model):
     name = fields.Char(string='Opération', required=True, copy=False, readonly=True,
                        default=lambda self: _('New'))
     ref_opr_deb = fields.Many2one('credit.operation.deb', string='Opération de déblocage',ondelete='cascade')
+    ligne_autorisation = fields.Many2one('credit.autorisation', string='Autorisation',
+                                         readonly=True, ondelete='cascade', related='ref_opr_deb.ligne_autorisation')
     banque = fields.Many2one(
         'credit.banque', string='Banque', index=True, tracking=True, )
     type = fields.Many2one(
@@ -29,6 +31,7 @@ class Gestion_echeance(models.Model):
     state = fields.Selection([('not_paid', 'Non payé'),
                               ('paid', 'Payé')], default='not_paid', string='Etat')
     is_retard = fields.Boolean(string='En retard')
+    disponible_id = fields.Many2one('credit.disponible')
 
     def validate_payment(self):
         for rec in self:

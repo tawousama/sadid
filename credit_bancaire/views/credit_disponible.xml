@@ -37,6 +37,20 @@
                                 </tree>
                             </field>
                         </page>
+                        <page name="echeance" string="Echeances à venir">
+                            <field name="echeance_ids">
+                                <tree>
+                                    <field name="banque"/>
+                                    <field name="ligne_autorisation"/>
+                                    <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
+                                    <field name="echeance_date" optional="show"/>
+                                    <field name="montant_a_rembourser" sum="Total amount" widget="monetary"
+                                           optional="show"/>
+                                    <field name="fournisseur" optional="show"/>
+                                    <field name="facture" optional="show"/>
+                                </tree>
+                            </field>
+                        </page>
                     </notebook>
 
                 </sheet>
