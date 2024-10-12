@@ -246,7 +246,16 @@ class Operation_Deb(models.Model):
                         'banque': rec.banque_id.id,
                         'type': rec.type.id
                     })
-                disponible.action_MAJ()
+                dispo = 0
+                total_autorisation = rec.disponible_id.montant_autorisation
+                total_deb = 0
+                total_ech = 0
+                if rec.disponible_id.has_deblocage:
+                    total_deb = sum(rec.disponible_id.debloque_ids.mapped('montant_debloque'))
+                if rec.disponible_id.has_echeance:
+                    total_ech = sum(rec.disponible_id.echeance_ids.mapped('montant_a_rembourser'))
+                dispo = total_autorisation - total_deb + total_ech
+                rec.disponible_id.montant_disponible = dispo
 
             if not rec.echeances:
                 echeance = self.env['credit.echeance'].search([('ref_opr_deb', '=', rec.id)])
