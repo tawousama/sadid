@@ -44,7 +44,7 @@ class Gestion_disponible(models.Model):
     def get_echeance(self):
         for rec in self:
             echeance_ids = self.env['credit.echeance'].search([('ligne_autorisation', '=', rec.ligne_autorisation.id),
-                                                               ('state', '!=', 'paid')])
+                                                               ('state', '=', 'paid')])
             if echeance_ids:
                 for ech in echeance_ids:
                     ech.disponible_id = rec.id
