@@ -37,6 +37,16 @@ class Gestion_echeance(models.Model):
         for rec in self:
             if not rec.echeance_date:
                 rec.echeance_date = fields.Date.today()
+            rec.disponble_id = rec.ref_opr_deb.disponible_id.id
+            total_autorisation = rec.disponible_id.montant_autorisation
+            total_deb = 0
+            total_ech = 0
+            if rec.disponible_id.has_deblocage:
+                total_deb = sum(rec.disponible_id.debloque_ids.mapped('montant_debloque'))
+            if rec.disponible_id.has_echeance:
+                total_ech = sum(rec.disponible_id.echeance_ids.mapped('montant_a_rembourser'))
+            dispo = total_autorisation - total_deb + total_ech
+            rec.disponible_id.montant_disponible = dispo
             view_id = self.env.ref('credit_bancaire.deblocage_wizard_form').id
             return {
                 'name': 'Information',
