@@ -7,10 +7,8 @@ class Wizard(models.TransientModel):
     _name = 'wizard.credit.deblocage'
 
     def send(self):
-        print(self.env.context.get('deblocage'))
         if self.env.context.get('deblocage'):
             deblocage = self.env['credit.operation.deb'].browse(self.env.context.get('deblocage'))
-            print(deblocage)
             deb_payment = self.env['account.payment'].create({'payment_type': 'inbound',
                                                 'amount': deblocage.montant_debloque,
                                                 'partner_id': deblocage.banque_id.partner_id.id,
@@ -33,7 +31,6 @@ class Wizard(models.TransientModel):
             }
         if self.env.context.get('payment'):
             payment = self.env['credit.echeance'].browse(self.env.context.get('payment'))
-            print(payment)
             payment = self.env['account.payment'].create({'payment_type': 'outbound',
                                                 'amount': payment.montant_a_rembourser,
                                                 'date': datetime.today(),
@@ -48,10 +45,8 @@ class Wizard(models.TransientModel):
 
             })
             if self.env.context.get('deb_id'):
-                print('deblocage', self.env.context.get('deb_id'))
                 echeance = self.env['credit.echeance'].search([('ref_opr_deb', '=', self.env.context.get('deb_id'))])
                 if echeance:
-                    print(echeance.state)
                     echeance.state = 'paid'
             view_id = self.env.ref('account.view_account_payment_form').id
             return {
@@ -63,12 +58,11 @@ class Wizard(models.TransientModel):
                 'view_id': view_id,
                 'res_id': payment.id,
             }
+
     def cancel(self):
-        if self.env.context.get('deb_id'):
-            print('deblocage', self.env.context.get('deb_id'))
-            echeance = self.env['credit.echeance'].search([('ref_opr_deb', '=', self.env.context.get('deb_id'))])
+        if self.env.context.get('payment'):
+            echeance = self.env['credit.echeance'].browse(self.env.context.get('payment'))
             if echeance:
-                print(echeance.state)
                 echeance.state = 'paid'
         return {'type': 'ir.actions.act_window_close'}
 
@@ -175,22 +169,17 @@ class AccountPayment(models.Model):
                 rec.date_encaissement_dec = fields.Date.today() + timedelta(days=5)
             elif rec.partner_type == 'supplier':
                 rec.date_encaissement_dec = fields.Date.today() + timedelta(days=1)
-            print('rec.date_encaissement_dec', rec.date_encaissement_dec)
 
     @api.depends('state')
     def _compute_state_autre(self):
         for rec in self:
-            print('rec')
             rec.state_payment = rec.state
 
     @api.model
     def get_time_off(self):
-        print(1)
         domain = [('state', '=', 'draft'), ('partner_type', '=', 'customer'), ('date_encaissement_dec', '!=', False)]
         data = self.env['account.payment'].search(domain)
-        print(2)
         headers = self.get_header()
-        print(3)
         final_list = []
         for d in data:
             type_added = False

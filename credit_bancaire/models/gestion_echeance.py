@@ -34,6 +34,7 @@ class Gestion_echeance(models.Model):
     disponible_id = fields.Many2one('credit.disponible')
 
     def validate_payment(self):
+
         for rec in self:
             if not rec.echeance_date:
                 rec.echeance_date = fields.Date.today()
