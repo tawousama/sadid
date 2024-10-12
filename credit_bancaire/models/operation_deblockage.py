@@ -70,7 +70,7 @@ class Operation_Deb(models.Model):
                                   default=fields.Datetime.now,
                                   help="Indicates the date the operation deb was created.",
                                   readonly=True)
-    disponible_id = fields.Many2one('credit.disponible', )
+    disponible_id = fields.Many2one('credit.disponible', compute='compute_dispo', store=True)
     echeances = fields.One2many('credit.operation.deb.echeance', 'ref_opr_deb')
     taux = fields.Float(string='Taux', default=0)
     amount_invoice = fields.Float(string='Montant de la facture', default=0)
@@ -93,6 +93,7 @@ class Operation_Deb(models.Model):
     numero_traite = fields.Char(string='Numéro traite')
     devise = fields.Many2one('res.currency', string="Devise")
     montant_devise = fields.Float(string='Montant en devise')
+
     @api.depends('ligne_autorisation')
     def _compute_type_ids(self):
         for record in self:
@@ -110,18 +111,6 @@ class Operation_Deb(models.Model):
         for rec in self:
             if rec.type:
                 rec.type_id = rec.type.id
-                """asf = rec.type_ids.filtered(lambda l: l.id in [2, 3])
-                if asf:
-                    rec.type_id = 2
-                traite = rec.type_ids.filtered(lambda l: l.id in [13])
-                if traite:
-                    rec.type_id = 13
-                lc = rec.type_ids.filtered(lambda l: l.id in [4])
-                if lc:
-                    rec.type_id = 4
-                leasing = rec.type_ids.filtered(lambda l: l.id in [9, 10, 11, 12])
-                if leasing:
-                    rec.type_id = 9"""
             else:
                 rec.type_id = 0
             if rec.deblocage_date and rec.delai_mobilisation:
@@ -130,17 +119,21 @@ class Operation_Deb(models.Model):
             if rec.financement_hauteur and rec.amount_invoice:
                 rec.montant_debloque = rec.financement_hauteur * rec.amount_invoice
 
+    @api.onchange('ligne_autorisation')
+    def compute_dispo(self):
+        for rec in self:
+            dispo = self.env['credit.disponible'].search([('ligne_autorisation', '=', rec.ligne_autorisation.id)])
+            rec.disponible_id = dispo
+
     def _compute_template_file(self):
         for rec in self:
             output = io.BytesIO()
             workbook = xlsxwriter.Workbook(output)
             worksheet = workbook.add_worksheet()
-
             # Ajouter les en-têtes de colonne
             headers = ['Montant à rembourser', 'Date d\'écheance']
             for col, header in enumerate(headers):
                 worksheet.write(0, col, header)
-
             workbook.close()
             output.seek(0)
 
@@ -152,21 +145,16 @@ class Operation_Deb(models.Model):
             if rec.import_file:
                 wb = load_workbook(filename=io.BytesIO(base64.b64decode(rec.import_file)))
                 ws = wb.active
-
                 records_to_create = []
-
                 # Iterate through rows and create records
                 for row in ws.iter_rows(min_row=2, values_only=True):  # Assuming data starts from the second row
                     amount, due_date = row[:2]
-                    print(row)
-                    print(due_date)
                     record_vals = {
                         'montant_rembourser': amount,
                         'echeance_date': due_date,
                         'ref_opr_deb': rec.id
                     }
                     records_to_create.append(record_vals)
-                print(records_to_create)
                 # Create records using Odoo ORM
                 for item in records_to_create:
                     self.env['credit.operation.deb.echeance'].create(item)
@@ -228,14 +216,11 @@ class Operation_Deb(models.Model):
                             tmp.unlink()
                             p = e.env['credit.operation.p'].search([('echeance', '=', e.id)])
                             p.unlink()
-
-                    print(len(rec.echeances))
                     if (len(rec.echeances) == 0) and (rec.type in [9,10,11,12]):
                         echeance = self.env['credit.echeance'].search([('ref_opr_deb', '=', rec.id)])
                         echeance.unlink()
                         pay = self.env['credit.operation.p'].search([('ref_opr_deb', '=', rec.id)])
                         pay.unlink()
-
         result = super(Operation_Deb, self).write(vals)
         return result
 
@@ -251,25 +236,22 @@ class Operation_Deb(models.Model):
         for rec in self:
             disponible = rec.env['credit.disponible'].search([('ligne_autorisation', '=', rec.ligne_autorisation.id)])
             m_dispo = rec.ligne_autorisation.montant - rec.montant_rembourser
-            print('mdispo1 = ', m_dispo)
             if not rec.deblocage_date:
                 raise UserError('Vous devriez saisir d\'abord la date de deblocage')
             if rec.montant_rembourser < rec.ligne_autorisation.montant and rec.type_id != 9:
                 m_dispo = disponible.montant_disponible - rec.montant_rembourser
                 if not disponible:
                     disponible.create({
-                        'montant_disponible': m_dispo,
                         'ligne_autorisation': rec.ligne_autorisation.id,
                         'banque': rec.banque_id.id,
                         'type': rec.type.id,
                         'debloque': rec
                     })
                 elif disponible.debloque != rec:
-                    print('mdispo2 = ', m_dispo)
                     if m_dispo < 0:
                         raise UserError('Montant non disponible')
-                    disponible.write({'debloque': rec, 'montant_disponible': m_dispo})
-            print(rec.echeances)
+                    disponible.write({'debloque': rec})
+                    disponible.action_MAJ()
             if not rec.echeances:
                 echeance = self.env['credit.echeance'].search([('ref_opr_deb', '=', rec.id)])
                 if not echeance:
@@ -298,9 +280,7 @@ class Operation_Deb(models.Model):
                         'ligne_autorisation': rec.ligne_autorisation.id,
                     })
             else:
-                print(rec.echeances)
                 for e in rec.echeances:
-                    print('echeance partiel ' + str(e))
                     tmp = e.env['credit.echeance'].search([('echeance', '=', e.id)])
                     if not tmp:
                         e.env['credit.echeance'].create({
@@ -327,25 +307,10 @@ class Operation_Deb(models.Model):
                             'echeance': e.id
                         })
                         e.montant_total = e.montant_rembourser
-                    else: e.update()
-                    '''if not paiement:
-                        paiement.env['credit.operation.p'].create({
-                            'ref_opr_deb': rec.id,
-                            'banque': rec.banque_id.id,
-                            'type': rec.type.id,
-                            'montant_a_rembourser': e.montant_rembourser,
-                            'fournisseur': rec.partner.id,
-                            'facture': rec.reference_interne.id,
-                            'reference_dossier': rec.reference_credit,
-                            'date_echeance': e.echeance_date,
-                            'date_deblocage': rec.deblocage_date,
-                            'ligne_autorisation': rec.ligne_autorisation.id,
-                            'echeance': e.id
-                        })'''
+                    else:
+                        e.update()
+
             rec.state = 'confirmed'
-            print('rembourser = ', rec.montant_rembourser)
-            print('autorise = ', rec.ligne_autorisation.montant)
-            print('autorisations = ', disponible.montant_disponible)
             view_id = self.env.ref('credit_bancaire.deblocage_wizard_form').id
             return {
                 'name': 'Information',

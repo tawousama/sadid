@@ -30,6 +30,7 @@ class Gestion_disponible(models.Model):
     has_deblocage = fields.Boolean(compute='get_debloque')
     echeance_ids = fields.One2many('credit.echeance', 'disponible_id', string='Opération d\'echeances')
     has_echeance = fields.Boolean(compute='get_echeance')
+
     def get_debloque(self):
         for rec in self:
             debloque_ids = self.env['credit.operation.deb'].search([('ligne_autorisation', '=', rec.ligne_autorisation.id),
@@ -46,7 +47,7 @@ class Gestion_disponible(models.Model):
             echeance_ids = self.env['credit.echeance'].search([('ligne_autorisation', '=', rec.ligne_autorisation.id),
                                                                ('state', '=', 'paid')])
             echeance_paid_ids = self.env['credit.echeance'].search([('ligne_autorisation', '=', rec.ligne_autorisation.id),
-                                                               ('state', '!=', 'paid')])
+                                                                ('state', '!=', 'paid')])
             if echeance_ids:
                 for ech in echeance_ids:
                     ech.disponible_id = rec.id
