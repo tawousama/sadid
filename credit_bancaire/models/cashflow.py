@@ -37,11 +37,11 @@ class CashflowReport(models.AbstractModel):
         headers = ['Date']
         for d in data:
             if d.type != False:
-                if 'Deb. ' + d.type.name not in headers:
-                    headers.append('Deb. ' + d.type.name)
+                if 'Deb. ' + d.type.titre not in headers:
+                    headers.append('Deb. ' + d.type.titre)
             elif d.type_ids[0] != False:
                 if 'Deb. ' + d.type_ids[0].name not in headers:
-                    headers.append('Deb. ' + d.type.name)
+                    headers.append('Deb. ' + d.type.titre)
         headers.append('Chèque clients en circulation')
         domain = [('state', '=', 'not_paid')]
         if dateStart:
@@ -56,8 +56,8 @@ class CashflowReport(models.AbstractModel):
             domain.append(('banque', '=', int(bank)))
         data = self.env['credit.echeance'].search(domain)
         for d in data:
-            if 'Ech. ' + d.type.name not in headers:
-                headers.append('Ech. ' + d.type.name)
+            if 'Ech. ' + d.type.titre not in headers:
+                headers.append('Ech. ' + d.type.titre)
         headers.append('Chèques fournisseurs en circulation')
         headers.append('Salaire en circulation')
         headers.append('G50 en circulation')
@@ -100,7 +100,7 @@ class CashflowReport(models.AbstractModel):
             if len(final_list) != 0:
                 for line in final_list:
                     if line[0] == date:
-                        index_bank = headers.index('Deb. ' + d.type.name)
+                        index_bank = headers.index('Deb. ' + d.type.titre)
                         index_line = final_list.index(line)
                         line[index_bank] = round(d.montant_debloque, 2) + line[index_bank]
                         final_list[index_line] = line
@@ -111,8 +111,8 @@ class CashflowReport(models.AbstractModel):
                 sub_line.append(date)
                 for i in range(len(headers) - 1):
                     sub_line.append(0)
-                if 'Deb. ' + d.type.name in headers:
-                    index = headers.index('Deb. ' + d.type.name)
+                if 'Deb. ' + d.type.titre in headers:
+                    index = headers.index('Deb. ' + d.type.titre)
                     sub_line[index] = round(d.montant_debloque, 2)
                 final_list.append(sub_line)
         print(1)
@@ -134,7 +134,7 @@ class CashflowReport(models.AbstractModel):
             if len(final_list) != 0:
                 for line in final_list:
                     if line[0] == date:
-                        index_bank = headers.index('Ech. ' +d.type.name)
+                        index_bank = headers.index('Ech. ' +d.type.titre)
                         index_line = final_list.index(line)
                         line[index_bank] = round(d.montant_a_rembourser, 2) + line[index_bank]
                         final_list[index_line] = line
@@ -145,8 +145,8 @@ class CashflowReport(models.AbstractModel):
                 sub_line.append(date)
                 for i in range(len(headers) - 1):
                     sub_line.append(0)
-                if 'Ech. ' + d.type.name in headers:
-                    index = headers.index('Ech. ' + d.type.name)
+                if 'Ech. ' + d.type.titre in headers:
+                    index = headers.index('Ech. ' + d.type.titre)
                     sub_line[index] = round(d.montant_a_rembourser, 2)
                 final_list.append(sub_line)
         print(2)
