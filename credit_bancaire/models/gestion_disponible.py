@@ -24,11 +24,10 @@ class Gestion_disponible(models.Model):
                                          readonly=True, ondelete='cascade')
     montant_autorisation = fields.Float(string="Autorisation", compute='_compute_montant', store=True, readonly=True)
     montant_difference = fields.Float(string="Montant Debloqué", compute='_compute_montant_diff', store=True)
-    #debloque = fields.One2many('credit.operation.deb', )
     comment = fields.Text(string='Commentaire')
     date_report = fields.Date(string='Date')
-    debloque_ids = fields.One2many('credit.operation.deb', 'disponible_id', string='Opération de déblocage',compute='get_debloque')
-    has_deblocage = fields.Boolean()
+    debloque_ids = fields.One2many('credit.operation.deb', 'disponible_id', string='Opération de déblocage')
+    has_deblocage = fields.Boolean(compute='get_debloque')
     def get_debloque(self):
         for rec in self:
             debloque_ids = self.env['credit.operation.deb'].search([('ligne_autorisation', '=', rec.ligne_autorisation.id),
@@ -36,8 +35,9 @@ class Gestion_disponible(models.Model):
             if debloque_ids:
                 for deb in debloque_ids:
                     deb.disponible_id = rec.id
+                rec.has_deblocage = True
             else:
-                rec.debloque_ids = False
+                rec.has_deblocage = False
 
     @api.model
     def create(self, vals):
