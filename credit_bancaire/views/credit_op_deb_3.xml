@@ -19,6 +19,7 @@
                     </div>
                     <group>
                         <group>
+                            <field name="disponible_id" invisible="1"/>
                             <field name="banque_id"/>
                             <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
                             <field name="ligne_autorisation"/>
@@ -137,6 +138,7 @@
                     </div>
                     <group>
                         <group>
+                            <field name="disponible_id" invisible="1"/>
                             <field name="banque_id"/>
                             <field name="type_ids" widget="many2many_tags" string="Ligne de crédit"/>
                             <field name="ligne_autorisation"/>
