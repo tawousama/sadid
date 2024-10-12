@@ -42,7 +42,7 @@ class Gestion_echeance(models.Model):
             total_deb = 0
             total_ech = 0
             if rec.disponible_id.has_deblocage:
-                total_deb = sum(rec.disponible_id.debloque_ids.mapped('montant_debloque'))
+                total_deb = sum(rec.disponible_id.debloque_ids.mapped('montant_rembourser'))
             if rec.disponible_id.has_echeance:
                 total_ech = sum(rec.disponible_id.echeance_ids.mapped('montant_a_rembourser'))
             dispo = total_autorisation - total_deb + total_ech

@@ -78,7 +78,7 @@ class Gestion_disponible(models.Model):
             total_deb = 0
             total_ech = 0
             if rec.has_deblocage:
-                total_deb = sum(rec.debloque_ids.mapped('montant_debloque'))
+                total_deb = sum(rec.debloque_ids.mapped('montant_rembourser'))
             if rec.has_echeance:
                 total_ech = sum(rec.echeance_ids.mapped('montant_a_rembourser'))
             dispo = total_autorisation - total_deb + total_ech
