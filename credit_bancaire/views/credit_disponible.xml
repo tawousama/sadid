@@ -16,6 +16,8 @@
                         <field name="type_ids" widget="many2many_tags" readonly="1"/>
                         <field name="montant_disponible" readonly="1"/>
                         <field name="ligne_autorisation" readonly="1"/>
+                        <field name="has_deblocage" invisible="1"/>
+                        <field name="has_echeance" invisible="1"/>
                     </group>
 
                     <notebook>
