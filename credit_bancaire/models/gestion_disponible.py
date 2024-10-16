@@ -90,7 +90,7 @@ class Gestion_disponible(models.Model):
                     journ = journal._get_journal_dashboard_outstanding_payments()
                     if journ:
                         total_deb = journ[journal.id][1]
-                    dispo = total_autorisation - total_deb
+                    dispo = total_autorisation + total_deb
             rec.montant_disponible = dispo
 
     @api.depends('ligne_autorisation')
