@@ -204,14 +204,19 @@ class Operation_Deb(models.Model):
                     else:
                         mnt_interet = vals.get('montant_add')
                     if mnt_interet != rec.montant_add or mnt_debloc != rec.montant_debloque:
-                        disponible = rec.env['credit.disponible'].search(
-                            [('ligne_autorisation', '=', rec.ligne_autorisation.id)])
-                        for debl in disponible.debloque:
+                        disponible = rec.disponible_id
+                        for debl in disponible.debloque_ids:
                             if debl.id == rec.id:
-                                montant = disponible.montant_disponible + debl.montant_rembourser - (
-                                            mnt_interet + mnt_debloc)
-                                disponible.montant_disponible = montant
-                                print('modification tmchi' + str(disponible.montant_disponible))
+                                dispo = 0
+                                total_autorisation = rec.disponible_id.montant_autorisation
+                                total_deb = 0
+                                total_ech = 0
+                                if rec.disponible_id.has_deblocage:
+                                    total_deb = sum(rec.disponible_id.debloque_ids.mapped('montant_rembourser'))
+                                if rec.disponible_id.has_echeance:
+                                    total_ech = sum(rec.disponible_id.echeance_ids.mapped('montant_a_rembourser'))
+                                dispo = total_autorisation - total_deb + total_ech
+                                rec.disponible_id.montant_disponible = dispo
                         for e in rec.echeances:
                             tmp = e.env['credit.echeance'].search([('echeance', '=', e.id)])
                             tmp.unlink()
@@ -317,16 +322,19 @@ class Operation_Deb(models.Model):
                         e.update()
 
             rec.state = 'confirmed'
-            view_id = self.env.ref('credit_bancaire.deblocage_wizard_form').id
-            return {
-                'name': 'Information',
-                'type': 'ir.actions.act_window',
-                'view_mode': 'form',
-                'res_model': 'wizard.credit.deblocage',
-                'view_id': view_id,
-                'target': 'new',
-                'context': {'deblocage': rec.id},
-            }
+            if rec.type_ligne == '1':
+                view_id = self.env.ref('credit_bancaire.deblocage_wizard_form').id
+                return {
+                    'name': 'Information',
+                    'type': 'ir.actions.act_window',
+                    'view_mode': 'form',
+                    'res_model': 'wizard.credit.deblocage',
+                    'view_id': view_id,
+                    'target': 'new',
+                    'context': {'deblocage': rec.id},
+                }
+            else:
+                return True
 
     def action_prolongation(self):
         for rec in self:

@@ -9,16 +9,12 @@
                     <button id="button_Confirm" name="action_Confirme" string="Confirmer"
                             class="btn-primary" invisible="state != 'draft'"
                             type="object"/>
-                    <!--<button id="button_open_file" name="action_create_file" string="Créer un LC"
-                            class="btn-primary" invisible="type != 4 or folder_id"
-                            type="object"/>-->
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                     </div>
                     <div class="oe_title">
-
                         <h1>
                             <field name="name" readonly="1"/>
                         </h1>
