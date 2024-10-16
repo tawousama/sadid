@@ -24,7 +24,6 @@ class Operation_Deb(models.Model):
                               ('extended', 'Prolongé')], default='draft')
     montant_debloque = fields.Float(string="Montant débloqué", store=True, required=True)
     montant_add = fields.Float(string="Interet", store=True)
-    montant_add_compute = fields.Float(string="Interet", store=True, compute='compute_interet')
     montant_total = fields.Float(string="Montant Total",)
     montant_total_comp = fields.Float(string="Montant Total", store=True, compute='_compute_total')
     montant_rembourser = fields.Float(string="Montant a rembourser")
@@ -357,18 +356,7 @@ class Operation_Deb(models.Model):
                 self.state = 'confirm'
                 print('origin', rec.date_origin)
 
-    @api.depends('deblocage_date', 'echeance_date', 'montant_debloque', 'taux')
-    def compute_interet(self):
-        for rec in self:
-            if rec.deblocage_date and rec.echeance_date:
-                difference = (rec.echeance_date - rec.deblocage_date).days
-            else:
-                difference = False
-            if difference and rec.montant_debloque and rec.taux:
-                rec.montant_add = (rec.montant_debloque * rec.taux * difference) / 360
-            else:
-                rec.montant_add = 0
-            rec._compute_total()
+
 
     '''@api.depends('banque', 'type')
     def _compute_autorisation(self):
