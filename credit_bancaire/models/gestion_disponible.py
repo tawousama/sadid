@@ -73,15 +73,24 @@ class Gestion_disponible(models.Model):
 
     def action_MAJ(self):
         for rec in self:
-            dispo = 0
             total_autorisation = rec.montant_autorisation
+            dispo = 0
             total_deb = 0
             total_ech = 0
-            if rec.has_deblocage:
-                total_deb = sum(rec.debloque_ids.mapped('montant_rembourser'))
-            if rec.has_echeance:
-                total_ech = sum(rec.echeance_ids.mapped('montant_a_rembourser'))
-            dispo = total_autorisation - total_deb + total_ech
+            if "Découvert" not in rec.ligne_autorisation.titre:
+                if rec.has_deblocage:
+                    total_deb = sum(rec.debloque_ids.mapped('montant_rembourser'))
+                if rec.has_echeance:
+                    total_ech = sum(rec.echeance_ids.mapped('montant_a_rembourser'))
+                dispo = total_autorisation - total_deb + total_ech
+                rec.montant_disponible = dispo
+            else:
+                if rec.banque.journal_id:
+                    journal = rec.banque.journal_id
+                    journ = journal._get_journal_dashboard_outstanding_payments()
+                    if journ:
+                        total_deb = journ[journal.id][1]
+                    dispo = total_autorisation - total_deb
             rec.montant_disponible = dispo
 
     @api.depends('ligne_autorisation')
