@@ -77,7 +77,7 @@ class Gestion_disponible(models.Model):
             dispo = 0
             total_deb = 0
             total_ech = 0
-            if "Découvert" not in rec.ligne_autorisation.type.titre:
+            if "Découvert" not in rec.ligne_autorisation.type_ids.mapped('titre'):
                 if rec.has_deblocage:
                     total_deb = sum(rec.debloque_ids.mapped('montant_rembourser'))
                 if rec.has_echeance:
