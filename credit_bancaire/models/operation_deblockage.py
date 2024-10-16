@@ -330,7 +330,8 @@ class Operation_Deb(models.Model):
                     'res_model': 'wizard.credit.deblocage',
                     'view_id': view_id,
                     'target': 'new',
-                    'context': {'deblocage': rec.id},
+                    'context': {'deblocage': rec.id,
+                                'default_type': 'deb'},
                 }
             else:
                 return True

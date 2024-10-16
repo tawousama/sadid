@@ -6,7 +6,7 @@
             <field name="model">wizard.credit.deblocage</field>
             <field name="arch" type="xml">
                 <form>
-                    <p>Ce déblocage a-t-il un impact sur le compte courant ?</p>
+                    <p>Ce <field name="type"/> a-t-il un impact sur le compte courant ?</p>
                     <br/>
                     <footer>
                         <button name="send" type="object" string="Oui" class="btn-primary"/>

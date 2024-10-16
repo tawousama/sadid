@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 class Wizard(models.TransientModel):
     _name = 'wizard.credit.deblocage'
 
+    type = fields.Selection([('deb', 'Déblocage'),
+                             ('ech', 'Echeance')], default='deb')
     def send(self):
         if self.env.context.get('deblocage'):
             deblocage = self.env['credit.operation.deb'].browse(self.env.context.get('deblocage'))

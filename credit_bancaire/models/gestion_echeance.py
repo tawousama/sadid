@@ -57,7 +57,8 @@ class Gestion_echeance(models.Model):
                 'view_id': view_id,
                 'target': 'new',
                 'context': {'payment': rec.id,
-                            'deb_id': rec.ref_opr_deb.id},
+                            'deb_id': rec.ref_opr_deb.id,
+                            'default_type': 'ech'},
             }
 
     @api.model
