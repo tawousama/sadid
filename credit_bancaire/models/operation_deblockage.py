@@ -43,6 +43,7 @@ class Operation_Deb(models.Model):
     ref_interne = fields.Char(string='Référence interne (N. facture)')
     ref_cheque = fields.Char(string='N. Cheque')
     lib = fields.Char(string='Libellé')
+    lib_pay = fields.Char(string='Termes de paiement')
     client = fields.Char(string='Client/ Fournisseur')
     user_id = fields.Many2one(
         'res.users', string='Order representative', index=True, tracking=True, readonly=True,

@@ -7,7 +7,7 @@
             <form>
                 <header>
                     <button id="button_Confirm" name="action_Confirme" string="Confirmer"
-                            class="btn-primary"
+                            class="btn-primary" invisible="state != 'draft'"
                             type="object"/>
                     <!--<button id="button_open_file" name="action_create_file" string="Créer un LC"
                             class="btn-primary" invisible="type != 4 or folder_id"
@@ -45,8 +45,8 @@
                             <field name="montant_total_comp" invisible="1"/>
                             <field name="montant_remb_comp" invisible="1"/>
 
-                            <field name="lib" invisible="type_id != 40"/>
-                            <field name="lib" string="Termes de paiement" invisible="type_id not in [39,45,48]"/>
+                            <field name="lib" />
+                            <field name="lib_pay" string="Termes de paiement" invisible="type_id not in [39,45,48]"/>
                             <!--<field name="folder_id" invisible="1"/>-->
                         </group>
                         <group invisible="type_id in [35,36,37,38,39,45,48]">
