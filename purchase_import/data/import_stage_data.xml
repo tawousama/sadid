@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="stage_01" model="import.stage">
+            <field name="name">Réception fiche validation</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="stage_02" model="import.stage">
+            <field name="name">Établissement Taxe Dom.</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="stage_03" model="import.stage">
+            <field name="name">Domiciliation</field>
+            <field name="sequence">3</field>
+        </record>
+        <record id="stage_04" model="import.stage">
+            <field name="name">Report Dom.</field>
+            <field name="sequence">4</field>
+        </record>
+        <record id="stage_05" model="import.stage">
+            <field name="name">Paiement fournisseur</field>
+            <field name="sequence">5</field>
+        </record>
+
+        <record id="stage_06" model="import.stage">
+            <field name="name">Clôturé</field>
+            <field name="sequence">6</field>
+        </record>
+
+  
+    </data>
+</odoo>

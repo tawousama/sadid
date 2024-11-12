@@ -49,8 +49,9 @@ class ImportFolder(models.Model):
         ('LC_a_DP', 'LC à DP'),
         ('REMDOC_a_vue', 'REMDOC à vue'),
         ('REMDOC_a_DP', 'REMDOC à DP'),
-        ('transfert_libre_a_vue', 'Transfert libre à vue'),
-        ('transfert_libre_a_DP', 'Transfert libre à DP'),
+        ('transfert_libre', 'Transfert Libre'),
+        ('a_vue', 'À vue '),
+        ('a_DP', 'À DP'),
     ],
         default='LC_a_vue',
         string="Mode de paiement",
@@ -148,7 +149,7 @@ class ImportFolder(models.Model):
             context = {'dossier_id': rec.id,
                        'default_partner_type': 'supplier',
                        'default_type_supplier': 'local',
-                       'default_payment_type': 'outbound',
+                       'default_payment_type': 'ouDate dépôttbound',
                        'default_journal_id': rec.bank_id.journal_id.id}
             return {
                 'type': 'ir.actions.act_window',

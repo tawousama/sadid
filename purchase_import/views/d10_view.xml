@@ -106,7 +106,7 @@
 
 
     <!--    groups="purchase_import.group_importation" -->
-    <menuitem
+      <!-- <menuitem
             id="menu_purchase_import_d10_view"
             name="D10"
             groups="purchase_import.group_importation,purchase_import.group_importation_user"
@@ -114,8 +114,7 @@
             action="open_view_purchase_import_d10_view_tree"
             sequence="20"
 
-    />
-
+    />-->
 
 </odoo>
 

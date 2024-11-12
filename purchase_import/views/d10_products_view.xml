@@ -31,7 +31,7 @@
 
 
 
-    <menuitem
+       <!-- <menuitem
             id="menu_purchase_import_d10_products_view"
             name="Produits D10"
             groups="purchase_import.group_importation,purchase_import.group_importation_user"
@@ -39,7 +39,7 @@
             action="open_view_purchase_import_d10_products_view_tree"
             sequence="20"
 
-    />
+    /> -->
 
 
 </odoo>

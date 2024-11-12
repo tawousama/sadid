@@ -84,9 +84,9 @@
                             <field name="date" invisible="1"/>
                             <field name="delai_payment"/>
                             <field name="date_payment"/>
-                            <field name="date_reception_d10"/>
+                            <field name="date_reception_d10" invisible="stage_id!=self.env.ref('purchase_import.stage_05')"/>
                             <field name="attach_d10" 
-                           />
+                            invisible="stage_id!=self.env.ref('purchase_import.stage_05')"/>
                             <field name="payment_id" invisible="payment_id == False"/>
                             <field name="num_commande"/>
 
@@ -100,7 +100,6 @@
                                 <group>
                                     <field name="bank_id"/>
                                     <field name="journal_id" invisible="1"/>
-                                   
                                     <field name="reference_dossier_banque"/>
                                     <field name="date_ouverture_lc"
                                            invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP']"/>
@@ -238,8 +237,7 @@
             sequence="20"
             parent="account_accountant.menu_accounting"
             groups="purchase_import.group_importation,purchase_import.group_importation_user"
-    /> 
-    
+    />
     <menuitem
             id="menu_purchase_import"
             name="Importation"

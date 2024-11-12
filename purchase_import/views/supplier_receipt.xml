@@ -1,0 +1,51 @@
+<odoo>
+    <record id="view_supplier_receipt_tree" model="ir.ui.view">
+        <field name="name">supplier.receipt.tree</field>
+        <field name="model">supplier.receipt</field>
+        <field name="arch" type="xml">
+            <tree string="Fiches de validation de réception fournisseur">
+                <field name="supplier_name"/>
+                <field name="reception_validation_date"/>
+                <field name="order_number"/>
+                <field name="currency_id"/>
+                <field name="country_of_origin"/>
+                <field name="dhl_reception_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_supplier_receipt_form" model="ir.ui.view">
+        <field name="name">supplier.receipt.form</field>
+        <field name="model">supplier.receipt</field>
+        <field name="arch" type="xml">
+            <form string="Fiche de validation de réception fournisseur">
+                <sheet>
+                    <group>
+                        <field name="supplier_name"/>
+                        <field name="reception_validation_date"/>
+                        <field name="attachment" widget="binary"/>
+                        <field name="order_number"/>
+                        <field name="currency_id"/>
+                        <field name="country_of_origin"/>
+                        <field name="dhl_reception_date"/>
+                        <field name="non_transfer_certificate_establishment_date"/>
+                        <field name="non_transfer_certificate_retrieval_date"/>
+                        <field name="shipping_date"/>
+                        <field name="goods_arrival_date"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_supplier_receipt" model="ir.actions.act_window">
+        <field name="name">Fiches de validation de réception</field>
+        <field name="res_model">supplier.receipt</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem id="menu_supplier_receipt_items" name="Dossiers Attestation de non-transfert" parent="purchase_import.menu_purchase_import" action="action_supplier_receipt" sequence="1"/>
+
+</odoo>

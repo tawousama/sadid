@@ -57,21 +57,7 @@
         <field name="view_id" ref="view_purchase_import_model_frais_tree"></field>
     </record>
 
-    <record id="ref_dom_action" model="ir.actions.act_window">
-        <field name="name">Reference Dom.</field>
-        <field name="res_model">import.dom</field>
-        <field name="view_mode">tree</field>
-    </record>
 
-    <record id="view_ref_dom_tree" model="ir.ui.view">
-        <field name="name">import.dom.tree</field>
-        <field name="model">import.dom</field>
-        <field name="arch" type="xml">
-            <tree string="Listes des Dossiers">
-                <field name="name" />
-            </tree>
-        </field>
-    </record>
     <menuitem
             id="menu_purchase_import_config"
             name="Configuration"
@@ -91,12 +77,7 @@
             sequence="20"
 
     />
-    <menuitem
-            id="menu_ref_dom"
-            name="Reference dossier dom."
-            parent="menu_purchase_import_config"
-            action="ref_dom_action"
-            sequence="20"
-    />
+
+
 </odoo>
 

@@ -27,4 +27,3 @@ purchase_import_model_import_stage,import.stage,model_import_stage,purchase_impo
 purchase_import_model_supplier_receipt,supplier.receipt,model_supplier_receipt,purchase_import.group_importation_user,1,1,1,1
 
 access_import_tarif_user,access.import.tarif.user,model_import_tarif,purchase_import.group_importation_user,1,0,0,0
-access_import_dom_user,access.import.dom.user,model_import_dom,purchase_import.group_importation_user,1,1,1,1

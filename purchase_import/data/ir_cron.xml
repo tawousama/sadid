@@ -1,0 +1,15 @@
+<odoo>
+    <data noupdate="1">
+        <!-- Cron job definition -->
+        <record id="cron_notify_users_due_payment" model="ir.cron">
+            <field name="name">Notify Users of Due Payments</field>
+            <field name="model_id" ref="model_purchase_import_folder"/>
+            <field name="state">code</field>
+            <field name="code">model.notify_users_due_payment()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">False</field>
+        </record>
+    </data>
+</odoo>
