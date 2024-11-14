@@ -23,7 +23,7 @@ class Gestion_disponible(models.Model):
     ligne_autorisation = fields.Many2one('credit.autorisation', string='Autorisation',
                                          readonly=True, ondelete='cascade')
     montant_autorisation = fields.Float(string="Autorisation", compute='_compute_montant', store=True, readonly=True)
-    montant_difference = fields.Float(string="Montant Debloqué", compute='_compute_montant_diff', store=True)
+    montant_difference = fields.Float(string="Consommation", compute='_compute_montant_diff', store=True)
     comment = fields.Text(string='Commentaire')
     date_report = fields.Date(string='Date')
     debloque_ids = fields.One2many('credit.operation.deb', 'disponible_id', string='Opération de déblocage')

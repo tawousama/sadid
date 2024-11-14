@@ -109,6 +109,7 @@ class AccountMove(models.Model):
 class AccountPayment(models.Model):
     _inherit = 'account.payment'
 
+    is_echeance = fields.Boolean(string='Échéance banque?')
     ref_supplier = fields.Char(string='Numéro de cheque')
     date_encaissement_dec = fields.Date(string='Date prévue d\'encaissement', store=True)
     autre_type = fields.Selection(selection=[('salaire', 'Salaire'),
@@ -154,6 +155,7 @@ class AccountPayment(models.Model):
                                    ('intermediaire', 'Intermediaire')], string='Accusé par')
     dept_id = fields.Many2one('hr.department', string='Service demandeur')
     comment = fields.Text(string='Commentaire')
+    partner_id = fields.Many2one('res.partner', required=False)
 
     @api.model
     def create(self, vals):

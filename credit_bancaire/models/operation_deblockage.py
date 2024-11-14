@@ -23,8 +23,7 @@ class Operation_Deb(models.Model):
                               ('confirmed', 'Confirmé'),
                               ('extended', 'Prolongé')], default='draft')
     montant_debloque = fields.Float(string="Montant débloqué", store=True, required=True)
-    montant_add = fields.Float(string="Interet", store=True)
-    montant_total = fields.Float(string="Montant Total",)
+    montant_total = fields.Float(string="Montant Total")
     montant_total_comp = fields.Float(string="Montant Total", store=True, compute='_compute_total')
     montant_rembourser = fields.Float(string="Montant a rembourser")
     montant_remb_comp = fields.Float(string="Montant a rembourser", store=True, compute='_compute_reste')
@@ -72,7 +71,6 @@ class Operation_Deb(models.Model):
                                   readonly=True)
     disponible_id = fields.Many2one('credit.disponible', compute='compute_dispo', store=True)
     echeances = fields.One2many('credit.operation.deb.echeance', 'ref_opr_deb')
-    taux = fields.Float(string='Taux', default=0)
     amount_invoice = fields.Float(string='Montant de la facture', default=0)
     file_ticket = fields.Binary(string='Document banque')
     file_name = fields.Char(string='File name')
@@ -197,12 +195,7 @@ class Operation_Deb(models.Model):
                         mnt_debloc = rec.montant_debloque
                     else:
                         mnt_debloc = vals.get('montant_debloque')
-
-                    if vals.get('montant_add') == None:
-                        mnt_interet = rec.montant_add
-                    else:
-                        mnt_interet = vals.get('montant_add')
-                    if mnt_interet != rec.montant_add or mnt_debloc != rec.montant_debloque:
+                    if mnt_debloc != rec.montant_debloque:
                         disponible = rec.disponible_id
                         for debl in disponible.debloque_ids:
                             if debl.id == rec.id:
@@ -366,16 +359,15 @@ class Operation_Deb(models.Model):
                 [('banque.name', '=', rec.banque_id.name), ('type.name', '=', rec.type.name)])
             print(rec.ligne_autorisation)'''
 
-    @api.depends('montant_debloque', 'montant_add')
+    @api.depends('montant_debloque')
     def _compute_total(self):
         for rec in self:
-            print('hi')
             if rec.type_ligne != '2':
-                rec.montant_total = rec.montant_debloque + rec.montant_add
-                rec.montant_total_comp = rec.montant_debloque + rec.montant_add
+                rec.montant_total = rec.montant_debloque
+                rec.montant_total_comp = rec.montant_debloque
             else:
-                rec.montant_total = rec.montant_debloque + rec.montant_add
-                rec.montant_total_comp = rec.montant_debloque + rec.montant_add
+                rec.montant_total = rec.montant_debloque
+                rec.montant_total_comp = rec.montant_debloque
 
     @api.depends('montant_total')
     def _compute_reste(self):

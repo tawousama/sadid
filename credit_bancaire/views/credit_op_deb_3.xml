@@ -28,7 +28,6 @@
                             <field name="reference_credit"/>
                             <field name="ref_interne"/>
                             <field name="client" string="Fournisseur"/>
-                            <field name="taux" widget="percentage"/>
                         </group>
                         <group>
                             <field name="montant_debloque"/>
@@ -148,7 +147,6 @@
                             <field name="reference_credit"/>
                             <field name="ref_interne"/>
                             <field name="partner_id" string="Fournisseur"/>
-                            <field name="taux" widget="percentage"/>
                             <field name="montant_total_comp" invisible="1"/>
                             <field name="montant_remb_comp" invisible="1"/>
                         </group>

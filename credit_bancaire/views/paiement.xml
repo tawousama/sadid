@@ -15,6 +15,7 @@
                 <attribute name="invisible">autre_type in ['salaire', 'g50', 'provision']</attribute>
             </field>
             <field name="partner_id" position="after">
+                <field name="is_echeance"/>
                 <field name="partner_id"
                        invisible="partner_type != 'supplier' or autre_type in ['salaire', 'g50', 'provision'] or is_internal_transfer or type_supplier != 'local'"
                        domain="[('partner_type', '=', 'supplier'),('supplier_type', '=', 'local')]"/>
@@ -83,12 +84,24 @@
         <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
+                <field name="comment"/>
                 <field name="date_cheque"/>
                 <field name="accuse_par"/>
                 <field name="dept_id"/>
             </field>
         </field>
     </record>
+    <record id="payment_account_view_tree_client_inherited" model="ir.ui.view">
+        <field name="name">account.payment.tree.inherit.client</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="comment"/>
+            </field>
+        </field>
+    </record>
+
     <record id="payment_account_view_search_inherited" model="ir.ui.view">
         <field name="name">account.payment.seq\arch.inherit</field>
         <field name="model">account.payment</field>

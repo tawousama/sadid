@@ -20,6 +20,7 @@
                         <field name="banque" readonly="1"/>
                         <field name="type_ids" widget="many2many_tags" readonly="1"/>
                         <field name="montant_disponible" readonly="1"/>
+                        <field name="montant_difference" readonly="1"/>
                         <field name="ligne_autorisation" readonly="1"/>
                         <field name="has_deblocage" invisible="1"/>
                         <field name="has_echeance" invisible="1"/>
@@ -74,6 +75,7 @@
                 <field name="banque"/>
                 <field name="type_ids" widget="many2many_tags"/>
                 <field name="montant_autorisation" sum="Total amount" widget="monetary" optional="show"/>
+                <field name="montant_difference" sum="Total amount" widget="monetary" optional="show"/>
                 <field name="montant_disponible" sum="Total amount" widget="monetary" optional="show"/>
             </tree>
         </field>

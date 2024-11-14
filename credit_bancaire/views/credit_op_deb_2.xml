@@ -32,7 +32,6 @@
                             <field name="type_ligne" invisible="1"/>
                             <field name="montant_total_comp" invisible="1"/>
                             <field name="montant_remb_comp" invisible="1"/>
-                            <field name="taux" widget="percentage"/>
                         </group>
                         <group>
                             <field name="montant_debloque"/>
