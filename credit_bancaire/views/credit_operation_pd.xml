@@ -119,7 +119,6 @@
                             <field name="reference_credit" readonly="1"/>
                             <field name="ref_interne" readonly="1"/>
                             <field name="client" readonly="1"/>
-                            <field name="taux" invisible="1"/>
                             <!--<field name="folder_id" invisible="1"/>-->
                         </group>
                         <group>
