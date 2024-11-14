@@ -84,7 +84,6 @@
         <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
         <field name="arch" type="xml">
             <field name="partner_id" position="after">
-                <field name="comment"/>
                 <field name="date_cheque"/>
                 <field name="accuse_par"/>
                 <field name="dept_id"/>
