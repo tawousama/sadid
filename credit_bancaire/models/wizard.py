@@ -6,6 +6,9 @@ from odoo.http import request
 from odoo import api, fields, models, _
 from datetime import datetime, timedelta
 
+from odoo.exceptions import UserError
+
+
 class Wizard(models.TransientModel):
     _name = 'wizard.credit.deblocage'
 
@@ -345,7 +348,7 @@ class AccountPayment(models.Model):
 
         # Encoder le fichier en base64
         file_base64 = base64.b64encode(file_content).decode('utf-8')
-
+        raise UserError(file_base64)
         # Définir la réponse HTTP pour télécharger le fichier
         return {
             'type': 'ir.actions.act_url',
