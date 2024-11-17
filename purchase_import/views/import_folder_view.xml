@@ -61,7 +61,7 @@
                             class="btn-primary" type="object"/>
                     <button name="action_precedent" string="Precedent"
                             class="btn-secondary" type="object"/> -->
-                    <field name="stage_id"  options="{'clickable': '1'}" widget="statusbar_duration"/>
+                    <field name="stage_id" options="{'clickable': '1'}" widget="statusbar_duration"/>
                 </header>
                 <sheet>
                     <h4>
@@ -69,26 +69,28 @@
                     </h4>
                     <group>
                         <group>
-                            <field name="partner_id"/>
+                            <field name="partner_id" readonly="stage != 1"/>
                             <field name="date_validation" invisible="1"/>
-                            <field name="payment_mode"/>
+                            <field name="stage" invisible="1"/>
+                            <field name="payment_mode" readonly="stage != 1"/>
                             <field name="sans_dom"/>
                             <field name="proformat"/>
                             <field name="montant_proformat"/>
-                            <field name="currency_id"/>
-                            <field name="designation_marchandise"/>
-                            <field name="tarif"/>
-                            <field name="note" placeholder="Observations"/>
+                            <field name="montant" readonly="stage != 1"/>
+                            <field name="currency_id" readonly="stage != 1"/>
+                            <field name="montant_dz" readonly="stage != 1"/>
+                            <field name="designation_marchandise" readonly="stage != 1"/>
+                            <field name="tarif" readonly="stage != 1"/>
+                            <field name="note" placeholder="Observations" readonly="stage not in [1, 4, 5]"/>
                         </group>
                         <group>
                             <field name="date" invisible="1"/>
                             <field name="delai_payment"/>
                             <field name="date_payment"/>
-                            <field name="date_reception_d10"/>
-                            <field name="attach_d10" 
-                           />
+                            <field name="date_reception_d10" readonly="stage != 5" invisible="stage in [1, 2, 3, 4]"/>
+                            <field name="attach_d10" readonly="stage != 5" invisible="stage in [1, 2, 3, 4]"/>
                             <field name="payment_id" invisible="payment_id == False"/>
-                            <field name="num_commande"/>
+                            <field name="num_commande" readonly="stage != 1"/>
 
                             <button name="create_payment" type="object" string="Créer un paiement"
                                     class="btn-primary" invisible="payment_id != False"/>
@@ -98,33 +100,42 @@
                         <page string="Détails de Dom. ">
                             <group>
                                 <group>
-                                    <field name="bank_id"/>
+                                    <field name="bank_id" readonly="stage != 1"/>
                                     <field name="journal_id" invisible="1"/>
-                                   
-                                    <field name="reference_dossier_banque"/>
-                                    <field name="date_ouverture_lc"
-                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP']"/>
-                                    <field name="echeance_date_lc"
-                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP']"/>
-                                    <field name="incoterm"/>
+                                    <field name="reference_dossier_banque" readonly="stage != 3"
+                                           invisible="stage in [1, 2]"/>
+                                    <field name="incoterm" readonly="stage != 1"/>
                                     <field name="methode_expedition"/>
-                                    <field name="provision_id"/>
+                                    <field name="provision_id" readonly="stage != 3" invisible="stage in [1, 2]"/>
                                     <field name="provision_ouverture" invisible="1"/>
-                                    <field name="date_limit_embarquement"
-                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP']"/>
-                                    <field name="date_reception_document"/>
+                                    <field name="date_limit_embarquement" readonly="stage != 4"
+                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP'] or stage in [1, 2, 3]"/>
+                                    <field name="date_reception_document" readonly="stage != 5"
+                                           invisible="stage in [1, 2, 3, 4]"/>
                                     <field name="date_report_dom"/>
-                                    <field name="date_demande_predom"/>
-                                    <field name="date_accord_predom"/>
-                                    <field name="date_usine"/>
-                                    <field name="date_embarquement"/>
-                                    <field name="date_reception_validation"/>
-                                    <field name="date_reception_attestation"/>
+                                    <field name="date_demande_predom" readonly="stage != 3"
+                                           invisible="stage in [1, 2]"/>
+                                    <field name="date_accord_predom" readonly="stage != 3" invisible="stage in [1, 2]"/>
+                                    <field name="date_usine" readonly="stage != 4" invisible="stage in [1, 2, 3]"/>
+                                    <field name="date_embarquement" readonly="stage != 4"
+                                           invisible="stage in [1, 2, 3]"/>
+                                    <field name="date_reception_validation" readonly="stage != 1"/>
+                                    <field name="date_reception_attestation" readonly="stage != 1"/>
                                     <field name="date_proforma_dom"/>
                                 </group>
                                 <group>
                                     <field name="deblocage_id" invisible="1"/>
                                     <field name="montant_debloque_spot_prefin" string="Montant LC"/>
+                                    <field name="date_envoi_draft" readonly="stage != 3"
+                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP'] or stage in [1, 2]"/>
+                                    <field name="date_confirm_draft" readonly="stage != 3"
+                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP'] or stage in [1, 2]"/>
+                                    <field name="date_ouverture_lc" readonly="stage != 3"
+                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP'] or stage in [1, 2]"/>
+                                    <field name="echeance_date_lc" readonly="stage != 3"
+                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP'] or stage in [1, 2]"/>
+                                    <field name="date_reception_swift" readonly="stage != 3"
+                                           invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP'] or stage in [1, 2]"/>
                                     <field name="montant_droits_douane"/>
                                     <field name="douane_id"/>
 
@@ -212,8 +223,8 @@
                     <group>
                         <group>
                             <field name="facture_file"/>
-                            <field name="validation_file"/>
-                            <field name="divers_file"/>
+                            <field name="validation_file" readonly="stage != 1"/>
+                            <field name="divers_file" readonly="stage != 3" invisible="stage in [1, 2]"/>
                         </group>
                     </group>
                 </sheet>
@@ -238,8 +249,8 @@
             sequence="20"
             parent="account_accountant.menu_accounting"
             groups="purchase_import.group_importation,purchase_import.group_importation_user"
-    /> 
-    
+    />
+
     <menuitem
             id="menu_purchase_import"
             name="Importation"
