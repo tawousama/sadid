@@ -70,7 +70,7 @@ class ImportFolder(models.Model):
     etd = fields.Char(string='ETD')
     eta = fields.Char(string='ETA')
     tracking_doc = fields.Char(string='Tracking Doc')
-    stage = fields.Integer(related='stage_id.sequence')
+    stage = fields.Integer(compute='compute_stage')
 
     #champs du detail de Dom
     bank_id = fields.Many2one("credit.banque", string="Banque de domiciliation", domain="[('journal_id', '!=', False)]")
@@ -146,6 +146,13 @@ class ImportFolder(models.Model):
     date_reception_swift = fields.Date(string='Date réception Swift')
     note = fields.Text('Observations')
 
+    def compute_stage(self):
+        for rec in self:
+            if rec.stage_id:
+                rec.stage = rec.stage_id.sequence
+            else:
+                rec.stage = 1
+                
     def create_payment(self):
         for rec in self:
             view_id = self.env.ref('account.view_account_payment_form').id
