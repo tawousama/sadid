@@ -152,7 +152,7 @@ class ImportFolder(models.Model):
                 rec.stage = rec.stage_id.sequence
             else:
                 rec.stage = 1
-                
+
     def create_payment(self):
         for rec in self:
             view_id = self.env.ref('account.view_account_payment_form').id
@@ -214,7 +214,7 @@ class ImportFolder(models.Model):
     # etat = fields.Selection(selection=nouv_list, string="etat",required=True, readonly=True, copy=False,
     #                             tracking=True, default='0')
     stage_id = fields.Many2one('import.stage', string="etat",
-                                tracking=True)
+                                tracking=True, default=lambda self: self.env.ref('purchase_import.stage_01'))
 
     '''@api.onchange('model_id')
     def _onchange_model_id(self):
