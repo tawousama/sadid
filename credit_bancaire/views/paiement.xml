@@ -262,7 +262,11 @@
         <field name="state">code</field>
         <field name="binding_view_types">tree,form</field>
         <field name="code">
-            model.get_template()
+                action = {
+                    'type': 'ir.actions.act_url',
+                    'url': '/download/template_excel',
+                    'target': 'self',
+                }
         </field>
     </record>
 </odoo>

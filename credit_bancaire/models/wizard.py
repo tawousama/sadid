@@ -392,3 +392,43 @@ class Card(models.Model):
         res.name = 'Carte Bancaire ' + res.partner_id.name
         return res
 
+
+class ExcelExportController(http.Controller):
+
+    @http.route('/download/template_excel', type='http', auth='user', csrf=False)
+    def download_excel(self, **kwargs):
+        # Création d'un fichier Excel en mémoire
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet("Template")
+
+        # Définir les en-têtes
+        headers = ["Nom de fournisseur", "Montant", "Date", "Commentaire", "Journal"]
+
+        # Ajouter les en-têtes au fichier Excel
+        header_format = workbook.add_format({
+            'bold': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'bg_color': '#D9EAD3',
+            'border': 1,
+        })
+
+        for col_num, header in enumerate(headers):
+            worksheet.write(0, col_num, header, header_format)
+
+        # Ajuster la largeur des colonnes
+        worksheet.set_column(0, len(headers) - 1, 20)
+
+        # Finaliser le fichier
+        workbook.close()
+        output.seek(0)
+
+        # Envoyer le fichier Excel dans la réponse HTTP
+        return request.make_response(
+            output.getvalue(),
+            headers=[
+                ('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+                ('Content-Disposition', 'attachment; filename=template_excel.xlsx'),
+            ]
+        )
