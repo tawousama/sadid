@@ -341,23 +341,17 @@ class AccountPayment(models.Model):
         workbook.close()
         output.seek(0)
 
-        file_data = output.getvalue()
+        file_content = output.getvalue()
 
-        file_name = "export_fournisseurs.xlsx"
-        attachment = request.env['ir.attachment'].create({
-            'name': file_name,
-            'type': 'binary',
-            'datas': base64.b64encode(file_data),
-            'store_fname': file_name,
-            'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        })
+        # Encoder le fichier en base64
+        file_base64 = base64.b64encode(file_content).decode('utf-8')
 
-        # Retourner le fichier en téléchargement
-        url = f'/web/content/{attachment.id}?download=true'
+        # Définir la réponse HTTP pour télécharger le fichier
         return {
             'type': 'ir.actions.act_url',
-            'url': url,
+            'url': f"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{file_base64}",
             'target': 'self',
+            'nodestroy': False,
         }
 
 
