@@ -308,6 +308,7 @@ class AccountPayment(models.Model):
         headers.append('Total')
         return headers
 
+    @api.model
     def get_template(self):
         # Utilisation d'un buffer pour créer le fichier Excel en mémoire
         output = io.BytesIO()
