@@ -348,14 +348,22 @@ class AccountPayment(models.Model):
 
         # Encoder le fichier en base64
         file_base64 = base64.b64encode(file_content).decode('utf-8')
-        raise UserError(file_base64)
-        # Définir la réponse HTTP pour télécharger le fichier
-        return {
+        file_name = "Template.xlsx"
+        attachment = self.env['ir.attachment'].create({
+            'name': file_name,
+            'type': 'binary',
+            'datas': file_base64,
+            'store_fname': file_name,
+            'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        })
+
+        # Retourner le fichier en téléchargement via une action URL
+        action = {
             'type': 'ir.actions.act_url',
-            'url': f"data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{file_base64}",
+            'url': f'/web/content/{attachment.id}?download=true',
             'target': 'self',
-            'nodestroy': False,
         }
+        return action
 
 
 class Partner(models.Model):
