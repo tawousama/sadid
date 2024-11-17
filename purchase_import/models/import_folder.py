@@ -207,7 +207,7 @@ class ImportFolder(models.Model):
     # etat = fields.Selection(selection=nouv_list, string="etat",required=True, readonly=True, copy=False,
     #                             tracking=True, default='0')
     stage_id = fields.Many2one('import.stage', string="etat",
-                                tracking=True, )
+                                tracking=True, default=lambda self: self.env.ref('purchase_import.stage_01'))
 
     '''@api.onchange('model_id')
     def _onchange_model_id(self):
