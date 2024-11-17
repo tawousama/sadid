@@ -1,5 +1,8 @@
 import datetime
-
+import base64
+import io
+from odoo import http
+from odoo.http import request
 from odoo import api, fields, models, _
 from datetime import datetime, timedelta
 
@@ -304,6 +307,57 @@ class AccountPayment(models.Model):
                 headers.append(d.journal_id.name)
         headers.append('Total')
         return headers
+
+    def get_template(self):
+        # Utilisation d'un buffer pour créer le fichier Excel en mémoire
+        output = io.BytesIO()
+
+        # Création du fichier Excel
+        import xlsxwriter
+        workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+        worksheet = workbook.add_worksheet("Données")
+
+        # Définition des colonnes
+        headers = ["Nom de fournisseur", "Montant", "Date", "Commentaire", "Journal"]
+
+        # Style pour le header
+        header_format = workbook.add_format({
+            'bold': True,
+            'align': 'center',
+            'valign': 'vcenter',
+            'border': 1,
+            'bg_color': '#D3D3D3'
+        })
+
+        # Ajout des headers
+        for col_num, header in enumerate(headers):
+            worksheet.write(0, col_num, header, header_format)
+
+        # Ajustement automatique des colonnes
+        worksheet.set_column(0, len(headers) - 1, 20)
+
+        # Finalisation du fichier
+        workbook.close()
+        output.seek(0)
+
+        file_data = output.getvalue()
+
+        file_name = "export_fournisseurs.xlsx"
+        attachment = request.env['ir.attachment'].create({
+            'name': file_name,
+            'type': 'binary',
+            'datas': base64.b64encode(file_data),
+            'store_fname': file_name,
+            'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        })
+
+        # Retourner le fichier en téléchargement
+        url = f'/web/content/{attachment.id}?download=true'
+        return {
+            'type': 'ir.actions.act_url',
+            'url': url,
+            'target': 'self',
+        }
 
 
 class Partner(models.Model):
