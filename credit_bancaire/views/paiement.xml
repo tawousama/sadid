@@ -34,8 +34,7 @@
                 <field name="comment"/>
             </field>
             <field name="ref" position="attributes">
-                <attribute name="invisible">partner_type != 'customer' or payment_mode_client not in ['cheque',
-                    'bank_cheque']
+                <attribute name="invisible">partner_type != 'customer' or payment_mode_client not in ['cheque', 'bank_cheque']
                 </attribute>
                 <attribute name="string">Numéro de chèque</attribute>
             </field>
@@ -47,8 +46,7 @@
             </field>
             <xpath expr="//field[@name='partner_id'][2]" position="attributes">
                 <attribute name="required">autre_type not in ['salaire', 'g50', 'provision']</attribute>
-                <attribute name="invisible">partner_type != 'supplier' or autre_type in ['salaire', 'g50', 'provision']
-                    or is_internal_transfer or type_supplier != 'etranger'
+                <attribute name="invisible">partner_type != 'supplier' or autre_type in ['salaire', 'g50', 'provision'] or is_internal_transfer or type_supplier != 'etranger'
                 </attribute>
                 <attribute name="domain">[('partner_type', '=', 'supplier'),('supplier_type', '=', 'etranger')]
                 </attribute>
