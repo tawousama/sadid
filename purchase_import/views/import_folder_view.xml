@@ -91,7 +91,6 @@
                             <field name="attach_d10" readonly="stage != 5" invisible="stage in [1, 2, 3, 4]"/>
                             <field name="payment_id" invisible="payment_id == False"/>
                             <field name="num_commande" readonly="stage != 1"/>
-
                             <button name="create_payment" type="object" string="Créer un paiement"
                                     class="btn-primary" invisible="payment_id != False"/>
                         </group>
@@ -102,29 +101,41 @@
                                 <group>
                                     <field name="bank_id" readonly="stage != 1"/>
                                     <field name="journal_id" invisible="1"/>
-                                    <field name="reference_dossier_banque" readonly="stage != 3"
-                                           invisible="stage in [1, 2]"/>
                                     <field name="incoterm" readonly="stage != 1"/>
                                     <field name="methode_expedition"/>
-                                    <field name="provision_id" readonly="stage != 3" invisible="stage in [1, 2]"/>
                                     <field name="provision_ouverture" invisible="1"/>
                                     <field name="date_limit_embarquement" readonly="stage != 4"
                                            invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP'] or stage in [1, 2, 3]"/>
-                                    <field name="date_reception_document" readonly="stage != 5"
-                                           invisible="stage in [1, 2, 3, 4]"/>
+
                                     <field name="date_report_dom"/>
-                                    <field name="date_demande_predom" readonly="stage != 3"
-                                           invisible="stage in [1, 2]"/>
-                                    <field name="date_accord_predom" readonly="stage != 3" invisible="stage in [1, 2]"/>
-                                    <field name="date_usine" readonly="stage != 4" invisible="stage in [1, 2, 3]"/>
-                                    <field name="date_embarquement" readonly="stage != 4"
-                                           invisible="stage in [1, 2, 3]"/>
                                     <field name="date_reception_validation" readonly="stage != 1"/>
                                     <field name="date_reception_attestation" readonly="stage != 1"/>
                                     <field name="date_proforma_dom"/>
+                                    <field name="montant_droits_douane"/>
+                                    <field name="douane_id"/>
                                 </group>
-                                <group>
+                                <group invisible="stage in [1]">
+                                    <field name="provision_id" readonly="stage != 2" invisible="stage in [1]"/>
+                                    <field name="date_etab" readonly="stage != 2" invisible="stage in [1]"/>
+                                    <field name="montant_cheque" readonly="stage != 2" invisible="stage in [1]"/>
+                                    <field name="n_cheque" readonly="stage != 2" invisible="stage in [1]"/>
+                                    <field name="date_depot" readonly="stage != 2" invisible="stage in [1]"/>
+                                    <field name="date_reception" readonly="stage != 2" invisible="stage in [1]"/>
+                                    <field name="bank" readonly="stage != 2" invisible="stage in [1]"/>
+                                    <field name="ordre_de" readonly="stage != 2" invisible="stage in [1]"/>
+                                </group>
+                                <group invisible="stage in [1, 2]">
                                     <field name="deblocage_id" invisible="1"/>
+                                    <field name="provision_id" readonly="stage != 3" invisible="stage in [1, 2]"/>
+                                    <field name="reference_dossier_banque" readonly="stage != 3"
+                                           invisible="stage in [1, 2]"/>
+                                    <field name="date_demande_predom" readonly="stage != 3"
+                                           invisible="stage in [1, 2]"/>
+                                    <field name="date_depot_pi" readonly="stage != 3"
+                                           invisible="stage in [1, 2]"/>
+                                    <field name="date_reception_pro_dom" readonly="stage != 3"
+                                           invisible="stage in [1, 2]"/>
+                                    <field name="date_accord_predom" readonly="stage != 3" invisible="stage in [1, 2]"/>
                                     <field name="montant_debloque_spot_prefin" string="Montant LC"/>
                                     <field name="date_envoi_draft" readonly="stage != 3"
                                            invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP'] or stage in [1, 2]"/>
@@ -136,15 +147,35 @@
                                            invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP'] or stage in [1, 2]"/>
                                     <field name="date_reception_swift" readonly="stage != 3"
                                            invisible="payment_mode not in ['LC_a_vue', 'LC_a_DP'] or stage in [1, 2]"/>
-                                    <field name="montant_droits_douane"/>
-                                    <field name="douane_id"/>
-
+                                </group>
+                                <group invisible="stage in [1, 2, 3]">
+                                    <field name="date_reception_pli" readonly="stage != 4"
+                                           invisible="stage in [1, 2, 3]"/>
+                                    <field name="date_usine" readonly="stage != 4" invisible="stage in [1, 2, 3]"/>
+                                    <field name="date_embarquement" readonly="stage != 4"
+                                           invisible="stage in [1, 2, 3]"/>
+                                    <field name="date_depot_rep_dom" readonly="stage != 4"
+                                           invisible="stage in [1, 2, 3]"/>
+                                    <field name="date_reception_fac_dom" readonly="stage != 4"
+                                           invisible="stage in [1, 2, 3]"/>
+                                    <field name="date_remis_import" readonly="stage != 4"
+                                           invisible="stage in [1, 2, 3]"/>
+                                </group>
+                                <group invisible="stage in [1, 2, 3, 4]">
+                                    <field name="n_dossier" readonly="stage != 5"
+                                           invisible="stage in [1, 2, 3, 4]"/>
+                                    <field name="date_valeur" readonly="stage != 5"
+                                           invisible="stage in [1, 2, 3, 4]"/>
+                                    <field name="date_reglement" readonly="stage != 5"
+                                           invisible="stage in [1, 2, 3, 4]"/>
+                                    <field name="date_depot_ordre" readonly="stage != 5"
+                                           invisible="stage in [1, 2, 3, 4]"/>
+                                    <field name="date_reception_document" readonly="stage != 5"
+                                           invisible="stage in [1, 2, 3, 4]"/>
                                 </group>
                                 <group>
                                     <field name="port_embarquement"/>
                                     <field name="compagnieie_maritime"/>
-                                </group>
-                                <group>
                                     <field name="navire"/>
                                     <field name="n_bl"/>
                                 </group>
@@ -225,6 +256,7 @@
                             <field name="facture_file"/>
                             <field name="validation_file" readonly="stage != 1"/>
                             <field name="divers_file" readonly="stage != 3" invisible="stage in [1, 2]"/>
+                            <field name="taxe_file" readonly="stage != 2" invisible="stage in [1]"/>
                         </group>
                     </group>
                 </sheet>

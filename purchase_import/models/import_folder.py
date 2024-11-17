@@ -144,6 +144,29 @@ class ImportFolder(models.Model):
     date_envoi_draft = fields.Date(string='Date envoie Draft')
     date_confirm_draft = fields.Date(string='Date confirmation Draft')
     date_reception_swift = fields.Date(string='Date réception Swift')
+
+    date_reception_pli = fields.Date(string='Date Réception Pli DHL')
+    date_depot_rep_dom = fields.Date(string='Date dépôts report de domiciliation')
+    date_reception_fac_dom = fields.Date(string='Date réception de la Facture Domicilier')
+    date_remis_import = fields.Date(string='Date remis a l’import')
+
+    date_etab = fields.Date(string='Date Établissement')
+    date_depot = fields.Date(string='Date de Dépôts')
+    date_reception = fields.Date(string='Date de Réception')
+    montant_cheque = fields.Float(string='Montant du Cheque')
+    n_cheque = fields.Char(string='N° de cheque')
+    bank = fields.Many2one("credit.banque", string="Banque", domain="[('journal_id', '!=', False)]")
+    taxe_file = fields.Binary(string='taxe et copie du cheque')
+    ordre_de = fields.Char(string='A l’ordre de')
+
+    date_depot_pi = fields.Date(string='Date de dépôts de la Domiciliation sur Pi')
+    date_reception_pro_dom = fields.Date(string='Date Réception de la Pro-forma domicilier')
+
+    date_valeur = fields.Date(string='Date de valeur')
+    date_reglement = fields.Date(string='Date de règlement')
+    date_depot_ordre = fields.Date(string='Date dépôts de l’ordre de transfert')
+    n_dossier = fields.Char(string='N° de dossier')
+
     note = fields.Text('Observations')
 
     def compute_stage(self):
