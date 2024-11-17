@@ -7,7 +7,7 @@ from odoo import api, fields, models, _
 from datetime import datetime, timedelta
 
 from odoo.exceptions import UserError
-
+import xlsxwriter
 
 class Wizard(models.TransientModel):
     _name = 'wizard.credit.deblocage'
@@ -313,27 +313,23 @@ class AccountPayment(models.Model):
 
     @api.model
     def get_template(self):
-        # Utilisation d'un buffer pour créer le fichier Excel en mémoire
+        # Création d'un buffer en mémoire pour le fichier Excel
         output = io.BytesIO()
-
-        # Création du fichier Excel
-        import xlsxwriter
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-        worksheet = workbook.add_worksheet("Données")
+        worksheet = workbook.add_worksheet("Export")
 
-        # Définition des colonnes
+        # Définition des headers
         headers = ["Nom de fournisseur", "Montant", "Date", "Commentaire", "Journal"]
 
-        # Style pour le header
+        # Ajout des headers avec un style
         header_format = workbook.add_format({
             'bold': True,
             'align': 'center',
             'valign': 'vcenter',
-            'border': 1,
-            'bg_color': '#D3D3D3'
+            'bg_color': '#D9EAD3',
+            'border': 1
         })
 
-        # Ajout des headers
         for col_num, header in enumerate(headers):
             worksheet.write(0, col_num, header, header_format)
 
@@ -344,26 +340,19 @@ class AccountPayment(models.Model):
         workbook.close()
         output.seek(0)
 
-        file_content = output.getvalue()
-
         # Encoder le fichier en base64
-        file_base64 = base64.b64encode(file_content).decode('utf-8')
-        file_name = "Template.xlsx"
-        attachment = self.env['ir.attachment'].create({
-            'name': file_name,
-            'type': 'binary',
-            'datas': file_base64,
-            'store_fname': file_name,
-            'mimetype': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        })
+        file_content = output.getvalue()
+        file_base64 = base64.b64encode(file_content)
 
-        # Retourner le fichier en téléchargement via une action URL
-        action = {
+        # Définir le nom du fichier
+        file_name = "export_fournisseurs.xlsx"
+
+        # Retourner une action pour télécharger le fichier
+        return {
             'type': 'ir.actions.act_url',
-            'url': f'/web/content/{attachment.id}?download=true',
+            'url': f'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{file_base64.decode()}',
             'target': 'self',
         }
-        return action
 
 
 class Partner(models.Model):
