@@ -68,11 +68,6 @@
                         <field name="reference" class="oe_inline" readonly="1"/>
                     </h4>
                     <group>
-                        <group>
-                            <field name="date_validation" invisible="1"/>
-                            <field name="stage" invisible="1"/>
-                            <field name="journal_id" invisible="1"/>
-                        </group>
                         <group string="Réception fiche validation">
                             <field name="num_commande" readonly="stage != 1"/>
                             <field name="date_reception_validation" readonly="stage != 1"/>
@@ -140,6 +135,11 @@
                             <field name="payment_id" invisible="payment_id == False"/>
                             <button name="create_payment" type="object" string="Créer un paiement"
                                     class="btn-primary" invisible="payment_id != False"/>
+                        </group>
+                        <group>
+                            <field name="date_validation" invisible="1"/>
+                            <field name="stage" invisible="1"/>
+                            <field name="journal_id" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
