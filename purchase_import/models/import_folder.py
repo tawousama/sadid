@@ -127,7 +127,7 @@ class ImportFolder(models.Model):
     deblocage_id = fields.Many2one('credit.operation.deb', string='Deblocage')
     ref_facture = fields.Char(string='N. facture', related='deblocage_id.ref_interne')
     delai_payment = fields.Integer(string='Délai de paiement')
-    date_payment = fields.Date(string='Date de paiement de fournisseur')
+    date_payment = fields.Date(string='Date échéance de paiement')
     date_reception_d10 = fields.Date(string='Date de réception D10')
     attach_d10 = fields.Binary(string='Attacher D10')
     date_validation = fields.Date(string='Date de validation')
